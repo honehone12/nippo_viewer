@@ -1,8 +1,8 @@
 <script lang="ts">
     interface Props {
-        orgId: string | undefined,
-        adminId: string | undefined,
-        adminPw: string | undefined
+        orgId: string,
+        adminId: string,
+        adminPw: string
     }
 
     let {

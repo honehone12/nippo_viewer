@@ -1,5 +1,5 @@
-<script>
-    let {q = $bindable()} = $props();
+<script lang="ts">
+    let {q = $bindable()}: {q: string} = $props();
 </script>
 
 <select class="select select-primary mb-5" bind:value={q}>

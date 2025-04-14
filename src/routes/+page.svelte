@@ -1,45 +1,36 @@
 <script>
     import AdminForm from "$lib/AdminForm.svelte";
 
-    /**
-     * @type {string | undefined}
-     */
-    let orgId = $state();
-    /**
-     * @type {string | undefined}
-     */
-    let adminId = $state();
-    /**
-     * @type {string | undefined}
-     */
-    let adminPw = $state();
+    let orgId = $state('');
+    let adminId = $state('');
+    let adminPw = $state('');
+    let loading = $state(false);
 
-    /**
-     * @returns {boolean}
-     */
     function valid() {
-        if (!orgId || orgId.length === 0) {
+        if (loading) {
             return false;
         }
-        if (!adminId || adminId.length === 0) {
+
+        if (orgId.length === 0) {
             return false;
         }
-        if (!adminPw || adminPw.length === 0) {
+        if (adminId.length === 0) {
+            return false;
+        }
+        if (adminPw.length === 0) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @type {boolean}
-     */
     let disabled = $derived(!valid());
 
     function onclick() {
         if (!valid()) {
             return;
         }
+        loading = true;
 
         window.location.href = '/user';
     }

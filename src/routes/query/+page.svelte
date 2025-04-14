@@ -3,7 +3,9 @@
     import MonthSelector from "$lib/MonthSelector.svelte";
     import YearSelector from "$lib/YearSelector.svelte";
 
-    let q = $state();
+    let q = $state('');
+    let y = $state(0);
+    let m = $state(0);
 </script>
 
 <div class="hero min-h-screen">
@@ -19,8 +21,8 @@
                 <h1 >取得するデータの期間を選択してください</h1>
             </div>
             <div>
-                <YearSelector/>
-                <MonthSelector/>
+                <YearSelector bind:y/>
+                <MonthSelector bind:m/>
             </div>
         </div>
     </div>

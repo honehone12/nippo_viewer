@@ -1,4 +1,8 @@
-<select name="m" id="month" class="select select-primary mb-5">
+<script lang="ts">
+    let {m = $bindable()}: {m: number} = $props();
+</script>
+
+<select class="select select-primary mb-5" bind:value={m}>
     <option value="0" disabled selected>月を選択してください</option>
     <option value="1">１月</option>
     <option value="2">２月</option>
