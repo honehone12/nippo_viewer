@@ -1,4 +1,6 @@
 <script lang="ts">
+    'use strict';
+
     interface Props {
         orgId: string,
         adminId: string,

@@ -1,4 +1,6 @@
 <script>
+    'use strict';
+
     import Error from "$lib/Error.svelte";
 </script>
 

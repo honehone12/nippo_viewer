@@ -1,4 +1,6 @@
 <script>
+    'use strict';
+
     import "../app.css"
     let {children} = $props();
 </script>

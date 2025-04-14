@@ -1,5 +1,5 @@
 <script>
-
+    'use strict';
 </script>
 
 <select class="select select-primary mb-5">

@@ -1,4 +1,6 @@
 <script>
+    'use strict';
+    
     import AdminForm from "$lib/AdminForm.svelte";
     import { invoke } from "@tauri-apps/api/core";
 

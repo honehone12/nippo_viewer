@@ -1,4 +1,6 @@
 <script lang="ts">
+    'use strict';
+
     let {q = $bindable()}: {q: string} = $props();
 </script>
 

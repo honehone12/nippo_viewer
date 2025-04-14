@@ -1,4 +1,6 @@
 <script>
+    'use strict';
+
     import DocumentSelector from "$lib/DocumentSelector.svelte";
     import MonthSelector from "$lib/MonthSelector.svelte";
     import YearSelector from "$lib/YearSelector.svelte";

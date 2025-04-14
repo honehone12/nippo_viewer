@@ -1,4 +1,6 @@
 <script>
+    'use strict';
+    
     import UserSelector from "$lib/UserSelector.svelte";
 
     let {users} = $props();
