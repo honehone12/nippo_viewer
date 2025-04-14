@@ -1,5 +1,6 @@
 <script>
     import AdminForm from "$lib/AdminForm.svelte";
+    import { invoke } from "@tauri-apps/api/core";
 
     let orgId = $state('');
     let adminId = $state('');
@@ -10,14 +11,7 @@
         if (loading) {
             return false;
         }
-
-        if (orgId.length === 0) {
-            return false;
-        }
-        if (adminId.length === 0) {
-            return false;
-        }
-        if (adminPw.length === 0) {
+        if (orgId.length === 0 || adminId.length === 0 || adminPw.length === 0) {
             return false;
         }
 
@@ -26,15 +20,27 @@
 
     let disabled = $derived(!valid());
 
-    function onclick() {
+    async function onclick() {
         if (!valid()) {
             return;
         }
         loading = true;
 
+        try {
+            await invoke('admin_auth', {
+                orgId,
+                adminId,
+                adminPw
+            });
+        } catch {
+            window.location.href = '/error';
+            return;
+        }
+
         window.location.href = '/user';
     }
 </script>
+
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">

@@ -7,6 +7,12 @@ import adapter from "@sveltejs/adapter-static";
 const config = {
   kit: {
     adapter: adapter(),
+    csp: {
+			directives: {
+        'default-src': ['self'],
+				'script-src': ['self']
+			}
+		}
   },
 };
 

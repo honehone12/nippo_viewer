@@ -13,16 +13,19 @@ async fn admin_auth(
 ) -> InvokeResult<()> {
     warn!("authentication is not implemented !!");
 
-    Ok(())
+    Err(error::InvokeError::HttpRequestError)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    if let Err(e) = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             admin_auth
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    {
+
+        panic!("{e}");
+    }
 }
