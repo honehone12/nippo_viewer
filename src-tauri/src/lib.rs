@@ -13,7 +13,7 @@ async fn admin_auth(
 ) -> InvokeResult<()> {
     warn!("authentication is not implemented !!");
 
-    Err(error::InvokeError::HttpRequestError)
+    Ok(())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
