@@ -8,7 +8,7 @@
 
     async function load() {
         try {
-            let exists = await invoke('exists_auth');
+            const exists = await invoke('exists_auth');
 
             if (exists) {
                 goto('/user');

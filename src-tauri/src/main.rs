@@ -1,7 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    tracing_subscriber::fmt().init();
+    tracing_subscriber::fmt()
+        .with_line_number(true)
+        .init();
 
     nippo_viewer_lib::run()
 }
