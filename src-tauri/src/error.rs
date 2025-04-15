@@ -6,7 +6,11 @@ pub enum InvokeError {
     #[error("failed to request or unexpected response")]
     HttpError,
     #[error("failed to read or write file")]
-    FsError
+    FsError,
+    #[error("failed to handle timezone")]
+    TimezoneError,
+    #[error("failed to serialize or deserialize json")]
+    JsonError
 }
 
 impl Serialize for InvokeError {

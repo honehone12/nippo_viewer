@@ -1,6 +1,7 @@
 mod error;
 mod state;
 
+use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
 use tokio::sync::RwLock;
 use state::{Admin, User};
@@ -8,6 +9,8 @@ use error::InvokeError;
 use tracing::{info, error};
 
 type InvokeResult<T> = Result<T, InvokeError>;
+
+const JST_OFFSET: i32 = 9 * 60 * 60;
 
 #[tauri::command]
 async fn exists_auth(st_admin: State<'_, RwLock<Admin>>) -> InvokeResult<bool> {
@@ -54,7 +57,7 @@ async fn load_users(
             return Err(InvokeError::HttpError);
         }
     };
-    let users = match res {
+    let mut users = match res {
         Ok(v) => v,
         Err(e) => {
             error!("{e}");
@@ -62,8 +65,16 @@ async fn load_users(
         }
     };
 
+    let Some(jst) = FixedOffset::east_opt(JST_OFFSET) else {
+        error!("failed to handle jst offset");
+        return Err(InvokeError::TimezoneError);
+    };
+    for u in users.iter_mut()  {
+        u.created_at = u.created_at.with_timezone(&jst);
+    }
+    users.sort_unstable_by_key(|u| u.created_at);
+
     let mut st_user = st_user.write().await;
-    
     *st_user = users;
 
     Ok(Response::new("".to_string()))
