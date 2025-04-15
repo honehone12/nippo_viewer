@@ -9,7 +9,6 @@ const config = {
     adapter: adapter(),
     csp: {
 			directives: {
-        'default-src': ['self'],
 				'script-src': ['self']
 			}
 		}

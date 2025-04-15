@@ -1,9 +1,9 @@
 <script>
     'use strict';
 
-    import DocumentSelector from "$lib/DocumentSelector.svelte";
-    import MonthSelector from "$lib/MonthSelector.svelte";
-    import YearSelector from "$lib/YearSelector.svelte";
+    import DocumentSelector from "$lib/components/DocumentSelector.svelte";
+    import MonthSelector from "$lib/components/MonthSelector.svelte";
+    import YearSelector from "$lib/components/YearSelector.svelte";
 
     let q = $state('');
     let y = $state(0);

@@ -1,16 +1,25 @@
 <script>
     'use strict';
     
-    import AdminForm from "$lib/AdminForm.svelte";
+    import { goto } from "$app/navigation";
+    import AdminForm from "$lib/components/AdminForm.svelte";
+    import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
-    let orgId = $state('');
-    let adminId = $state('');
-    let adminPw = $state('');
-    let loading = $state(false);
+    async function load() {
+        try {
+            let exists = await invoke('exists_auth');
+
+            if (exists) {
+                goto('/user');
+            }
+        } catch {
+            goto('/error');
+        }
+    }
 
     function valid() {
-        if (loading) {
+        if (submitting) {
             return false;
         }
         if (orgId.length === 0 || adminId.length === 0 || adminPw.length === 0) {
@@ -20,13 +29,11 @@
         return true;
     }
 
-    let disabled = $derived(!valid());
-
     async function onclick() {
         if (!valid()) {
             return;
         }
-        loading = true;
+        submitting = true;
 
         try {
             await invoke('admin_auth', {
@@ -34,33 +41,44 @@
                 adminId,
                 adminPw
             });
-        } catch {
-            window.location.href = '/error';
-            return;
-        }
 
-        window.location.href = '/user';
+            goto('/user');
+        } catch {
+            goto('/error');
+        }
     }
+
+    let orgId = $state('');
+    let adminId = $state('');
+    let adminPw = $state('');
+    let submitting = $state(false);
+
+    let ready = $derived(valid()); 
 </script>
 
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">
-            <div class="text-2xl mb-5">
-                <h1 >管理者認証を行います</h1>
-            </div>
-            <AdminForm 
-                bind:orgId 
-                bind:adminId
-                bind:adminPw
-            />
-            <div class="mt-5">
-                <button 
-                    class="btn btn-primary" 
-                    {disabled}
-                    {onclick}
-                >OK</button>    
-            </div>
+            {#await load()}
+                <Loading/>
+            {:then} 
+                <div class="text-2xl mb-5">
+                    <h1 >管理者認証を行います</h1>
+                </div>
+                <AdminForm 
+                    disabled={submitting}
+                    bind:orgId 
+                    bind:adminId
+                    bind:adminPw
+                />
+                <div class="mt-5">
+                    <button 
+                        class="btn btn-primary" 
+                        disabled={!ready}
+                        {onclick}
+                    >OK</button>    
+                </div>    
+            {/await}
         </div>
     </div>
 </div>

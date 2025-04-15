@@ -4,7 +4,9 @@ use serde::Serialize;
 #[derive(Error, Debug)]
 pub enum InvokeError {
     #[error("failed to request or unexpected response")]
-    HttpRequestError
+    HttpError,
+    #[error("failed to read or write file")]
+    FsError
 }
 
 impl Serialize for InvokeError {
