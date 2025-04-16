@@ -1,13 +1,52 @@
 <script>
     'use strict';
-
+    
+    import { goto } from "$app/navigation";
     import DocumentSelector from "$lib/components/DocumentSelector.svelte";
     import MonthSelector from "$lib/components/MonthSelector.svelte";
     import YearSelector from "$lib/components/YearSelector.svelte";
+    import { invoke } from "@tauri-apps/api/core";
 
     let q = $state('');
     let y = $state(0);
     let m = $state(0);
+    let submitting = $state(false);
+
+    function valid() {
+        if (submitting) {
+            return false;
+        }
+
+        return q.length !== 0 && y !== 0 && m !== 0
+    }
+
+    async function onclick() {
+        if (!valid()) {
+            return;
+        }
+
+        submitting = true;
+
+        try {
+            await invoke('set_query_qym', {q, y, m});
+
+            switch (q) {
+                case 'reports':
+                    goto('/report');
+                    break;
+                case 'calls':
+                    goto('/call');
+                    break;
+                default:
+                    goto('/error');
+                    break;
+            }
+        } catch {
+            goto('/error');
+        }
+    }
+
+    let ready = $derived(valid());
 </script>
 
 <div class="hero min-h-screen">
@@ -25,6 +64,13 @@
             <div>
                 <YearSelector bind:y/>
                 <MonthSelector bind:m/>
+            </div>
+            <div class="mt-10">
+                <button 
+                    class="btn btn-primary" 
+                    disabled={!ready}
+                    {onclick}
+                >OK</button>    
             </div>
         </div>
     </div>

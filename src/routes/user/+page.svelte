@@ -30,19 +30,24 @@
         if (submitting) {
             return false;
         }
-        if (user.length == 0) {
-            return false;
-        }
-
-        return true;
+        
+        return user.length !== 0;
     }
 
-    function onclick() {
+    async function onclick() {
         if (!valid()) {
             return;
         }
 
         submitting = true;
+
+        try {
+            await invoke('set_query_user', {user});
+
+            goto('/query');
+        } catch {
+            goto('/error');
+        }
     }
 
     let ready = $derived(valid());

@@ -27,17 +27,15 @@
         if (submitting) {
             return false;
         }
-        if (orgId.length === 0 || adminId.length === 0 || adminPw.length === 0) {
-            return false;
-        }
-
-        return true;
+        
+        return orgId.length !== 0 && adminId.length !== 0 && adminPw.length !== 0;
     }
 
     async function onclick() {
         if (!valid()) {
             return;
         }
+
         submitting = true;
 
         try {

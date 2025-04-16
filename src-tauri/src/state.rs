@@ -35,5 +35,8 @@ impl Users {
 
 #[derive(Debug, Default)]
 pub(crate) struct Query {
-    pub(crate) user: String
+    pub(crate) user: String,
+    pub(crate) q: String,
+    pub(crate) y: i64,
+    pub(crate) m: i64
 }

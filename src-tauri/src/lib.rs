@@ -102,10 +102,26 @@ async fn load_users(
 }
 
 #[tauri::command]
-async fn set_query_user(st_query: State<'_, RwLock<Query>>, user_id: String) -> InvokeResult<()> {
+async fn set_query_user(st_query: State<'_, RwLock<Query>>, user_id: String) 
+-> InvokeResult<()> {
     let mut st_query = st_query.write().await;
     st_query.user = user_id;
 
+    Ok(())
+}
+
+#[tauri::command]
+async fn set_query_qym(
+    st_query: State<'_, RwLock<Query>>,
+    q: String,
+    y: i64,
+    m: i64
+) -> InvokeResult<()> {
+    let mut st_query = st_query.write().await;
+    st_query.q = q;
+    st_query.y = y;
+    st_query.m = m;
+    
     Ok(())
 }
 
