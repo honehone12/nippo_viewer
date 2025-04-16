@@ -77,6 +77,16 @@ pub(crate) struct CacheCalls {
     pub(crate) calls: Calls
 }
 
+impl CacheCalls {
+    pub(crate) fn has(&self, user: &str, y: &str, m: &str) -> bool {
+        if self.user != user || self.y != y || self.m != m {
+            return false;
+        }
+
+        self.calls.morning_calls.len() != 0 || self.calls.evening_calls.len() != 0
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub(crate) struct DailyReport {
     pub(crate) id: String,
@@ -95,6 +105,16 @@ pub(crate) struct CacheDailyReports {
     pub(crate) y: String,
     pub(crate) m: String,
     pub(crate) reports: Vec<DailyReport>
+}
+
+impl CacheDailyReports {
+    pub(crate) fn has(&self, user: &str, y: &str, m: &str) -> bool {
+        if self.user != user || self.y != y || self.m != m {
+            return false;
+        }
+
+        self.reports.len() != 0
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -157,6 +177,12 @@ pub(crate) struct DailyReportPrint {
 pub(crate) struct CacheDailyReportPrint {
     pub(crate) report: String,
     pub(crate) print: DailyReportPrint
+}
+
+impl CacheDailyReportPrint {
+    pub(crate) fn has(&self, report: &str) -> bool {
+        &self.report == report && self.print.daily_report.is_some()
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
