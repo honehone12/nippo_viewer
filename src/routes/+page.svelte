@@ -6,6 +6,11 @@
     import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
+    let orgId = $state('');
+    let adminId = $state('');
+    let adminPw = $state('');
+    let submitting = $state(false);
+
     async function load() {
         try {
             const exists = await invoke('exists_auth');
@@ -47,11 +52,6 @@
             goto('/error');
         }
     }
-
-    let orgId = $state('');
-    let adminId = $state('');
-    let adminPw = $state('');
-    let submitting = $state(false);
 
     let ready = $derived(valid()); 
 </script>
