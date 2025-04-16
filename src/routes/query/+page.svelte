@@ -8,8 +8,8 @@
     import { invoke } from "@tauri-apps/api/core";
 
     let q = $state('');
-    let y = $state(0);
-    let m = $state(0);
+    let y = $state('');
+    let m = $state('');
     let submitting = $state(false);
 
     function valid() {
@@ -17,7 +17,7 @@
             return false;
         }
 
-        return q.length !== 0 && y !== 0 && m !== 0
+        return q.length !== 0 && y.length !== 0 && m.length !== 0
     }
 
     async function onclick() {

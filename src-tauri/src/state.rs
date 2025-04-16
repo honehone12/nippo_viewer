@@ -30,8 +30,8 @@ impl CacheUsers {
 pub(crate) struct CacheQuery {
     pub(crate) user: String,
     pub(crate) q: String,
-    pub(crate) y: i64,
-    pub(crate) m: i64,
+    pub(crate) y: String,
+    pub(crate) m: String,
     pub(crate) report: String,
 }
 
@@ -72,8 +72,8 @@ pub(crate) struct Calls {
 #[derive(Default)]
 pub(crate) struct CacheCalls {
     pub(crate) user: String,
-    pub(crate) y: i64,
-    pub(crate) m: i64,
+    pub(crate) y: String,
+    pub(crate) m: String,
     pub(crate) calls: Calls
 }
 
@@ -92,8 +92,8 @@ pub(crate) struct DailyReport {
 #[derive(Default)]
 pub(crate) struct CacheDailyReports {
     pub(crate) user: String,
-    pub(crate) y: i64,
-    pub(crate) m: i64,
+    pub(crate) y: String,
+    pub(crate) m: String,
     pub(crate) reports: Vec<DailyReport>
 }
 

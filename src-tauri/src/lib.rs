@@ -4,7 +4,7 @@ mod state;
 use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
 use tokio::sync::RwLock;
-use state::{CacheAdmin, CacheQuery, User, CacheUsers};
+use state::*;
 use error::InvokeError;
 use tracing::{info, error};
 
@@ -100,10 +100,10 @@ async fn load_users(
 }
 
 #[tauri::command]
-async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user_id: String) 
+async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user: String) 
 -> InvokeResult<()> {
     let mut st_query = st_query.write().await;
-    st_query.user = user_id;
+    st_query.user = user;
 
     Ok(())
 }
@@ -112,8 +112,8 @@ async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user_id: String
 async fn set_query_qym(
     st_query: State<'_, RwLock<CacheQuery>>,
     q: String,
-    y: i64,
-    m: i64
+    y: String,
+    m: String
 ) -> InvokeResult<()> {
     let mut st_query = st_query.write().await;
     st_query.q = q;
@@ -131,12 +131,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             exists_auth,
             admin_auth,
             load_users,
-            set_query_user
+            set_query_user,
+            set_query_qym
         ])
         .setup(|app| {
             app.manage(RwLock::new(CacheAdmin::default()));
             app.manage(RwLock::new(CacheUsers::default()));
             app.manage(RwLock::new(CacheQuery::default()));
+            app.manage(RwLock::new(CacheCalls::default()));
+            app.manage(RwLock::new(CacheDailyReports::default()));
+            app.manage(RwLock::new(CacheDailyReportPrint::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;
