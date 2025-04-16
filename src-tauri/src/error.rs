@@ -4,13 +4,21 @@ use serde::Serialize;
 #[derive(Error, Debug)]
 pub enum InvokeError {
     #[error("failed to request or unexpected response")]
-    HttpError,
+    Http(#[from] reqwest::Error),
     #[error("failed to read or write file")]
-    FsError,
+    Fs,
     #[error("failed to handle chrono")]
-    ChronoError,
+    Chrono,
     #[error("failed to serialize or deserialize json")]
-    JsonError
+    Json(#[from] serde_json::Error),
+    #[error("invalid input")]
+    Input,
+    #[error("internal system error")]
+    Internal,
+    #[error("failed to encode or decode base64")]
+    Base64(#[from] base64::DecodeError),
+    #[error("failed to parse uuid")]
+    Uuid(#[from] uuid::Error)
 }
 
 impl Serialize for InvokeError {
