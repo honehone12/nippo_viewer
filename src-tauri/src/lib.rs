@@ -4,7 +4,7 @@ mod state;
 use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
 use tokio::sync::RwLock;
-use state::{Admin, User};
+use state::{Admin, Users, User};
 use error::InvokeError;
 use tracing::{info, error};
 
@@ -39,15 +39,16 @@ async fn admin_auth(
 #[tauri::command]
 async fn load_users(
     st_admin: State<'_, RwLock<Admin>>, 
-    st_user: State<'_, RwLock<Vec<User>>>,
+    st_users: State<'_, RwLock<Users>>,
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
+    let org_id = st_admin.org_id.clone();
     #[cfg(not(debug_assertions))]
     let base_url = env!("BASE_API_URL");
     #[cfg(debug_assertions)]
     let base_url = option_env!("BASE_API_URL")
         .expect("env for api url is not set");
-    let url = format!("{base_url}/{}/view/?q=users", st_admin.org_id);
+    let url = format!("{base_url}/{}/view/?q=users", org_id);
     
     info!("requesting to {url}");
     let res = match reqwest::get(url).await {
@@ -82,9 +83,10 @@ async fn load_users(
         }
     };
 
-    let mut st_user = st_user.write().await;
-    *st_user = users;
-
+    let mut st_users = st_users.write().await;
+    st_users.users = users;
+    st_users.org_id = org_id;
+    
     Ok(Response::new(json))
 }
 
@@ -99,7 +101,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         ])
         .setup(|app| {
             app.manage(RwLock::new(Admin::default()));
-            app.manage(RwLock::new(Vec::<User>::new()));
+            app.manage(RwLock::new(Users::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;

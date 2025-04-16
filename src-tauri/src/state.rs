@@ -20,3 +20,9 @@ pub(crate) struct User {
 
     // pub(crate) org_id: String
 }
+
+#[derive(Debug, Default)]
+pub(crate) struct Users {
+    pub(crate) org_id: String,
+    pub(crate) users: Vec<User>
+}
