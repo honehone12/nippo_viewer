@@ -4,7 +4,7 @@ mod state;
 use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
 use tokio::sync::RwLock;
-use state::{Admin, Query, User, Users};
+use state::{CacheAdmin, CacheQuery, User, CacheUsers};
 use error::InvokeError;
 use tracing::{info, error};
 
@@ -13,7 +13,7 @@ type InvokeResult<T> = Result<T, InvokeError>;
 const JST_OFFSET: i32 = 9 * 60 * 60;
 
 #[tauri::command]
-async fn exists_auth(st_admin: State<'_, RwLock<Admin>>) -> InvokeResult<bool> {
+async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bool> {
     tracing::warn!("saving file is not implemented !!");
 
     let mut st_admin = st_admin.write().await;
@@ -23,7 +23,7 @@ async fn exists_auth(st_admin: State<'_, RwLock<Admin>>) -> InvokeResult<bool> {
 
 #[tauri::command]
 async fn admin_auth(
-    st_admin: State<'_, RwLock<Admin>>,
+    st_admin: State<'_, RwLock<CacheAdmin>>,
     org_id: String,
     admin_id: String,
     admin_pw: String
@@ -38,8 +38,8 @@ async fn admin_auth(
 
 #[tauri::command]
 async fn load_users(
-    st_admin: State<'_, RwLock<Admin>>, 
-    st_users: State<'_, RwLock<Users>>,
+    st_admin: State<'_, RwLock<CacheAdmin>>, 
+    st_users: State<'_, RwLock<CacheUsers>>,
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let org_id = st_admin.org_id.clone();
@@ -83,8 +83,6 @@ async fn load_users(
         return Err(InvokeError::ChronoError);
     };
     users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
-    // users.iter_mut().for_each(|u| u.updated_at = u.updated_at.with_timezone(&jst));
-    // users.retain(|u| u.deleted_at.is_none());
     users.sort_unstable_by_key(|u| u.created_at);
 
     let json = match serde_json::to_string(&users) {
@@ -102,7 +100,7 @@ async fn load_users(
 }
 
 #[tauri::command]
-async fn set_query_user(st_query: State<'_, RwLock<Query>>, user_id: String) 
+async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user_id: String) 
 -> InvokeResult<()> {
     let mut st_query = st_query.write().await;
     st_query.user = user_id;
@@ -112,7 +110,7 @@ async fn set_query_user(st_query: State<'_, RwLock<Query>>, user_id: String)
 
 #[tauri::command]
 async fn set_query_qym(
-    st_query: State<'_, RwLock<Query>>,
+    st_query: State<'_, RwLock<CacheQuery>>,
     q: String,
     y: i64,
     m: i64
@@ -136,9 +134,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             set_query_user
         ])
         .setup(|app| {
-            app.manage(RwLock::new(Admin::default()));
-            app.manage(RwLock::new(Users::default()));
-            app.manage(RwLock::new(Query::default()));
+            app.manage(RwLock::new(CacheAdmin::default()));
+            app.manage(RwLock::new(CacheUsers::default()));
+            app.manage(RwLock::new(CacheQuery::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;

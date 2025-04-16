@@ -1,8 +1,8 @@
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Default)]
-pub(crate) struct Admin {
+#[derive(Serialize, Deserialize, Default)]
+pub(crate) struct CacheAdmin {
     pub(crate) org_id: String,
     pub(crate) tkn: String
 }
@@ -11,32 +11,157 @@ pub(crate) struct Admin {
 pub(crate) struct User {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
-    // pub(crate) updated_at: DateTime<FixedOffset>,
-    // pub(crate) deleted_at: Option<DateTime<FixedOffset>>,
-
     pub(crate) name: String,
-    // pub(crate) line_id: String,
-    // pub(crate) car_number: String,
-
-    // pub(crate) org_id: String
 }
 
-#[derive(Debug, Default)]
-pub(crate) struct Users {
+#[derive(Default)]
+pub(crate) struct CacheUsers {
     pub(crate) org_id: String,
     pub(crate) users: Vec<User>
 }
 
-impl Users {
+impl CacheUsers {
     pub(crate) fn has(&self, org_id: &str) -> bool {
         return &self.org_id == org_id && self.users.len() != 0;
     }
 }
 
-#[derive(Debug, Default)]
-pub(crate) struct Query {
+#[derive(Default)]
+pub(crate) struct CacheQuery {
     pub(crate) user: String,
     pub(crate) q: String,
     pub(crate) y: i64,
-    pub(crate) m: i64
+    pub(crate) m: i64,
+    pub(crate) report: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct MorningCall {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) caller: String,
+    pub(crate) car_number: String,
+    pub(crate) method: u32,
+    pub(crate) using_alc_checker: bool,
+    pub(crate) alc_check: bool,
+    pub(crate) alc_photo: String,
+    pub(crate) health_check: bool,
+    pub(crate) car_check: bool,
+    pub(crate) note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct EveningCall {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) caller: String,
+    pub(crate) car_number: String,
+    pub(crate) method: u32,
+    pub(crate) using_alc_checker: bool,
+    pub(crate) alc_check: bool,
+    pub(crate) alc_photo: String,
+    pub(crate) note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Calls {
+    pub(crate) morning_calls: Vec<MorningCall>,
+    pub(crate) evening_calls: Vec<EveningCall>
+}
+
+#[derive(Default)]
+pub(crate) struct CacheCalls {
+    pub(crate) user: String,
+    pub(crate) y: i64,
+    pub(crate) m: i64,
+    pub(crate) calls: Calls
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct DailyReport {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
+    pub(crate) name: String,
+    pub(crate) car_number: String,
+    pub(crate) meter_photo: String,
+    pub(crate) trouble: String,
+    pub(crate) note: String
+}
+
+#[derive(Default)]
+pub(crate) struct CacheDailyReports {
+    pub(crate) user: String,
+    pub(crate) y: i64,
+    pub(crate) m: i64,
+    pub(crate) reports: Vec<DailyReport>
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Location {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) lable: String,
+    pub(crate) address: String,
+    pub(crate) latitude: f64,
+    pub(crate) longitude: f64,
+    pub(crate) short_note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Waiting {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) lable: String,
+    pub(crate) address: String,
+    pub(crate) latitude: f64,
+    pub(crate) longitude: f64,
+    pub(crate) note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Loading {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) lable: String,
+    pub(crate) address: String,
+    pub(crate) latitude: f64,
+    pub(crate) longitude: f64,
+    pub(crate) shipping_check: bool,
+    pub(crate) note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Resting {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) lable: String,
+    pub(crate) address: String,
+    pub(crate) latitude: f64,
+    pub(crate) longitude: f64,
+    pub(crate) short_note: String
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct DailyReportPrint {
+    pub(crate) daily_report: Option<DailyReport>,
+    pub(crate) morning_call: Option<MorningCall>,
+    pub(crate) evening_call: Option<EveningCall>,
+    pub(crate) locations: Vec<Location>,
+    pub(crate) waitings: Vec<Waiting>,
+    pub(crate) loadings: Vec<Loading>,
+    pub(crate) restings: Vec<Resting>
+}
+
+#[derive(Default)]
+pub(crate) struct CacheDailyReportPrint {
+    pub(crate) report: String,
+    pub(crate) print: DailyReportPrint
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub(crate) struct Photos {
+    pub(crate) morning_alc: String,
+    pub(crate) evening_alc: String,
+    pub(crate) meter: String
 }
