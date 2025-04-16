@@ -26,3 +26,14 @@ pub(crate) struct Users {
     pub(crate) org_id: String,
     pub(crate) users: Vec<User>
 }
+
+impl Users {
+    pub(crate) fn has(&self, org_id: &str) -> bool {
+        return &self.org_id == org_id && self.users.len() != 0;
+    }
+}
+
+#[derive(Debug, Default)]
+pub(crate) struct Query {
+    pub(crate) user: String
+}

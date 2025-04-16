@@ -4,7 +4,7 @@ mod state;
 use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
 use tokio::sync::RwLock;
-use state::{Admin, Users, User};
+use state::{Admin, Query, User, Users};
 use error::InvokeError;
 use tracing::{info, error};
 
@@ -43,6 +43,18 @@ async fn load_users(
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let org_id = st_admin.org_id.clone();
+    let mut st_users = st_users.write().await;
+
+    if st_users.has(&org_id) {
+        match serde_json::to_string(&st_users.users) {
+            Ok(s) => return Ok(Response::new(s)),
+            Err(e) => {
+                error!("{e}");
+                return Err(InvokeError::JsonError);
+            }
+        }
+    }
+
     #[cfg(not(debug_assertions))]
     let base_url = env!("BASE_API_URL");
     #[cfg(debug_assertions)]
@@ -83,11 +95,18 @@ async fn load_users(
         }
     };
 
-    let mut st_users = st_users.write().await;
     st_users.users = users;
     st_users.org_id = org_id;
-    
+
     Ok(Response::new(json))
+}
+
+#[tauri::command]
+async fn set_query_user(st_query: State<'_, RwLock<Query>>, user_id: String) -> InvokeResult<()> {
+    let mut st_query = st_query.write().await;
+    st_query.user = user_id;
+
+    Ok(())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -98,10 +117,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             exists_auth,
             admin_auth,
             load_users,
+            set_query_user
         ])
         .setup(|app| {
             app.manage(RwLock::new(Admin::default()));
             app.manage(RwLock::new(Users::default()));
+            app.manage(RwLock::new(Query::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;
