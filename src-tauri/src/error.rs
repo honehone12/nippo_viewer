@@ -7,8 +7,8 @@ pub enum InvokeError {
     HttpError,
     #[error("failed to read or write file")]
     FsError,
-    #[error("failed to handle timezone")]
-    TimezoneError,
+    #[error("failed to handle chrono")]
+    ChronoError,
     #[error("failed to serialize or deserialize json")]
     JsonError
 }

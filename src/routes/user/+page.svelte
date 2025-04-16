@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
     'use strict';
 
     import { goto } from "$app/navigation";
@@ -8,14 +8,17 @@
 
     async function load() {
         try {
-            const json = await invoke('load_users');
-            console.log(json);
-            return json;
-        } catch (e) {
-            console.error(e);
+            /**
+             * @type {{
+             *  id: string,
+             *  name: string,
+             * }}
+             */
+            const users = await invoke('load_users');
+            return users;
+        } catch {
             goto('/error');
         }
-
     }
 
     function onclick() {
@@ -28,7 +31,7 @@
         <div class="p-20">
             {#await load()}
                 <Loading/>
-            {:then res} 
+            {:then users} 
                 <div class="text-2xl mb-5">
                     <h1 >取得するユーザーを選択してください</h1>
                 </div>

@@ -66,18 +66,26 @@ async fn load_users(
     };
 
     let Some(jst) = FixedOffset::east_opt(JST_OFFSET) else {
-        error!("failed to handle jst offset");
-        return Err(InvokeError::TimezoneError);
+        error!("failed to create jst offset");
+        return Err(InvokeError::ChronoError);
     };
-    for u in users.iter_mut()  {
-        u.created_at = u.created_at.with_timezone(&jst);
-    }
+    users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    // users.iter_mut().for_each(|u| u.updated_at = u.updated_at.with_timezone(&jst));
+    // users.retain(|u| u.deleted_at.is_none());
     users.sort_unstable_by_key(|u| u.created_at);
+
+    let json = match serde_json::to_string(&users) {
+        Ok(s) => s,
+        Err(e) => {
+            error!("{e}");
+            return Err(InvokeError::JsonError);
+        }
+    };
 
     let mut st_user = st_user.write().await;
     *st_user = users;
 
-    Ok(Response::new("".to_string()))
+    Ok(Response::new(json))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
