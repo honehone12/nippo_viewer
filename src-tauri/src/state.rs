@@ -7,7 +7,7 @@ pub(crate) struct CacheAdmin {
     pub(crate) tkn: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct User {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -35,7 +35,7 @@ pub(crate) struct CacheQuery {
     pub(crate) report: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct MorningCall {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -50,7 +50,7 @@ pub(crate) struct MorningCall {
     pub(crate) note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct EveningCall {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -63,7 +63,7 @@ pub(crate) struct EveningCall {
     pub(crate) note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Calls {
     pub(crate) morning_calls: Vec<MorningCall>,
     pub(crate) evening_calls: Vec<EveningCall>
@@ -87,7 +87,7 @@ impl CacheCalls {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct DailyReport {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -117,7 +117,7 @@ impl CacheDailyReports {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Location {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -128,7 +128,7 @@ pub(crate) struct Location {
     pub(crate) short_note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Waiting {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -139,7 +139,7 @@ pub(crate) struct Waiting {
     pub(crate) note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Loading {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -151,7 +151,7 @@ pub(crate) struct Loading {
     pub(crate) note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Resting {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -162,7 +162,7 @@ pub(crate) struct Resting {
     pub(crate) short_note: String
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct DailyReportPrint {
     pub(crate) daily_report: Option<DailyReport>,
     pub(crate) morning_call: Option<MorningCall>,
@@ -185,7 +185,7 @@ impl CacheDailyReportPrint {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Photos {
     pub(crate) morning_alc: String,
     pub(crate) evening_alc: String,
