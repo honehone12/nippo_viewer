@@ -1,5 +1,10 @@
 "use strict";
 
+export interface User {
+    id: string,
+    name: string
+}
+
 export interface MorningCall {
     id: string,
     created_at: string,
@@ -24,4 +29,9 @@ export interface EveningCall {
     alc_check: boolean,
     alc_photo: string,
     note: string
+}
+
+export interface Calls {
+    morning_calls: Array<MorningCall>,
+    evening_calls: Array<EveningCall>
 }

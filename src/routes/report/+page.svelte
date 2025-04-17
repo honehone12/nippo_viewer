@@ -1,22 +1,16 @@
-<script lang="ts">
+<script>
     'use strict';
     
     import { goto } from "$app/navigation";
-    import {
-        type MorningCall, 
-        type EveningCall
-    } from "$lib/api";
     import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
-    interface Calls {
-        morning_calls: Array<MorningCall>,
-        evening_calls: Array<EveningCall>
-    }
-
     async function load() {
         try {
-            const calls: Calls = await invoke('load_calls');
+            /**
+             * @type {import("$lib/api").Calls}
+             */
+            const calls = await invoke('load_calls');
             return calls;  
         } catch {
             goto('/error');
@@ -35,7 +29,13 @@
             {#await load()}
                 <Loading/>
             {:then calls} 
-                
+                {#each calls.morning_calls as mcall (mcall.id)}
+                    
+                {/each}
+
+                {#each calls.evening_calls as ecall (ecall.id)}
+                    
+                {/each}
             {/await}
         </div>
     </div>
