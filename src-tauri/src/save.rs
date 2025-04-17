@@ -30,8 +30,7 @@ pub(crate) fn key() -> InvokeResult<Vec<u8>> {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Save {
-    pub(crate) n: Vec<u8>,
-    pub(crate) tex: Vec<u8>
+    c: Vec<u8>
 }
 
 impl Save {
@@ -40,12 +39,15 @@ impl Save {
         let key = Key::from_slice(&key);
         let cipher = ChaCha20Poly1305::new(&key);
         let nonce = ChaCha20Poly1305::generate_nonce(&mut OsRng);
-        let cipher_text = cipher.encrypt(&nonce, text.as_bytes())
+        let mut cipher_text = cipher.encrypt(&nonce, text.as_bytes())
             .map_err(print_err)?;
 
+        let mut c = nonce.to_vec();
+        c.append(&mut cipher_text);
+
+
         Ok(Self { 
-            n: nonce.to_vec(), 
-            tex: cipher_text 
+            c 
         })
     }
 
@@ -53,8 +55,9 @@ impl Save {
         let key = key()?;
         let key = Key::from_slice(&key);
         let cipher = ChaCha20Poly1305::new(&key);
-        let nonce = Nonce::from_slice(&self.n);
-        let raw = cipher.decrypt(&nonce, self.tex.as_slice())
+        const SPLIT: usize = 24;
+        let nonce = Nonce::from_slice(&self.c[..SPLIT]);
+        let raw = cipher.decrypt(&nonce, &self.c[SPLIT..])
             .map_err(print_err)?;
         let text = String::from_utf8(raw).map_err(print_err)?;
         Ok(text)
