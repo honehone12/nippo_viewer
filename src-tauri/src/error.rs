@@ -1,13 +1,16 @@
 use thiserror::Error;
 use serde::Serialize;
+use tokio::io;
 use tracing::error;
 
 #[derive(Error, Debug)]
 pub enum InvokeError {
+    #[error("this does not usually happen")]
+    Unknown,
     #[error("failed to request or unexpected response")]
     Http(#[from] reqwest::Error),
     #[error("failed to read or write file")]
-    Fs,
+    Fs(#[from] io::Error),
     #[error("failed to handle chrono")]
     Chrono,
     #[error("failed to serialize or deserialize json")]
@@ -19,7 +22,9 @@ pub enum InvokeError {
     #[error("failed to encode or decode base64")]
     Base64(#[from] base64::DecodeError),
     #[error("failed to parse uuid")]
-    Uuid(#[from] uuid::Error)
+    Uuid(#[from] uuid::Error),
+    #[error("failed to encrypt or decrypt")]
+    Aead(#[from] chacha20poly1305::Error)
 }
 
 impl Serialize for InvokeError {
@@ -28,6 +33,8 @@ impl Serialize for InvokeError {
         serializer.serialize_str(&self.to_string())
     }
 }
+
+pub type InvokeResult<T> = Result<T, InvokeError>;
 
 #[inline]
 pub(crate) fn print_err<E>(err: E) -> E

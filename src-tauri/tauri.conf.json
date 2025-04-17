@@ -18,9 +18,7 @@
       }
     ],
     "security": {
-      "csp": {
-        "script-src": ["'self'"]
-      }
+      "csp": "script-src 'self';"
     }
   },
   "bundle": {

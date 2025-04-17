@@ -4,22 +4,20 @@ mod save;
 
 use chrono::FixedOffset;
 use tauri::{ipc::Response, Manager, State};
-use tokio::sync::RwLock;
+use tokio::{fs, sync::RwLock};
 use tracing::{error, info, warn};
 use base64::prelude::*;
 use uuid::Uuid;
 use state::*;
-use error::{InvokeError, print_err};
-
-type InvokeResult<T> = Result<T, InvokeError>;
+use save::{persistent_file_path, Save};
+use error::{InvokeError, InvokeResult, print_err};
 
 #[inline]
 fn base_url() -> &'static str {
-    if cfg!(debug_assertions) {
-        option_env!("BASE_API_URL").expect("env for api url is not set")
-    } else {
-        env!("BASE_API_URL")
-    }
+    #[cfg(debug_assertions)]
+    return option_env!("BASE_API_URL").expect("env for api url is not set");
+    #[cfg(not(debug_assertions))]
+    return env!("BASE_API_URL");
 }
 
 #[inline]
@@ -32,7 +30,13 @@ fn jst() -> InvokeResult<FixedOffset> {
 
 #[tauri::command]
 async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bool> {
-    warn!("saving file is not implemented !!");
+    let path = persistent_file_path()?;
+    if !fs::try_exists(&path).await.map_err(print_err)? {
+        _ = fs::File::create(path).await.map_err(print_err)?;
+        return Ok(false);
+    }
+
+    warn!("check saved auth is valid here !!");
 
     let mut st_admin = st_admin.write().await;
 
@@ -46,15 +50,26 @@ async fn admin_auth(
     admin_id: String,
     admin_pw: String
 ) -> InvokeResult<()> {
-    warn!("authentication is not implemented !!");
-
     if org_id.is_empty() || admin_id.is_empty() || admin_pw.is_empty() {
         warn!("empty input");
         return Err(InvokeError::Input);
     }
 
+    warn!("do authentication here !!");
+
+    let tkn = String::from("test-token-999"); 
+    let admin = CacheAdmin{ 
+        org_id, 
+        tkn
+    };
+    let json = serde_json::to_string(&admin).map_err(print_err)?;
+    let save = Save::from_text(json)?;
+    let json = serde_json::to_string(&save).map_err(print_err)?;
+    let path = persistent_file_path()?;
+    fs::write(path, json).await.map_err(print_err)?;
+
     let mut st_admin = st_admin.write().await;
-    st_admin.org_id = org_id;
+    *st_admin = admin;
 
     Ok(())
 }
@@ -229,6 +244,19 @@ async fn load_reports(
     Ok(Response::new(json))
 }
 
+#[tauri::command]
+async fn load_print(
+    st_admin: State<'_, RwLock<CacheAdmin>>,
+    st_query: State<'_, RwLock<CacheQuery>>,
+    st_print: State<'_, RwLock<CacheDailyReportPrint>>    
+) -> InvokeResult<Response> {
+    let st_admin = st_admin.read().await;
+    let st_query = st_query.read().await;
+    let mut st_print = st_print.write().await;
+
+    Err(InvokeError::Internal)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
@@ -240,7 +268,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             set_query_user,
             set_query_qym,
             load_calls,
-            load_reports
+            load_reports,
+            load_print
         ])
         .setup(|app| {
             app.manage(RwLock::new(CacheAdmin::default()));
