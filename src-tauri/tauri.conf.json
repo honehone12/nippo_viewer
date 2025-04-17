@@ -19,7 +19,7 @@
     ],
     "security": {
       "csp": {
-        "script-src": ["self"]
+        "script-src": ["'self'"]
       }
     }
   },
