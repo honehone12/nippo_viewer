@@ -35,7 +35,8 @@ reqwest = { version = "0.12.15", features = ["json"] }
 chrono = { version = "0.4.40", features = ["serde"] }
 base64 = "0.22.1"
 uuid = { version = "1.16.0", features = ["v4"] }
-chacha20poly1305 = { version = "0.10.1", features = ["std"]}
+chacha20poly1305 = { version = "0.10.1", features = ["std"] }
+dotenvy_macro = "0.15.7"
 
 [profile.dev]
 incremental = true

@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use dotenvy_macro::dotenv;
 use serde::{Serialize, Deserialize};
 use base64::prelude::*;
 use chacha20poly1305::{
@@ -22,11 +23,7 @@ pub(crate) fn persistent_file_path() -> InvokeResult<PathBuf> {
 
 #[inline]
 pub(crate) fn key() -> InvokeResult<Vec<u8>> {
-    #[cfg(debug_assertions)]
-    let key = option_env!("SAVE_KEY").expect("env for save key is not set"); 
-    #[cfg(not(debug_assertions))]
-    let key = env!("SAVE_KEY");
-
+    let key = dotenv!("SAVE_KEY");
     let key = BASE64_STANDARD.decode(key).map_err(print_err)?;
     Ok(key)
 }

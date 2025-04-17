@@ -3,12 +3,10 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(debug_assertions)]
     tracing_subscriber::fmt()
-        .with_line_number(true)
         .init();
     #[cfg(not(debug_assertions))]
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::WARN)
-        .with_line_number(true)
         .init();
     
     nippo_viewer_lib::run()

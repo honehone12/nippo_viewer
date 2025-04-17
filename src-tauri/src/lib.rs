@@ -3,6 +3,7 @@ mod state;
 mod save;
 
 use chrono::FixedOffset;
+use dotenvy_macro::dotenv;
 use tauri::{ipc::Response, Manager, State};
 use tokio::{fs, sync::RwLock};
 use tracing::{error, info, warn};
@@ -11,14 +12,6 @@ use uuid::Uuid;
 use state::*;
 use save::{persistent_file_path, Save};
 use error::{InvokeError, InvokeResult, print_err};
-
-#[inline]
-fn base_url() -> &'static str {
-    #[cfg(debug_assertions)]
-    return option_env!("BASE_API_URL").expect("env for api url is not set");
-    #[cfg(not(debug_assertions))]
-    return env!("BASE_API_URL");
-}
 
 #[inline]
 fn jst() -> InvokeResult<FixedOffset> {
@@ -32,7 +25,6 @@ fn jst() -> InvokeResult<FixedOffset> {
 async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bool> {
     let path = persistent_file_path()?;
     if !fs::try_exists(&path).await.map_err(print_err)? {
-        _ = fs::File::create(path).await.map_err(print_err)?;
         return Ok(false);
     }
 
@@ -93,7 +85,11 @@ async fn load_users(
         return Ok(Response::new(json));
     }
 
-    let url = format!("{}/{}/view/?q=users", base_url(), st_admin.org_id);    
+    let url = format!(
+        "{}/{}/view/?q=users", 
+        dotenv!("BASE_API_URL"), 
+        st_admin.org_id
+    );    
     info!("requesting to {url}");
     let mut users = reqwest::get(url).await.map_err(print_err)?
         .json::<Vec<User>>().await.map_err(print_err)?;
@@ -169,7 +165,7 @@ async fn load_calls(
 
     let url = format!(
         "{}/{}/view?q=calls&y={}&m={}&user={}",
-        base_url(),
+        dotenv!("BASE_API_URL"),
         st_admin.org_id,
         st_query.y,
         st_query.m,
@@ -222,7 +218,7 @@ async fn load_reports(
 
     let url = format!(
         "{}/{}/view?q={}&y={}&m={}&user={}",
-        base_url(),
+        dotenv!("BASE_API_URL"),
         st_admin.org_id,
         st_query.q,
         st_query.y,
