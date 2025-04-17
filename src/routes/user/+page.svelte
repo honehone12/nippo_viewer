@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     'use strict';
 
     import { goto } from "$app/navigation";
@@ -9,15 +9,14 @@
     let user = $state("");
     let submitting = $state(false);
 
+    interface User {
+        id: string,
+        name: string
+    }
+
     async function load() {
         try {
-            /**
-             * @type {Array<{
-             *  id: string,
-             *  name: string,
-             * }>}
-             */
-            const users = await invoke('load_users');
+            const users: Array<User> = await invoke('load_users');
             return users;
         } catch {
             goto('/error');
