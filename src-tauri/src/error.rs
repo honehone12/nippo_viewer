@@ -1,6 +1,5 @@
 use thiserror::Error;
 use serde::Serialize;
-use tokio::io;
 use tracing::error;
 
 #[derive(Error, Debug)]
@@ -10,7 +9,7 @@ pub enum InvokeError {
     #[error("failed to request or unexpected response")]
     Http(#[from] reqwest::Error),
     #[error("failed to read or write file")]
-    Fs(#[from] io::Error),
+    Fs(#[from] tokio::io::Error),
     #[error("failed to handle chrono")]
     Chrono,
     #[error("failed to serialize or deserialize json")]
@@ -19,6 +18,8 @@ pub enum InvokeError {
     Input,
     #[error("internal system error")]
     Internal,
+    #[error("invalid utf-8 encoding")]
+    Utf8(#[from] std::string::FromUtf8Error),
     #[error("failed to encode or decode base64")]
     Base64(#[from] base64::DecodeError),
     #[error("failed to parse uuid")]

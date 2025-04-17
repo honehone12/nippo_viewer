@@ -36,11 +36,17 @@ async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bo
         return Ok(false);
     }
 
-    warn!("check saved auth is valid here !!");
+    let json = fs::read_to_string(path).await.map_err(print_err)?;
+    let save = serde_json::from_str::<Save>(&json).map_err(print_err)?;
+    let json = save.into_text()?;
+    let admin = serde_json::from_str::<CacheAdmin>(&json).map_err(print_err)?;
+
+    warn!("do authentication here !!");
 
     let mut st_admin = st_admin.write().await;
+    *st_admin = admin;
 
-    Ok(false)
+    Ok(true)
 }
 
 #[tauri::command]
