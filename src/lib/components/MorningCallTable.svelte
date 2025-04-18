@@ -8,7 +8,7 @@
 </script>
 
 <table class="table table-s">
-    <caption class="text-2xl mb-10">前点呼</caption>
+    <caption class="text-2xl text-primary mb-10">前点呼</caption>
     <thead>
         <tr>
             <th>日時</th>

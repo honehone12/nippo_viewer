@@ -5,6 +5,6 @@
     let {children} = $props();
 </script>
 
-<main class="min-w-screen">
+<main class="w-full">
     {@render children()}
 </main>

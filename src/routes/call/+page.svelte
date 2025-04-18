@@ -2,8 +2,8 @@
     'use strict';
     
     import { goto } from "$app/navigation";
-    import EveningCallTable from "$lib/components/EveningCallTable.svelte";
     import Loading from "$lib/components/Loading.svelte";
+    import EveningCallTable from "$lib/components/EveningCallTable.svelte";
     import MorningCallTable from "$lib/components/MorningCallTable.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
@@ -34,11 +34,17 @@
         </div>
     </div>
 {:then calls}
-    <div class="w-full p-20">
-        <div class="flex flex-col">
-            <MorningCallTable calls={calls.morning_calls}/>
-            <div class="divider divider-primary my-10"></div>
-            <EveningCallTable calls={calls.evening_calls}/>
+    <div class="min-h-screen">
+        <div class="p-20">
+            <div class="flex flex-col">
+                <div class="flex-auto">
+                    <MorningCallTable calls={calls.morning_calls}/>
+                </div>
+                <div class="divider divider-primary flex-auto my-20"></div>
+                <div class="flex-auto">
+                    <EveningCallTable calls={calls.evening_calls}/>
+                </div>
+            </div>
         </div>
     </div>
 {/await}
