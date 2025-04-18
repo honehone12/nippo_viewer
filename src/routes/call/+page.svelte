@@ -40,7 +40,9 @@
                 <div class="flex-auto">
                     <MorningCallTable calls={calls.morning_calls}/>
                 </div>
-                <div class="divider divider-primary flex-auto my-20"></div>
+                <div class="divider divider-primary flex-auto my-20">
+                    前{calls.morning_calls.length}件：後{calls.evening_calls.length}件
+                </div>
                 <div class="flex-auto">
                     <EveningCallTable calls={calls.evening_calls}/>
                 </div>

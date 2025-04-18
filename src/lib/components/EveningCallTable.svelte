@@ -35,7 +35,7 @@
             </tr>
             <tr>
                 <td>備考</td>
-                <td colspan="8">{e.note}</td>
+                <td colspan="7">{e.note}</td>
             </tr>
         {/each}
     </tbody>

@@ -30,10 +30,18 @@ export function good(flag) {
  * @param {string} enc
  */
 export function datetime(enc) {
+    console.log(enc);
+
     try {
-        const d = new Date(enc);
-        return `${d.getFullYear()}/${d.getMonth()}/${d.getDay()} ${d.getHours()}:${d.getMinutes()}`;   
+        const date = new Date(enc);
+        const Y = date.getFullYear();
+        const M = date.getMonth() + 1;
+        const D = date.getDate();
+        const H = date.getHours();
+        const m = date.getMinutes();
+
+        return `${Y}年${M}月${D}日${H}時${m}分`;   
     } catch {
-        return  '不明';
+        return '不明';
     }
 }
