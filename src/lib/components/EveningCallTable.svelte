@@ -4,7 +4,7 @@
     import type { EveningCall } from "$lib/api";
     import {method, good, done, datetime} from "$lib/display";
 
-    let {calls}: {calls: Array<EveningCall>} = $props();
+    let {calls}: {calls: EveningCall[]} = $props();
 </script>
 
 <table class="table table-s">

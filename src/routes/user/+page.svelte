@@ -12,7 +12,7 @@
     async function load() {
         try {
             /**
-             * @type {Array<import("$lib/api").User>}
+             * @type {import("$lib/api").User[]}
              */
             const users = await invoke('load_users');
             return users;
