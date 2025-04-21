@@ -98,3 +98,19 @@ export interface Resting {
     longitude: number,
     short_note: string
 }
+
+export interface DailyReportPrint {
+    daily_report: DailyReportFull | null,
+    morning_call: MorningCall | null,
+    evening_call: EveningCall | null,
+    locations: Location[],
+    waitings: Waiting[],
+    loadings: Loading[],
+    restings: Resting[]
+}
+
+export interface photos {
+    morning_alc: string,
+    evening_alc: string,
+    meter: string
+}
