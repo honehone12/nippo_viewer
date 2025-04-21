@@ -22,7 +22,7 @@ pub(crate) fn persistent_file_path() -> InvokeResult<PathBuf> {
 }
 
 #[inline]
-pub(crate) fn key() -> InvokeResult<Vec<u8>> {
+fn key() -> InvokeResult<Vec<u8>> {
     let key = dotenv!("SAVE_KEY");
     let key = BASE64_STANDARD.decode(key).map_err(print_err)?;
     Ok(key)
@@ -30,7 +30,7 @@ pub(crate) fn key() -> InvokeResult<Vec<u8>> {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Save {
-    ct: Vec<u8>
+    ca: Vec<u8>
 }
 
 impl Save {
@@ -42,12 +42,10 @@ impl Save {
         let mut cipher_text = cipher.encrypt(&nonce, text.as_bytes())
             .map_err(print_err)?;
 
-        let mut ct = nonce.to_vec();
-        ct.append(&mut cipher_text);
+        let mut ca = nonce.to_vec();
+        ca.append(&mut cipher_text);
 
-        Ok(Self { 
-            ct 
-        })
+        Ok(Self {ca})
     }
 
     pub(crate) fn into_text(&self) -> InvokeResult<String> {
@@ -55,8 +53,8 @@ impl Save {
         let key = Key::from_slice(&key);
         let cipher = ChaCha20Poly1305::new(&key);
         const N: usize = 12;
-        let nonce = Nonce::from_slice(&self.ct[..N]);
-        let raw = cipher.decrypt(&nonce, &self.ct[N..])
+        let nonce = Nonce::from_slice(&self.ca[..N]);
+        let raw = cipher.decrypt(&nonce, &self.ca[N..])
             .map_err(print_err)?;
         let text = String::from_utf8(raw).map_err(print_err)?;
         Ok(text)

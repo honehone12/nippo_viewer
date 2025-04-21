@@ -17,7 +17,10 @@ use error::{InvokeError, InvokeResult, print_err};
 fn jst() -> InvokeResult<FixedOffset> {
     match FixedOffset::east_opt(9 * 60 * 60) {
         Some(jst) => Ok(jst),
-        None => Err(InvokeError::Chrono)
+        None => {
+            error!("failed to create jst fixed offset");
+            Err(InvokeError::Chrono)
+        }
     }
 }
 
@@ -94,7 +97,7 @@ async fn load_users(
     let mut users = reqwest::get(url).await.map_err(print_err)?
         .json::<Vec<User>>().await.map_err(print_err)?;
 
-    let jst = jst().map_err(print_err)?;
+    let jst = jst()?;
     users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
     users.sort_unstable_by_key(|u| u.created_at);
 
@@ -215,7 +218,7 @@ async fn load_reports(
         return Ok(Response::new(json));
     }
 
-    let user_id = BASE64_STANDARD.decode(st_query.user.as_str()).map_err(print_err)?;
+    let user_id = BASE64_STANDARD.decode(&st_query.user).map_err(print_err)?;
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
     let url = format!(
@@ -230,7 +233,7 @@ async fn load_reports(
     let mut reports = reqwest::get(url).await.map_err(print_err)?
         .json::<Vec<DailyReportMini>>().await.map_err(print_err)?;
 
-    let jst = jst().map_err(print_err)?;
+    let jst = jst()?;
     reports.iter_mut().for_each(|r| {
         r.created_at = r.created_at.with_timezone(&jst);
         r.updated_at = r.updated_at.with_timezone(&jst);
@@ -257,7 +260,51 @@ async fn load_print(
     let st_query = st_query.read().await;
     let mut st_print = st_print.write().await;
 
-    Err(InvokeError::Internal)
+    if st_print.has(&st_query.report) {
+        let json = serde_json::to_string(&st_print.print).map_err(print_err)?;
+        return Ok(Response::new(json));
+    }
+
+    let report_id = BASE64_STANDARD.decode(&st_query.report).map_err(print_err)?;
+    let report_id = Uuid::from_slice(&report_id).map_err(print_err)?;
+
+    let url = format!(
+        "{}/{}/view?q=print&report={}",
+        dotenv!("BASE_API_URL"),
+        st_admin.org_id,
+        report_id
+    );
+    info!("requesting to {url}");
+    let mut print = reqwest::get(url).await.map_err(print_err)?
+        .json::<DailyReportPrint>().await.map_err(print_err)?;
+
+    let jst = jst()?;
+    print.daily_report.iter_mut().for_each(|r| {
+        r.created_at = r.created_at.with_timezone(&jst);
+        r.updated_at = r.updated_at.with_timezone(&jst);
+    });
+    print.morning_call.iter_mut().for_each(|m| m.created_at = m.created_at.with_timezone(&jst));
+    print.evening_call.iter_mut().for_each(|e| e.created_at = e.created_at.with_timezone(&jst));
+    print.locations.iter_mut().for_each(|l| l.created_at = l.created_at.with_timezone(&jst));
+    print.waitings.iter_mut().for_each(|w| {
+        w.created_at = w.created_at.with_timezone(&jst);
+        w.updated_at = w.updated_at.with_timezone(&jst);
+    });
+    print.loadings.iter_mut().for_each(|l| {
+        l.created_at = l.created_at.with_timezone(&jst);
+        l.updated_at = l.updated_at.with_timezone(&jst);
+    });
+    print.restings.iter_mut().for_each(|r| {
+        r.created_at = r.created_at.with_timezone(&jst);
+        r.updated_at = r.updated_at.with_timezone(&jst);
+    });
+
+    let json = serde_json::to_string(&print).map_err(print_err)?;
+
+    st_print.report = st_query.report.clone();
+    st_print.print = print;
+
+    Ok(Response::new(json))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
