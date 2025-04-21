@@ -202,3 +202,21 @@ pub(crate) struct Photos {
     pub(crate) evening_alc: String,
     pub(crate) meter: String
 }
+
+#[derive(Default)]
+pub(crate) struct CachedPhotos {
+    pub(crate) report: String,
+    pub(crate) photos: Photos
+}
+
+impl CachedPhotos {
+    pub(crate) fn has(&self, report: &str) -> bool {
+        if &self.report != report {
+            return false;
+        }
+
+        return !self.photos.morning_alc.is_empty()
+            || !self.photos.evening_alc.is_empty()
+            || !self.photos.meter.is_empty()
+    }
+}

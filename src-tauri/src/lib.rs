@@ -307,6 +307,11 @@ async fn load_print(
     Ok(Response::new(json))
 }
 
+#[tauri::command]
+async fn load_download() -> InvokeResult<()> {
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
@@ -320,7 +325,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             set_query_report,
             load_calls,
             load_reports,
-            load_print
+            load_print,
+            load_download
         ])
         .setup(|app| {
             app.manage(RwLock::new(CachedAdmin::default()));
@@ -329,6 +335,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             app.manage(RwLock::new(CachedCalls::default()));
             app.manage(RwLock::new(CachedDailyReports::default()));
             app.manage(RwLock::new(CachedDailyReportPrint::default()));
+            app.manage(RwLock::new(CachedPhotos::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;
