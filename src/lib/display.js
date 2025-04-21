@@ -1,6 +1,6 @@
 /**
-     * @param {number} code 
-     */
+ * @param {number} code 
+ */
 export function method(code) {
     switch (code) {
         case 1:
@@ -13,8 +13,8 @@ export function method(code) {
 }
 
 /**
-     * @param {boolean} flag 
-     */
+ * @param {boolean} flag 
+ */
 export function done(flag) {
     return flag ? '有' : '無';
 }
