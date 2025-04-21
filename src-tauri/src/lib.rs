@@ -317,7 +317,46 @@ async fn load_download(
     let st_query = st_query.read().await;
     let mut st_photos = st_photos.write().await;
 
-    Ok(Response::new("".to_string()))
+    if st_photos.has(&st_query.report) {
+        let json = serde_json::to_string(&st_photos.photos).map_err(print_err)?;
+        return Ok(Response::new(json));
+    }
+
+    let report_id = BASE64_STANDARD.decode(&st_query.report).map_err(print_err)?;
+    let report_id = Uuid::from_slice(&report_id).map_err(print_err)?;
+
+    let url = format!(
+        "{}/{}/view?q=download&report={}",
+        dotenv!("BASE_API_URL"),
+        st_admin.org_id,
+        report_id
+    );
+    info!("requesting to {url}");
+    let mut photos = reqwest::get(url).await.map_err(print_err)?
+        .json::<Photos>().await.map_err(print_err)?;
+
+    if !photos.morning_alc.is_empty() {
+        let morning_alc = BASE64_STANDARD.decode(&photos.morning_alc).map_err(print_err)?;
+        let morning_alc = String::from_utf8(morning_alc).map_err(print_err)?;
+        photos.morning_alc = morning_alc;
+    }
+    if !photos.evening_alc.is_empty() {
+        let evening_alc = BASE64_STANDARD.decode(&photos.evening_alc).map_err(print_err)?;
+        let evening_alc = String::from_utf8(evening_alc).map_err(print_err)?;
+        photos.evening_alc = evening_alc;
+    }
+    if !photos.meter.is_empty() {
+        let meter = BASE64_STANDARD.decode(&photos.meter).map_err(print_err)?;
+        let meter = String::from_utf8(meter).map_err(print_err)?;
+        photos.meter = meter;
+    }
+    
+    let json = serde_json::to_string(&photos).map_err(print_err)?;
+
+    st_photos.report = st_query.report.clone();
+    st_photos.photos = photos;
+
+    Ok(Response::new(json))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

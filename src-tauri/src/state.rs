@@ -22,7 +22,7 @@ pub(crate) struct CachedUsers {
 
 impl CachedUsers {
     pub(crate) fn has(&self, org_id: &str) -> bool {
-        return &self.org_id == org_id && self.users.len() != 0;
+        return &self.org_id == org_id && !self.users.is_empty();
     }
 }
 
