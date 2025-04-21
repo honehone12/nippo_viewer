@@ -16,8 +16,6 @@ pub enum InvokeError {
     Json(#[from] serde_json::Error),
     #[error("invalid input")]
     Input,
-    #[error("internal system error")]
-    Internal,
     #[error("invalid utf-8 encoding")]
     Utf8(#[from] std::string::FromUtf8Error),
     #[error("failed to encode or decode base64")]
