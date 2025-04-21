@@ -22,7 +22,7 @@ fn jst() -> InvokeResult<FixedOffset> {
 }
 
 #[tauri::command]
-async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bool> {
+async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> InvokeResult<bool> {
     let path = persistent_file_path()?;
     if !fs::try_exists(&path).await.map_err(print_err)? {
         return Ok(false);
@@ -31,7 +31,7 @@ async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bo
     let json = fs::read_to_string(path).await.map_err(print_err)?;
     let save = serde_json::from_str::<Save>(&json).map_err(print_err)?;
     let json = save.into_text()?;
-    let admin = serde_json::from_str::<CacheAdmin>(&json).map_err(print_err)?;
+    let admin = serde_json::from_str::<CachedAdmin>(&json).map_err(print_err)?;
 
     warn!("do authentication here !!");
 
@@ -43,7 +43,7 @@ async fn exists_auth(st_admin: State<'_, RwLock<CacheAdmin>>) -> InvokeResult<bo
 
 #[tauri::command]
 async fn admin_auth(
-    st_admin: State<'_, RwLock<CacheAdmin>>,
+    st_admin: State<'_, RwLock<CachedAdmin>>,
     org_id: String,
     admin_id: String,
     admin_pw: String
@@ -56,7 +56,7 @@ async fn admin_auth(
     warn!("do authentication here !!");
 
     let tkn = String::from("test-token-999"); 
-    let admin = CacheAdmin{ 
+    let admin = CachedAdmin{ 
         org_id, 
         tkn
     };
@@ -74,8 +74,8 @@ async fn admin_auth(
 
 #[tauri::command]
 async fn load_users(
-    st_admin: State<'_, RwLock<CacheAdmin>>, 
-    st_users: State<'_, RwLock<CacheUsers>>,
+    st_admin: State<'_, RwLock<CachedAdmin>>, 
+    st_users: State<'_, RwLock<CachedUsers>>,
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let mut st_users = st_users.write().await;
@@ -107,7 +107,7 @@ async fn load_users(
 }
 
 #[tauri::command]
-async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user: String) 
+async fn set_query_user(st_query: State<'_, RwLock<CachedQuery>>, user: String) 
 -> InvokeResult<()> {
     if user.is_empty() {
         warn!("empty input");
@@ -121,7 +121,7 @@ async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user: String)
 }
 
 #[tauri::command]
-async fn set_query_report(st_query: State<'_, RwLock<CacheQuery>>, report: String)
+async fn set_query_report(st_query: State<'_, RwLock<CachedQuery>>, report: String)
 -> InvokeResult<()> {
     if report.is_empty() {
         warn!("empty input");
@@ -130,24 +130,22 @@ async fn set_query_report(st_query: State<'_, RwLock<CacheQuery>>, report: Strin
 
     let mut st_query = st_query.write().await;
     st_query.report = report;
-    
+
     Ok(())
 }
 
 #[tauri::command]
-async fn set_query_qym(
-    st_query: State<'_, RwLock<CacheQuery>>,
-    q: String,
+async fn set_query_ym(
+    st_query: State<'_, RwLock<CachedQuery>>,
     y: String,
     m: String
 ) -> InvokeResult<()> {
-    if q.is_empty() || y.is_empty() || m.is_empty() {
+    if y.is_empty() || m.is_empty() {
         warn!("empty input");
         return Err(InvokeError::Input);
     }
 
     let mut st_query = st_query.write().await;
-    st_query.q = q;
     st_query.y = y;
     st_query.m = m;
     
@@ -156,18 +154,13 @@ async fn set_query_qym(
 
 #[tauri::command]
 async fn load_calls(
-    st_admin: State<'_, RwLock<CacheAdmin>>,
-    st_query: State<'_, RwLock<CacheQuery>>,
-    st_calls: State<'_, RwLock<CacheCalls>>
+    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_query: State<'_, RwLock<CachedQuery>>,
+    st_calls: State<'_, RwLock<CachedCalls>>
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let st_query = st_query.read().await;
     let mut st_calls = st_calls.write().await;
-
-    if &st_query.q != "calls" {
-        error!("inconsistent cache");
-        return Err(InvokeError::Internal);
-    }
 
     if st_calls.has(&st_query.user, &st_query.y, &st_query.m) {
         let json =serde_json::to_string(&st_calls.calls).map_err(print_err)?;
@@ -200,27 +193,22 @@ async fn load_calls(
     let json = serde_json::to_string(&calls).map_err(print_err)?;
 
     st_calls.calls = calls;
+    st_calls.user = st_query.user.clone();
     st_calls.y = st_query.y.clone();
     st_calls.m = st_query.m.clone();
-    st_calls.user = st_query.user.clone();
 
     Ok(Response::new(json))
 }
 
 #[tauri::command]
 async fn load_reports(
-    st_admin: State<'_, RwLock<CacheAdmin>>,
-    st_query: State<'_, RwLock<CacheQuery>>,
-    st_reports: State<'_, RwLock<CacheDailyReports>>
+    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_query: State<'_, RwLock<CachedQuery>>,
+    st_reports: State<'_, RwLock<CachedDailyReports>>
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let st_query = st_query.read().await;
     let mut st_reports = st_reports.write().await;
-
-    if &st_query.q != "reports" {
-        error!("inconsistent cache");
-        return Err(InvokeError::Internal);
-    }
 
     if st_reports.has(&st_query.user, &st_query.y, &st_query.m) {
         let json = serde_json::to_string(&st_reports.reports).map_err(print_err)?;
@@ -231,10 +219,9 @@ async fn load_reports(
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
     let url = format!(
-        "{}/{}/view?q={}&y={}&m={}&user={}",
+        "{}/{}/view?q=report&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
         st_admin.org_id,
-        st_query.q,
         st_query.y,
         st_query.m,
         user_id.to_string()
@@ -253,18 +240,18 @@ async fn load_reports(
     let json = serde_json::to_string(&reports).map_err(print_err)?;
 
     st_reports.reports = reports;
+    st_reports.user = st_query.user.clone();
     st_reports.y = st_query.y.clone();
     st_reports.m = st_query.m.clone();
-    st_reports.user = st_query.user.clone();
 
     Ok(Response::new(json))
 }
 
 #[tauri::command]
 async fn load_print(
-    st_admin: State<'_, RwLock<CacheAdmin>>,
-    st_query: State<'_, RwLock<CacheQuery>>,
-    st_print: State<'_, RwLock<CacheDailyReportPrint>>    
+    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_query: State<'_, RwLock<CachedQuery>>,
+    st_print: State<'_, RwLock<CachedDailyReportPrint>>    
 ) -> InvokeResult<Response> {
     let st_admin = st_admin.read().await;
     let st_query = st_query.read().await;
@@ -282,19 +269,19 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             admin_auth,
             load_users,
             set_query_user,
-            set_query_qym,
+            set_query_ym,
             set_query_report,
             load_calls,
             load_reports,
             load_print
         ])
         .setup(|app| {
-            app.manage(RwLock::new(CacheAdmin::default()));
-            app.manage(RwLock::new(CacheUsers::default()));
-            app.manage(RwLock::new(CacheQuery::default()));
-            app.manage(RwLock::new(CacheCalls::default()));
-            app.manage(RwLock::new(CacheDailyReports::default()));
-            app.manage(RwLock::new(CacheDailyReportPrint::default()));
+            app.manage(RwLock::new(CachedAdmin::default()));
+            app.manage(RwLock::new(CachedUsers::default()));
+            app.manage(RwLock::new(CachedQuery::default()));
+            app.manage(RwLock::new(CachedCalls::default()));
+            app.manage(RwLock::new(CachedDailyReports::default()));
+            app.manage(RwLock::new(CachedDailyReportPrint::default()));
             Ok(())
         })
         .run(tauri::generate_context!())?;

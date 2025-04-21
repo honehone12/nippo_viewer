@@ -2,7 +2,7 @@ use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default)]
-pub(crate) struct CacheAdmin {
+pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
     pub(crate) tkn: String
 }
@@ -15,21 +15,20 @@ pub(crate) struct User {
 }
 
 #[derive(Default)]
-pub(crate) struct CacheUsers {
+pub(crate) struct CachedUsers {
     pub(crate) org_id: String,
     pub(crate) users: Vec<User>
 }
 
-impl CacheUsers {
+impl CachedUsers {
     pub(crate) fn has(&self, org_id: &str) -> bool {
         return &self.org_id == org_id && self.users.len() != 0;
     }
 }
 
 #[derive(Default)]
-pub(crate) struct CacheQuery {
+pub(crate) struct CachedQuery {
     pub(crate) user: String,
-    pub(crate) q: String,
     pub(crate) y: String,
     pub(crate) m: String,
     pub(crate) report: String,
@@ -72,14 +71,14 @@ pub(crate) struct Calls {
 }
 
 #[derive(Default)]
-pub(crate) struct CacheCalls {
+pub(crate) struct CachedCalls {
     pub(crate) user: String,
     pub(crate) y: String,
     pub(crate) m: String,
     pub(crate) calls: Calls
 }
 
-impl CacheCalls {
+impl CachedCalls {
     pub(crate) fn has(&self, user: &str, y: &str, m: &str) -> bool {
         if self.user != user || self.y != y || self.m != m {
             return false;
@@ -109,14 +108,14 @@ pub(crate) struct DailyReportFull {
 }
 
 #[derive(Default)]
-pub(crate) struct CacheDailyReports {
+pub(crate) struct CachedDailyReports {
     pub(crate) user: String,
     pub(crate) y: String,
     pub(crate) m: String,
     pub(crate) reports: Vec<DailyReportMini>
 }
 
-impl CacheDailyReports {
+impl CachedDailyReports {
     pub(crate) fn has(&self, user: &str, y: &str, m: &str) -> bool {
         if self.user != user || self.y != y || self.m != m {
             return false;
@@ -186,12 +185,12 @@ pub(crate) struct DailyReportPrint {
 }
 
 #[derive(Default)]
-pub(crate) struct CacheDailyReportPrint {
+pub(crate) struct CachedDailyReportPrint {
     pub(crate) report: String,
     pub(crate) print: DailyReportPrint
 }
 
-impl CacheDailyReportPrint {
+impl CachedDailyReportPrint {
     pub(crate) fn has(&self, report: &str) -> bool {
         &self.report == report && self.print.daily_report.is_some()
     }
