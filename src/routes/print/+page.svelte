@@ -41,7 +41,7 @@
     <div class="min-h-screen">
         <div class="p-20">
             <div class="flex-auto">
-                <Print/>
+                <Print {print}/>
             </div>
         </div>
     </div>

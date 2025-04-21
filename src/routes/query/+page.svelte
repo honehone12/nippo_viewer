@@ -28,7 +28,7 @@
         submitting = true;
 
         try {
-            await invoke('set_query_qym', {q, y, m});
+            await invoke('set_query_ym', {y, m});
 
             switch (q) {
                 case 'reports':

@@ -34,8 +34,8 @@ export interface EveningCall {
 }
 
 export interface Calls {
-    morning_calls: Array<MorningCall>,
-    evening_calls: Array<EveningCall>
+    morning_calls: MorningCall[],
+    evening_calls: EveningCall[]
 }
 
 export interface DailyReportMini {

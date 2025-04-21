@@ -7,7 +7,7 @@
     let {m = $bindable()} = $props();
 </script>
 
-<select class="select select-primary mb-5" bind:value={m}>
+<select id="mSelect" class="select select-primary mb-5" bind:value={m}>
     <option value="" disabled selected>月を選択してください</option>
     <option value="1">１月</option>
     <option value="2">２月</option>

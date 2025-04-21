@@ -18,6 +18,7 @@
 
 <div>
     <input 
+        id="orgId"
         type="text" 
         placeholder="企業IDを英字で入力してください" 
         class="input input-primary mb-5"
@@ -25,6 +26,7 @@
         bind:value={orgId}
     >
     <input 
+        id="adminId"
         type="text" 
         placeholder="管理者IDを英字で入力してください" 
         class="input input-primary mb-5"
@@ -32,6 +34,7 @@
         bind:value={adminId}
     >
     <input 
+        id="adminPw"
         type="password" 
         placeholder="管理者パスワードを英字で入力してください" 
         class="input input-primary mb-5"

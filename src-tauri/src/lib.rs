@@ -185,7 +185,7 @@ async fn load_calls(
     let mut calls = reqwest::get(url).await.map_err(print_err)?
         .json::<Calls>().await.map_err(print_err)?;
         
-    let jst = jst().map_err(print_err)?;
+    let jst = jst()?;
     calls.morning_calls.iter_mut()
         .for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
     calls.morning_calls.sort_unstable_by_key(|c| c.created_at);
@@ -222,7 +222,7 @@ async fn load_reports(
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
     let url = format!(
-        "{}/{}/view?q=report&y={}&m={}&user={}",
+        "{}/{}/view?q=reports&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
         st_admin.org_id,
         st_query.y,

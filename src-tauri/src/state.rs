@@ -84,7 +84,7 @@ impl CachedCalls {
             return false;
         }
 
-        self.calls.morning_calls.len() != 0 || self.calls.evening_calls.len() != 0
+        !self.calls.morning_calls.is_empty() || !self.calls.evening_calls.is_empty()
     }
 }
 
@@ -121,7 +121,7 @@ impl CachedDailyReports {
             return false;
         }
 
-        self.reports.len() != 0
+        !self.reports.is_empty()
     }
 }
 
