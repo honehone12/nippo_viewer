@@ -308,8 +308,16 @@ async fn load_print(
 }
 
 #[tauri::command]
-async fn load_download() -> InvokeResult<()> {
-    Ok(())
+async fn load_download(
+    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_query: State<'_, RwLock<CachedQuery>>,
+    st_photos: State<'_, RwLock<CachedPhotos>> 
+) -> InvokeResult<Response> {
+    let st_admin = st_admin.read().await;
+    let st_query = st_query.read().await;
+    let mut st_photos = st_photos.write().await;
+
+    Ok(Response::new("".to_string()))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

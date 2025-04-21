@@ -4,8 +4,8 @@ use tracing::error;
 
 #[derive(Error, Debug)]
 pub enum InvokeError {
-    #[error("this does not usually happen")]
-    Unknown,
+    #[error("could not resolve path")]
+    Path,
     #[error("failed to request or unexpected response")]
     Http(#[from] reqwest::Error),
     #[error("failed to read or write file")]

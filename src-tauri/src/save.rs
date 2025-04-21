@@ -13,7 +13,7 @@ use tracing::error;
 pub(crate) fn persistent_file_path() -> InvokeResult<PathBuf> {
     let Some(mut path) = dirs::config_local_dir() else {
         error!("could not find app data local path");
-        return Err(InvokeError::Unknown);
+        return Err(InvokeError::Path);
     };
 
     path.push("com.nippo-viewer.app");
