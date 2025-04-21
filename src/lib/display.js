@@ -30,8 +30,6 @@ export function good(flag) {
  * @param {string} enc
  */
 export function datetime(enc) {
-    console.log(enc);
-
     try {
         const date = new Date(enc);
         const Y = date.getFullYear();
