@@ -1,7 +1,10 @@
-<script lang="ts">
+<script>
     'use strict';
 
-    let {y = $bindable()}: {y: string} = $props();
+    /**
+     * @type {{y: string}}
+     */
+    let {y = $bindable()} = $props();
 </script>
 
 <select class="select select-primary mb-5" bind:value={y}>

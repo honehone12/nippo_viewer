@@ -121,6 +121,20 @@ async fn set_query_user(st_query: State<'_, RwLock<CacheQuery>>, user: String)
 }
 
 #[tauri::command]
+async fn set_query_report(st_query: State<'_, RwLock<CacheQuery>>, report: String)
+-> InvokeResult<()> {
+    if report.is_empty() {
+        warn!("empty input");
+        return Err(InvokeError::Input);
+    }
+
+    let mut st_query = st_query.write().await;
+    st_query.report = report;
+    
+    Ok(())
+}
+
+#[tauri::command]
 async fn set_query_qym(
     st_query: State<'_, RwLock<CacheQuery>>,
     q: String,
@@ -227,7 +241,7 @@ async fn load_reports(
     );
     info!("requesting to {url}");
     let mut reports = reqwest::get(url).await.map_err(print_err)?
-        .json::<Vec<DailyReport>>().await.map_err(print_err)?;
+        .json::<Vec<DailyReportMini>>().await.map_err(print_err)?;
 
     let jst = jst().map_err(print_err)?;
     reports.iter_mut().for_each(|r| {
@@ -269,6 +283,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             load_users,
             set_query_user,
             set_query_qym,
+            set_query_report,
             load_calls,
             load_reports,
             load_print

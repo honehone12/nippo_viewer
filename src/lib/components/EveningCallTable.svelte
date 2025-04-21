@@ -1,10 +1,12 @@
-<script lang="ts">
+<script>
     'use strict';
 
-    import type { EveningCall } from "$lib/api";
     import {method, good, done, datetime} from "$lib/display";
 
-    let {calls}: {calls: EveningCall[]} = $props();
+    /**
+     * @type {{calls: import("$lib/api").EveningCall[]}}
+     */
+    let {calls} = $props();
 </script>
 
 <table class="table table-s">

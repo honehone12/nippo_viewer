@@ -90,7 +90,14 @@ impl CacheCalls {
 }
 
 #[derive(Serialize, Deserialize, Default)]
-pub(crate) struct DailyReport {
+pub(crate) struct DailyReportMini {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>
+}
+
+#[derive(Serialize, Deserialize, Default)]
+pub(crate) struct DailyReportFull {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) updated_at: DateTime<FixedOffset>,
@@ -106,7 +113,7 @@ pub(crate) struct CacheDailyReports {
     pub(crate) user: String,
     pub(crate) y: String,
     pub(crate) m: String,
-    pub(crate) reports: Vec<DailyReport>
+    pub(crate) reports: Vec<DailyReportMini>
 }
 
 impl CacheDailyReports {
@@ -134,6 +141,7 @@ pub(crate) struct Location {
 pub(crate) struct Waiting {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) lable: String,
     pub(crate) address: String,
     pub(crate) latitude: f64,
@@ -145,6 +153,7 @@ pub(crate) struct Waiting {
 pub(crate) struct Loading {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) lable: String,
     pub(crate) address: String,
     pub(crate) latitude: f64,
@@ -157,6 +166,7 @@ pub(crate) struct Loading {
 pub(crate) struct Resting {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) lable: String,
     pub(crate) address: String,
     pub(crate) latitude: f64,
@@ -166,7 +176,7 @@ pub(crate) struct Resting {
 
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct DailyReportPrint {
-    pub(crate) daily_report: Option<DailyReport>,
+    pub(crate) daily_report: Option<DailyReportFull>,
     pub(crate) morning_call: Option<MorningCall>,
     pub(crate) evening_call: Option<EveningCall>,
     pub(crate) locations: Vec<Location>,

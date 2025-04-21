@@ -1,15 +1,16 @@
-<script lang="ts">
+<script>
     'use strict';
 
-    interface User {
-        id: string,
-        name: string
-    }
-
+    /**
+     * @type {{
+     *  users: import("$lib/api").User[], 
+     *  user: string
+     * }}
+     */
     let {
         users, 
         user = $bindable()
-    }: {users: Array<User>, user: string} = $props()
+    } = $props()
 </script>
 
 <select class="select select-primary mb-5" bind:value={user}>
