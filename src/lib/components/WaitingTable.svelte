@@ -10,12 +10,12 @@
 </script>
 
 <table class="table table-s">
-    <caption class="text-2xl text-primary mb-10">待機</caption>
+    <caption class="text-2xl text-primary mb-10">待機（荷主都合による）</caption>
     <thead>
         <tr>
             <th>開始日時</th>
             <th>終了日時</th>
-            <th>ラベル</th>
+            <th>場所名</th>
             <th>住所</th>
         </tr>
     </thead>

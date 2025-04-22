@@ -27,6 +27,13 @@ export function good(flag) {
 }
 
 /**
+ * @param {boolean} flag
+ */
+export function check(flag) {
+    return flag ? '有' : '不明'
+}
+
+/**
  * @param {string} enc
  */
 export function datetime(enc) {

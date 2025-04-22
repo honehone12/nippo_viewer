@@ -10,11 +10,11 @@
 </script>
 
 <table class="table table-s">
-    <caption class="text-2xl text-primary mb-10">位置情報</caption>
+    <caption class="text-2xl text-primary mb-10">位置情報・ルート履歴</caption>
     <thead>
         <tr>
             <th>登録日時</th>
-            <th>ラベル</th>
+            <th>場所名</th>
             <th>住所</th>
             <th>緯度</th>
             <th>経度</th>
