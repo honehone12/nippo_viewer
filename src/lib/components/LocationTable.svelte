@@ -9,7 +9,7 @@
     let {locations} = $props()
 </script>
 
-<table class="table table-s">
+<table class="table table-sm">
     <caption class="text-2xl text-primary mb-10">位置情報・ルート履歴</caption>
     <thead>
         <tr>

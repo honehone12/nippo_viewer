@@ -17,7 +17,7 @@
     }: Props = $props(); 
 </script>
 
-<table class="table table-s">
+<table class="table table-sm">
     <caption class="text-2xl text-primary mb-10">日報</caption>
     <thead>
         <tr>
