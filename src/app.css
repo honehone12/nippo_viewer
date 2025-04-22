@@ -3,3 +3,7 @@
     logs: false;
     themes: light --default, dark --prefersdark
 }
+
+td {
+    white-space: pre-wrap;
+}

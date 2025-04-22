@@ -1,6 +1,7 @@
 <script>
     'use strict';
-
+    
+    import { datetime, done } from "$lib/display";
     import EveningCallTable from "./EveningCallTable.svelte";
     import LoadingTable from "./LoadingTable.svelte";
     import LocationTable from "./LocationTable.svelte";
@@ -16,8 +17,34 @@
 
 {#if print.daily_report}
     <div class="mb-10">
-        <table class="table table-m">
+        <table class="table">
             <caption class="text-3xl font-bold text-primary mb-10">日報</caption>
+            <thead>
+                <tr>
+                    <th>開始日時</th>
+                    <th>終了日時</th>
+                    <th>名前</th>
+                    <th>車両番号</th>
+                    <th>メーター写真</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{datetime(print.daily_report.created_at)}</td>
+                    <td>{datetime(print.daily_report.updated_at)}</td>
+                    <td>{print.daily_report.name}</td>
+                    <td>{print.daily_report.car_number}</td>
+                    <td>{done(!!print.daily_report.meter_photo.length)}</td>
+                </tr>
+                <tr>
+                    <td>遅延・事故</td>
+                    <td colspan="4">{print.daily_report.trouble}</td>
+                </tr>
+                <tr>
+                    <td>備考</td>
+                    <td colspan="4">{print.daily_report.note}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div>

@@ -9,7 +9,7 @@
     let {waitings} = $props();
 </script>
 
-<table class="table table-sm">
+<table class="table">
     <caption class="text-2xl text-primary mb-10">待機（荷主都合による）</caption>
     <thead>
         <tr>

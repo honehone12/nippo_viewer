@@ -9,7 +9,7 @@
     let {calls} = $props();
 </script>
 
-<table class="table table-sm">
+<table class="table">
     <caption class="text-2xl text-primary mb-10">前点呼</caption>
     <thead>
         <tr>
@@ -20,7 +20,7 @@
             <th>方法</th>
             <th>検査機</th>
             <th>Alc検査</th>
-            <th>写真</th>
+            <th>Alc写真</th>
             <th>体調検査</th>
             <th>車両検査</th>
         </tr>
