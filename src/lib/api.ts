@@ -45,9 +45,9 @@ export interface DailyReportMini {
 }
 
 export interface DailyReportFull {
+    id: string,
     created_at: string,
     updated_at: string,
-    id: string,
     name: string,
     car_number: string,
     meter_photo: string,
