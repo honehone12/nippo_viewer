@@ -50,7 +50,7 @@
     <div>
         {#if print.morning_call}
             <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">前点呼</div>
+                <div class="collapse-title">前点呼のリンク</div>
                 <div class="collapse-content">
                     <MorningCallTable calls={[print.morning_call]}/>
                 </div>
@@ -62,7 +62,7 @@
         {/if}
         {#if print.evening_call}
             <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">後点呼</div>
+                <div class="collapse-title">後点呼のリンク</div>
                 <div class="collapse-content">
                     <EveningCallTable calls={[print.evening_call]}/>
                 </div>
@@ -100,11 +100,11 @@
             </div>    
         {/if}
         {#if print.restings.length > 0}
-            <div class="mb-10">
+            <div>
                 <RestingTable restings={print.restings}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center">
                 <p>休憩の登録無し</p>
             </div>
         {/if}

@@ -13,8 +13,9 @@
     "windows": [
       {
         "title": "にっぽーViewer",
-        "width": 1200,
-        "height": 700
+        "width": 1300,
+        "height": 700,
+        "maximized": true
       }
     ],
     "security": {
