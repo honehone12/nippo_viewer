@@ -71,8 +71,6 @@ export interface Waiting {
     updated_at: string,
     label: string,
     address: string,
-    latitude: number,
-    longitude: number,
     note: string
 }
 
@@ -82,8 +80,6 @@ export interface Loading {
     updated_at: string,
     label: string,
     address: string,
-    latitude: number,
-    longitude: number,
     shipping_check: boolean,
     note: string
 }
@@ -94,8 +90,6 @@ export interface Resting {
     updated_at: string,
     label: string,
     address: string,
-    latitude: number,
-    longitude: number,
     short_note: string
 }
 

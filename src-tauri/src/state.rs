@@ -143,8 +143,6 @@ pub(crate) struct Waiting {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
-    pub(crate) latitude: f64,
-    pub(crate) longitude: f64,
     pub(crate) note: String
 }
 
@@ -155,8 +153,6 @@ pub(crate) struct Loading {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
-    pub(crate) latitude: f64,
-    pub(crate) longitude: f64,
     pub(crate) shipping_check: bool,
     pub(crate) note: String
 }
@@ -168,8 +164,6 @@ pub(crate) struct Resting {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
-    pub(crate) latitude: f64,
-    pub(crate) longitude: f64,
     pub(crate) short_note: String
 }
 

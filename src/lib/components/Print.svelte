@@ -5,6 +5,7 @@
     'use strict';
     
     import MorningCallTable from "./MorningCallTable.svelte";
+    import WaitingTable from "./WaitingTable.svelte";
 
     /**
      * @type {{print: import("$lib/api").DailyReportPrint}}
@@ -26,6 +27,9 @@
         {/if}
         <div class="mb-10">
             <LocationTable locations={print.locations}/>
+        </div>
+        <div class="mb-10">
+            <WaitingTable waitings={print.waitings}/>
         </div>
     </div>
 {:else}
