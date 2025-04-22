@@ -26,18 +26,26 @@
                 <EveningCallTable calls={[print.evening_call]}/>
             </div>
         {/if}
-        <div class="mb-10">
-            <LocationTable locations={print.locations}/>
-        </div>
-        <div class="mb-10">
-            <WaitingTable waitings={print.waitings}/>
-        </div>
-        <div class="mb-10">
-            <LoadingTable loadings={print.loadings}/>
-        </div>
-        <div class="mb-10">
-            <RestingTable restings={print.restings}/>
-        </div>
+        {#if print.locations.length > 0}
+            <div class="mb-10">
+                <LocationTable locations={print.locations}/>
+            </div>
+        {/if}
+        {#if print.waitings.length > 0}
+            <div class="mb-10">
+                <WaitingTable waitings={print.waitings}/>
+            </div>    
+        {/if}
+        {#if print.loadings.length > 0}
+            <div class="mb-10">
+                <LoadingTable loadings={print.loadings}/>
+            </div>    
+        {/if}
+        {#if print.restings.length > 0}
+            <div class="mb-10">
+                <RestingTable restings={print.restings}/>
+            </div>    
+        {/if}
     </div>
 {:else}
     <p>日報が存在しません</p>
