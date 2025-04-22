@@ -49,8 +49,11 @@
     </div>
     <div>
         {#if print.morning_call}
-            <div class="mb-10">
-                <MorningCallTable calls={[print.morning_call]}/>
+            <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
+                <div class="collapse-title">前点呼</div>
+                <div class="collapse-content">
+                    <MorningCallTable calls={[print.morning_call]}/>
+                </div>
             </div>
         {:else}
             <div class="text-center mb-10">
@@ -58,8 +61,11 @@
             </div>    
         {/if}
         {#if print.evening_call}
-            <div class="mb-10">
-                <EveningCallTable calls={[print.evening_call]}/>
+            <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
+                <div class="collapse-title">後点呼</div>
+                <div class="collapse-content">
+                    <EveningCallTable calls={[print.evening_call]}/>
+                </div>
             </div>
         {:else}
             <div class="text-center mb-10">
@@ -108,3 +114,11 @@
         <p>日報無し</p>
     </div>
 {/if}
+
+<style>
+    @media print {
+        .print-exclude {
+            display: none;
+        }
+    }
+</style>

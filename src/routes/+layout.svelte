@@ -1,9 +1,9 @@
 <script>
     'use strict';
-
-    import "../app.css"
-    import Navbar from "$lib/components/Navbar.svelte";
     
+    import "../app.css";
+    import Navbar from "$lib/components/layout/Navbar.svelte";
+
     let {children} = $props();
 </script>
 

@@ -1,4 +1,4 @@
-<div class="navbar bg-base-200 print-exclude">
+<div class="navbar bg-base-300 print-exclude">
     <div class="navbar-start">
         <div class="join grid grid-cols-2">
             <button

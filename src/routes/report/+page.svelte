@@ -55,7 +55,7 @@
     </div>                
 {:then reports} 
     <div class="min-h-screen">
-        <div class="p-20">
+        <div class="flex p-20">
             <div class="flex-auto">
                 <DailyReportTable 
                     {reports}

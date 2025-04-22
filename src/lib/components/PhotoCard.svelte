@@ -7,7 +7,7 @@
     let {url, name} = $props();
 </script>
 
-<div class="card card-side bg-base-300 mb-5">
+<div class="card card-side bg-base-200 mb-5">
     <figure>
         <img src="{url}" class="max-w-110 max-h-110" alt="{name}"/>
     </figure>

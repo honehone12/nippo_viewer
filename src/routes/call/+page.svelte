@@ -36,6 +36,9 @@
 {:then calls}
     <div class="min-h-screen">
         <div class="p-20">
+            <div class="text-3xl text-primary font-bold text-center mb-10">
+                <h1>点呼表</h1>
+            </div>
             <div class="flex flex-col">
                 <div>
                     <MorningCallTable calls={calls.morning_calls}/>
