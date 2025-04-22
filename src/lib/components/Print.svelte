@@ -1,11 +1,11 @@
 <script>
+    'use strict';
+
     import EveningCallTable from "./EveningCallTable.svelte";
     import LoadingTable from "./LoadingTable.svelte";
     import LocationTable from "./LocationTable.svelte";
-
-    'use strict';
-    
     import MorningCallTable from "./MorningCallTable.svelte";
+    import RestingTable from "./RestingTable.svelte";
     import WaitingTable from "./WaitingTable.svelte";
 
     /**
@@ -34,6 +34,9 @@
         </div>
         <div class="mb-10">
             <LoadingTable loadings={print.loadings}/>
+        </div>
+        <div class="mb-10">
+            <RestingTable restings={print.restings}/>
         </div>
     </div>
 {:else}
