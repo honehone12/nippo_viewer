@@ -28,23 +28,41 @@
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">
-                {#await load()}
+            {#await load()}
                 <Loading/>
-                {:then photos}
-                    <div class="mb-15">
-                        <p>リンクは30分間有効です</p>
-                        <p>リンクが切れた場合は、一度他の日付を閲覧してから再試行して下さい</p>
-                    </div> 
-                    {#if photos.morning_alc}
+            {:then photos}
+                <div class="mb-15">
+                    <p>リンクは30分間有効です</p>
+                    <p>リンクが切れた場合は、一度他の日付を閲覧してから再試行して下さい</p>
+                </div> 
+                {#if photos.morning_alc}
+                    <div class="mb-5">
                         <PhotoCard url="{photos.morning_alc}" name="前点呼　アルコール"/>
-                    {/if}
-                    {#if photos.evening_alc}
+                    </div>
+                {:else}
+                    <div class="text-center mb-5">
+                        <p>前点呼の写真無し</p>
+                    </div>
+                {/if}
+                {#if photos.evening_alc}
+                    <div class="mb-5">
                         <PhotoCard url="{photos.evening_alc}" name="後点呼　アルコール"/>
-                    {/if}
-                    {#if photos.meter}
+                    </div>
+                {:else}
+                    <div class="text-center mb-5">
+                        <p>後点呼の写真無し</p>
+                    </div>
+                {/if}
+                {#if photos.meter}
+                    <div class="mb-5">
                         <PhotoCard url="{photos.meter}" name="日報　メーター"/>
-                    {/if}
-                {/await}
+                    </div>
+                {:else}
+                    <div class="text-center mb-5">
+                        <p>メータの写真無し</p>
+                    </div>
+                {/if}
+            {/await}
         </div>
     </div>
 </div>                
