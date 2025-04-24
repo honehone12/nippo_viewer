@@ -8,8 +8,8 @@ pub enum InvokeError {
     Path,
     #[error("failed to request or unexpected response")]
     Http(#[from] reqwest::Error),
-    #[error("failed to read or write file")]
-    Fs(#[from] tokio::io::Error),
+    #[error("failed on fs or ipc")]
+    Io(#[from] std::io::Error),
     #[error("failed to handle chrono")]
     Chrono,
     #[error("failed to serialize or deserialize json")]

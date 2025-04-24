@@ -46,6 +46,14 @@ async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> InvokeResult<b
 }
 
 #[tauri::command]
+async fn start_auth() -> InvokeResult<()> {
+    webbrowser::open(
+        "https://ap-northeast-1ihrsm2mj7.auth.ap-northeast-1.amazoncognito.com/login?client_id=7qt98bdmk4u0seg2671ammlpgk&response_type=code&scope=email+openid+phone&redirect_uri=nippoviewer%3A%2F%2Fauth&lang=ja"
+    ).map_err(print_err)?;
+    Ok(())
+}
+
+#[tauri::command]
 async fn admin_auth(
     st_admin: State<'_, RwLock<CachedAdmin>>,
     org_id: String,
@@ -410,7 +418,7 @@ async fn load_download(
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, argv, _| {
-            warn!("trying to open new instance: {argv:?}");
+            warn!("trying to open new instance with args: {argv:?}");
             let Some(w) = app.get_webview_window("main") else {
                 warn!("no main window");
                 return;
@@ -423,6 +431,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             exists_auth,
+            start_auth,
             admin_auth,
             load_users,
             set_query_user,
@@ -441,7 +450,9 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             app.manage(RwLock::new(CachedDailyReports::default()));
             app.manage(RwLock::new(CachedDailyReportPrint::default()));
             app.manage(RwLock::new(CachedPhotos::default()));
-            app.deep_link().on_open_url(|e| info!("deep link url: {:?}", e.urls()));
+            app.deep_link().on_open_url(|e| {
+                info!("deep link url: {:?}", e.urls());
+            });
             if let Err(e) = app.deep_link().register_all() {
                 warn!("{e}");
             }

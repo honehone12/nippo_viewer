@@ -2,13 +2,9 @@
     'use strict';
     
     import { goto } from "$app/navigation";
-    import AdminForm from "$lib/components/AdminForm.svelte";
     import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
-    let orgId = $state('');
-    let adminId = $state('');
-    let adminPw = $state('');
     let submitting = $state(false);
 
     async function load() {
@@ -23,35 +19,21 @@
         }
     }
 
-    function valid() {
-        if (submitting) {
-            return false;
-        }
-        
-        return orgId.length !== 0 && adminId.length !== 0 && adminPw.length !== 0;
-    }
-
     async function onclick() {
-        if (!valid()) {
+        if (submitting) {
             return;
         }
 
         submitting = true;
 
         try {
-            await invoke('admin_auth', {
-                orgId,
-                adminId,
-                adminPw
-            });
+            await invoke('start_auth');
 
-            goto('/user');
+            goto('/auth');
         } catch {
             goto('/error');
         }
     }
-
-    let ready = $derived(valid()); 
 </script>
 
 <div class="hero min-h-screen">
@@ -61,13 +43,15 @@
                 <Loading/>
             {:then}
                 <div class="text-2xl mb-5">
-                    <h1 >管理者認証を行います（アマゾンウェブサービスへリダイレクトされます）</h1>
+                    <h1 >管理者認証を行います（ブラウザが開きます）</h1>
                 </div>
-                <a href="https://ap-northeast-1ihrsm2mj7.auth.ap-northeast-1.amazoncognito.com/login/continue?client_id=7qt98bdmk4u0seg2671ammlpgk&redirect_uri=nippoviwer%3A%2F%2Fauth&response_type=code&scope=email+openid+phone">
-                    <div class="mt-5">
-                        <button class="btn btn-primary">認証を行う</button>    
-                    </div>
-                </a>
+                <div class="mt-5">
+                    <button 
+                        class="btn btn-primary" 
+                        disabled={submitting}
+                        {onclick}
+                    >OK</button>    
+                </div>    
             {/await}
         </div>
     </div>
