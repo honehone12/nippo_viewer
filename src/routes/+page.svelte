@@ -4,6 +4,7 @@
     import { goto } from "$app/navigation";
     import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
+    import { listen } from "@tauri-apps/api/event";
 
     let submitting = $state(false);
 
@@ -27,9 +28,16 @@
         submitting = true;
 
         try {
+            const done = await listen('auth_done', () => {
+                done();
+                goto('/auth');
+            });
+            const error = await listen('auth_error', () => {
+                error();
+                goto('/error');
+            });
+            
             await invoke('start_auth');
-
-            goto('/auth');
         } catch {
             goto('/error');
         }

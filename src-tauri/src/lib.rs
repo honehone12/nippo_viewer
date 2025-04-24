@@ -8,7 +8,7 @@ use dotenvy_macro::dotenv;
 use error::{print_err, InvokeError, InvokeResult};
 use save::{persistent_file_path, Save};
 use state::*;
-use tauri::{ipc::Response, Manager, State};
+use tauri::{ipc::Response, AppHandle, Emitter, Manager, State, Url};
 use tauri_plugin_deep_link::DeepLinkExt;
 use tokio::{fs, sync::RwLock};
 use tracing::{error, info, warn};
@@ -47,36 +47,24 @@ async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> InvokeResult<b
 
 #[tauri::command]
 async fn start_auth() -> InvokeResult<()> {
-    webbrowser::open(
-        "https://ap-northeast-1ihrsm2mj7.auth.ap-northeast-1.amazoncognito.com/login?client_id=7qt98bdmk4u0seg2671ammlpgk&response_type=code&scope=email+openid+phone&redirect_uri=nippoviewer%3A%2F%2Fauth&lang=ja"
-    ).map_err(print_err)?;
+    webbrowser::open(dotenv!("AUTH_URL")).map_err(print_err)?;
     Ok(())
 }
 
 #[tauri::command]
-async fn admin_auth(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
-    org_id: String,
-    admin_id: String,
-    admin_pw: String,
-) -> InvokeResult<()> {
-    if org_id.is_empty() || admin_id.is_empty() || admin_pw.is_empty() {
-        warn!("empty input");
-        return Err(InvokeError::Input);
-    }
-
+async fn obtain_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> InvokeResult<()> {
     warn!("do authentication here !!");
 
-    let tkn = String::from("test-token-999");
-    let admin = CachedAdmin { org_id, tkn };
-    let json = serde_json::to_string(&admin).map_err(print_err)?;
-    let save = Save::from_text(json)?;
-    let json = serde_json::to_string(&save).map_err(print_err)?;
-    let path = persistent_file_path()?;
-    fs::write(path, json).await.map_err(print_err)?;
+    // let tkn = String::from("test-token-999");
+    // let admin = CachedAdmin { org_id, tkn };
+    // let json = serde_json::to_string(&admin).map_err(print_err)?;
+    // let save = Save::from_text(json)?;
+    // let json = serde_json::to_string(&save).map_err(print_err)?;
+    // let path = persistent_file_path()?;
+    // fs::write(path, json).await.map_err(print_err)?;
 
-    let mut st_admin = st_admin.write().await;
-    *st_admin = admin;
+    // let mut st_admin = st_admin.write().await;
+    // *st_admin = admin;
 
     Ok(())
 }
@@ -417,14 +405,66 @@ async fn load_download(
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, argv, _| {
-            warn!("trying to open new instance with args: {argv:?}");
+        .plugin(tauri_plugin_single_instance::init(|app, args, _| {
+            info!("trying to open new instance with args {args:?}");
+
             let Some(w) = app.get_webview_window("main") else {
-                warn!("no main window");
+                error!("no main window");
                 return;
             };
+
+            let Some(arg) = args.get(1) else {
+                warn!("unexpected arg");
+                return;
+            };
+            let url = match Url::parse(arg) {
+                Ok(url) => {
+                    if url.scheme() != "nippoviewer" {
+                        warn!("unexpected schema");
+                        return;
+                    }
+                    if url.host_str() != Some("localhost") {
+                        warn!("unexpected host");
+                        return;
+                    }
+
+                    url
+                },
+                Err(e) => {
+                    error!("{e}");
+                    return;
+                }
+            };
+            let mut params = url.query_pairs();
+            let code = match params.next() {
+                Some(kv) => {
+                    if &kv.0 != "code" {
+                        error!("unexpected params");
+                        return;
+                    }
+                    kv.1
+                }
+                None => {
+                    error!("empty params");
+                    return;
+                }
+            };
+
+            let st_auth = app.state::<RwLock<CachedAuth>>();
+            let mut st_auth = match st_auth.try_write() {
+                Ok(l) => l,
+                Err(e) => {
+                    error!("opening another instance?: {e}");
+                    return;
+                }
+            };
+            st_auth.code = code.into();
+            
+            if let Err(e) =app.emit_to("main", "auth_done", ()) {
+                error!("{e}");
+            };
             if let Err(e) = w.set_focus() {
-                warn!("{e}");
+                error!("{e}");
             }
         }))
         .plugin(tauri_plugin_deep_link::init())
@@ -432,7 +472,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .invoke_handler(tauri::generate_handler![
             exists_auth,
             start_auth,
-            admin_auth,
+            obtain_auth,
             load_users,
             set_query_user,
             set_query_ym,
@@ -443,6 +483,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             load_download
         ])
         .setup(|app| {
+            app.manage(RwLock::new(CachedAuth::default()));
             app.manage(RwLock::new(CachedAdmin::default()));
             app.manage(RwLock::new(CachedUsers::default()));
             app.manage(RwLock::new(CachedQuery::default()));
@@ -450,12 +491,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             app.manage(RwLock::new(CachedDailyReports::default()));
             app.manage(RwLock::new(CachedDailyReportPrint::default()));
             app.manage(RwLock::new(CachedPhotos::default()));
-            app.deep_link().on_open_url(|e| {
-                info!("deep link url: {:?}", e.urls());
-            });
-            if let Err(e) = app.deep_link().register_all() {
-                warn!("{e}");
-            }
+            _ = app.deep_link().register("nippoviewer").map_err(print_err);
 
             Ok(())
         })

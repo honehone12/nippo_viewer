@@ -1,6 +1,11 @@
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 
+#[derive(Default)]
+pub(crate) struct CachedAuth {
+    pub(crate) code: String
+}
+
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
