@@ -402,6 +402,11 @@ async fn load_download(
     Ok(Response::new(json))
 }
 
+#[inline]
+fn emit_auth_error(app: &AppHandle) {
+    _ = app.emit_to("main", "auth_error", "auth failed").map_err(print_err);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
@@ -410,21 +415,25 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
             let Some(w) = app.get_webview_window("main") else {
                 error!("no main window");
+                emit_auth_error(app);
                 return;
             };
 
             let Some(arg) = args.get(1) else {
                 warn!("unexpected arg");
+                emit_auth_error(app);
                 return;
             };
             let url = match Url::parse(arg) {
                 Ok(url) => {
                     if url.scheme() != "nippoviewer" {
                         warn!("unexpected schema");
+                        emit_auth_error(app);
                         return;
                     }
                     if url.host_str() != Some("localhost") {
                         warn!("unexpected host");
+                        emit_auth_error(app);
                         return;
                     }
 
@@ -432,6 +441,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 },
                 Err(e) => {
                     error!("{e}");
+                    emit_auth_error(app);
                     return;
                 }
             };
@@ -440,12 +450,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 Some(kv) => {
                     if &kv.0 != "code" {
                         error!("unexpected params");
+                        emit_auth_error(app);
                         return;
                     }
                     kv.1
                 }
                 None => {
                     error!("empty params");
+                    emit_auth_error(app);
                     return;
                 }
             };
@@ -455,17 +467,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(l) => l,
                 Err(e) => {
                     error!("opening another instance?: {e}");
+                    emit_auth_error(app);
                     return;
                 }
             };
             st_auth.code = code.into();
             
-            if let Err(e) =app.emit_to("main", "auth_done", ()) {
-                error!("{e}");
-            };
-            if let Err(e) = w.set_focus() {
-                error!("{e}");
-            }
+            _ = app.emit_to("main", "auth_done", ()).map_err(print_err);
+            _ = w.set_focus().map_err(print_err);
         }))
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_opener::init())
