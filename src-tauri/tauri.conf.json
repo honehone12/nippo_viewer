@@ -22,6 +22,13 @@
       "csp": "script-src 'self';"
     }
   },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["nippoviewer"]
+      }
+    }
+  },
   "bundle": {
     "active": true,
     "targets": "all",

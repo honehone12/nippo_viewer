@@ -1,12 +1,15 @@
-use std::path::PathBuf;
-use dotenvy_macro::dotenv;
-use serde::{Serialize, Deserialize};
+use crate::{
+    error::{InvokeError, InvokeResult},
+    print_err,
+};
 use base64::prelude::*;
 use chacha20poly1305::{
-    aead::{Aead, KeyInit, OsRng}, 
-    AeadCore, ChaCha20Poly1305, Key, Nonce
+    aead::{Aead, KeyInit, OsRng},
+    AeadCore, ChaCha20Poly1305, Key, Nonce,
 };
-use crate::{error::{InvokeError, InvokeResult}, print_err};
+use dotenvy_macro::dotenv;
+use serde::{Deserialize, Serialize};
+use std::path::PathBuf;
 use tracing::error;
 
 #[inline]
@@ -30,7 +33,7 @@ fn key() -> InvokeResult<Vec<u8>> {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Save {
-    ca: Vec<u8>
+    ca: Vec<u8>,
 }
 
 impl Save {
@@ -39,13 +42,12 @@ impl Save {
         let key = Key::from_slice(&key);
         let cipher = ChaCha20Poly1305::new(&key);
         let nonce = ChaCha20Poly1305::generate_nonce(&mut OsRng);
-        let mut cipher_text = cipher.encrypt(&nonce, text.as_bytes())
-            .map_err(print_err)?;
+        let mut cipher_text = cipher.encrypt(&nonce, text.as_bytes()).map_err(print_err)?;
 
         let mut ca = nonce.to_vec();
         ca.append(&mut cipher_text);
 
-        Ok(Self {ca})
+        Ok(Self { ca })
     }
 
     pub(crate) fn into_text(&self) -> InvokeResult<String> {
@@ -54,8 +56,7 @@ impl Save {
         let cipher = ChaCha20Poly1305::new(&key);
         const N: usize = 12;
         let nonce = Nonce::from_slice(&self.ca[..N]);
-        let raw = cipher.decrypt(&nonce, &self.ca[N..])
-            .map_err(print_err)?;
+        let raw = cipher.decrypt(&nonce, &self.ca[N..]).map_err(print_err)?;
         let text = String::from_utf8(raw).map_err(print_err)?;
         Ok(text)
     }

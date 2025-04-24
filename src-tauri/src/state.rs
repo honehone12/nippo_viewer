@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
-    pub(crate) tkn: String
+    pub(crate) tkn: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -17,7 +17,7 @@ pub(crate) struct User {
 #[derive(Default)]
 pub(crate) struct CachedUsers {
     pub(crate) org_id: String,
-    pub(crate) users: Vec<User>
+    pub(crate) users: Vec<User>,
 }
 
 impl CachedUsers {
@@ -47,7 +47,7 @@ pub(crate) struct MorningCall {
     pub(crate) alc_photo: String,
     pub(crate) health_check: bool,
     pub(crate) car_check: bool,
-    pub(crate) note: String
+    pub(crate) note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -61,13 +61,13 @@ pub(crate) struct EveningCall {
     pub(crate) using_alc_checker: bool,
     pub(crate) alc_check: bool,
     pub(crate) alc_photo: String,
-    pub(crate) note: String
+    pub(crate) note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Calls {
     pub(crate) morning_calls: Vec<MorningCall>,
-    pub(crate) evening_calls: Vec<EveningCall>
+    pub(crate) evening_calls: Vec<EveningCall>,
 }
 
 #[derive(Default)]
@@ -75,7 +75,7 @@ pub(crate) struct CachedCalls {
     pub(crate) user: String,
     pub(crate) y: String,
     pub(crate) m: String,
-    pub(crate) calls: Calls
+    pub(crate) calls: Calls,
 }
 
 impl CachedCalls {
@@ -92,7 +92,7 @@ impl CachedCalls {
 pub(crate) struct DailyReportMini {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
-    pub(crate) updated_at: DateTime<FixedOffset>
+    pub(crate) updated_at: DateTime<FixedOffset>,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -104,7 +104,7 @@ pub(crate) struct DailyReportFull {
     pub(crate) car_number: String,
     pub(crate) meter_photo: String,
     pub(crate) trouble: String,
-    pub(crate) note: String
+    pub(crate) note: String,
 }
 
 #[derive(Default)]
@@ -112,7 +112,7 @@ pub(crate) struct CachedDailyReports {
     pub(crate) user: String,
     pub(crate) y: String,
     pub(crate) m: String,
-    pub(crate) reports: Vec<DailyReportMini>
+    pub(crate) reports: Vec<DailyReportMini>,
 }
 
 impl CachedDailyReports {
@@ -133,7 +133,7 @@ pub(crate) struct Location {
     pub(crate) address: String,
     pub(crate) latitude: f64,
     pub(crate) longitude: f64,
-    pub(crate) short_note: String
+    pub(crate) short_note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -143,7 +143,7 @@ pub(crate) struct Waiting {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
-    pub(crate) note: String
+    pub(crate) note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -154,7 +154,7 @@ pub(crate) struct Loading {
     pub(crate) label: String,
     pub(crate) address: String,
     pub(crate) shipping_check: bool,
-    pub(crate) note: String
+    pub(crate) note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -164,7 +164,7 @@ pub(crate) struct Resting {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
-    pub(crate) short_note: String
+    pub(crate) short_note: String,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -175,13 +175,13 @@ pub(crate) struct DailyReportPrint {
     pub(crate) locations: Vec<Location>,
     pub(crate) waitings: Vec<Waiting>,
     pub(crate) loadings: Vec<Loading>,
-    pub(crate) restings: Vec<Resting>
+    pub(crate) restings: Vec<Resting>,
 }
 
 #[derive(Default)]
 pub(crate) struct CachedDailyReportPrint {
     pub(crate) report: String,
-    pub(crate) print: DailyReportPrint
+    pub(crate) print: DailyReportPrint,
 }
 
 impl CachedDailyReportPrint {
@@ -194,13 +194,13 @@ impl CachedDailyReportPrint {
 pub(crate) struct Photos {
     pub(crate) morning_alc: String,
     pub(crate) evening_alc: String,
-    pub(crate) meter: String
+    pub(crate) meter: String,
 }
 
 #[derive(Default)]
 pub(crate) struct CachedPhotos {
     pub(crate) report: String,
-    pub(crate) photos: Photos
+    pub(crate) photos: Photos,
 }
 
 impl CachedPhotos {
@@ -211,6 +211,6 @@ impl CachedPhotos {
 
         return !self.photos.morning_alc.is_empty()
             || !self.photos.evening_alc.is_empty()
-            || !self.photos.meter.is_empty()
+            || !self.photos.meter.is_empty();
     }
 }

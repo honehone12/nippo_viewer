@@ -1,5 +1,5 @@
-use thiserror::Error;
 use serde::Serialize;
+use thiserror::Error;
 use tracing::error;
 
 #[derive(Error, Debug)]
@@ -23,12 +23,14 @@ pub enum InvokeError {
     #[error("failed to parse uuid")]
     Uuid(#[from] uuid::Error),
     #[error("failed to encrypt or decrypt")]
-    Aead(#[from] chacha20poly1305::Error)
+    Aead(#[from] chacha20poly1305::Error),
 }
 
 impl Serialize for InvokeError {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where S: serde::Serializer {
+    where
+        S: serde::Serializer,
+    {
         serializer.serialize_str(&self.to_string())
     }
 }
@@ -37,7 +39,9 @@ pub type InvokeResult<T> = Result<T, InvokeError>;
 
 #[inline]
 pub(crate) fn print_err<E>(err: E) -> E
-where E: std::error::Error {
+where
+    E: std::error::Error,
+{
     error!("{err}");
     err
 }

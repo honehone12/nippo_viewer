@@ -59,23 +59,15 @@
         <div class="p-20">
             {#await load()}
                 <Loading/>
-            {:then} 
+            {:then}
                 <div class="text-2xl mb-5">
-                    <h1 >管理者認証を行います</h1>
+                    <h1 >管理者認証を行います（アマゾンウェブサービスへリダイレクトされます）</h1>
                 </div>
-                <AdminForm 
-                    disabled={submitting}
-                    bind:orgId 
-                    bind:adminId
-                    bind:adminPw
-                />
-                <div class="mt-5">
-                    <button 
-                        class="btn btn-primary" 
-                        disabled={!ready}
-                        {onclick}
-                    >OK</button>    
-                </div>    
+                <a href="https://ap-northeast-1ihrsm2mj7.auth.ap-northeast-1.amazoncognito.com/login/continue?client_id=7qt98bdmk4u0seg2671ammlpgk&redirect_uri=nippoviwer%3A%2F%2Fauth&response_type=code&scope=email+openid+phone">
+                    <div class="mt-5">
+                        <button class="btn btn-primary">認証を行う</button>    
+                    </div>
+                </a>
             {/await}
         </div>
     </div>
