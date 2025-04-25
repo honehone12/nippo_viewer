@@ -402,9 +402,45 @@ async fn load_download(
     Ok(Response::new(json))
 }
 
+fn get_code(args: Vec<String>) -> Result<String, String> {
+    let Some(arg) = args.get(1) else {
+        return Err("unexpected arg".to_string());
+    };
+
+    let url = match Url::parse(arg) {
+        Ok(url) => {
+            if url.scheme() != "nippoviewer" {
+                return Err("unexpected schema".to_string());
+            }
+            if url.host_str() != Some("localhost") {
+                return Err("unexpected host".to_string());
+            }
+
+            url
+        },
+        Err(e) => {
+            error!("{e}");
+            return Err("malformed url".to_string());
+        }
+    };
+
+    let mut params = url.query_pairs();
+    let code = match params.next() {
+        Some(kv) => {
+            if &kv.0 != "code" {
+                return Err("unexpected params".to_string());
+            }
+            kv.1
+        }
+        None => return Err("empty params".to_string())
+    };
+
+    Ok(code.into())
+}
+
 #[inline]
-fn emit_auth_error(app: &AppHandle) {
-    _ = app.emit_to("main", "auth_error", "auth failed").map_err(print_err);
+fn emit_auth_error(app: &AppHandle, msg: &str) {
+    _ = app.emit_to("main", "auth_failed", msg).map_err(print_err);
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -415,50 +451,16 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
 
             let Some(w) = app.get_webview_window("main") else {
                 error!("no main window");
-                emit_auth_error(app);
+                emit_auth_error(app, "window error");
                 return;
             };
 
-            let Some(arg) = args.get(1) else {
-                warn!("unexpected arg");
-                emit_auth_error(app);
-                return;
-            };
-            let url = match Url::parse(arg) {
-                Ok(url) => {
-                    if url.scheme() != "nippoviewer" {
-                        warn!("unexpected schema");
-                        emit_auth_error(app);
-                        return;
-                    }
-                    if url.host_str() != Some("localhost") {
-                        warn!("unexpected host");
-                        emit_auth_error(app);
-                        return;
-                    }
-
-                    url
-                },
-                Err(e) => {
-                    error!("{e}");
-                    emit_auth_error(app);
-                    return;
-                }
-            };
-            let mut params = url.query_pairs();
-            let code = match params.next() {
-                Some(kv) => {
-                    if &kv.0 != "code" {
-                        error!("unexpected params");
-                        emit_auth_error(app);
-                        return;
-                    }
-                    kv.1
-                }
-                None => {
-                    error!("empty params");
-                    emit_auth_error(app);
-                    return;
+            let code = match get_code(args) {
+                Ok(s) => s,
+                Err(s) => {
+                    warn!(s);
+                    emit_auth_error(app, "auth error");
+                    return
                 }
             };
 
@@ -467,11 +469,11 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(l) => l,
                 Err(e) => {
                     error!("opening another instance?: {e}");
-                    emit_auth_error(app);
+                    emit_auth_error(app, "instance error");
                     return;
                 }
             };
-            st_auth.code = code.into();
+            st_auth.code = code;
             
             _ = app.emit_to("main", "auth_done", ()).map_err(print_err);
             _ = w.set_focus().map_err(print_err);

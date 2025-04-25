@@ -32,8 +32,8 @@
                 done();
                 goto('/auth');
             });
-            const error = await listen('auth_error', () => {
-                error();
+            const failed = await listen('auth_failed', () => {
+                failed();
                 goto('/error');
             });
             
