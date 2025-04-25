@@ -1,8 +1,8 @@
-use std::mem;
+use std::{mem, time::{Duration, SystemTime}};
 use dotenvy_macro::dotenv;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
-use tracing::warn;
+use tracing::{warn, error};
 use crate::{
     error::{print_err, InvokeError, InvokeResult},
     save::{persistent_file_path, Save},
@@ -21,7 +21,13 @@ pub(crate) async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> Inv
     let json = save.into_text()?;
     let admin = serde_json::from_str::<CachedAdmin>(&json).map_err(print_err)?;
 
-    warn!("do authentication here !!");
+    let now = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .map_err(print_err)?;
+
+    if now >= admin.exp {
+        
+    }
 
     let mut st_admin = st_admin.write().await;
     *st_admin = admin;
@@ -72,9 +78,17 @@ pub(crate) async fn obtain_tkn(
         .send().await.map_err(print_err)?
         .json::<Token>().await.map_err(print_err)?;
 
+    let now = SystemTime::now();
+    let Some(exp) = now.checked_add(Duration::from_secs(tkn.expires_in)) else {
+        error!("unexpected expiration");
+        return Err(InvokeError::Arithmetic);
+    };
+    let exp = exp.duration_since(SystemTime::UNIX_EPOCH).map_err(print_err)?;
+
     let admin = CachedAdmin{ 
         org_id, 
-        tkn
+        tkn,
+        exp
     };
     
     let json = serde_json::to_string(&admin).map_err(print_err)?;

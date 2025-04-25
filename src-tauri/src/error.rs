@@ -4,6 +4,8 @@ use tracing::error;
 
 #[derive(Error, Debug)]
 pub enum InvokeError {
+    #[error("arithmetic error")]
+    Arithmetic,
     #[error("could not resolve path")]
     Path,
     #[error("failed to request or unexpected response")]
@@ -12,6 +14,8 @@ pub enum InvokeError {
     Io(#[from] std::io::Error),
     #[error("failed to handle chrono")]
     Chrono,
+    #[error("failed to handle system time")]
+    SystemTime(#[from] std::time::SystemTimeError),
     #[error("failed to serialize or deserialize json")]
     Json(#[from] serde_json::Error),
     #[error("invalid input")]

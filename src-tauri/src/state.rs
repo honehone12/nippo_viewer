@@ -1,3 +1,4 @@
+use std::time::Duration;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 
@@ -10,7 +11,7 @@ pub(crate) struct CachedAuth {
 #[derive(Default, Serialize, Deserialize)]
 pub(crate) struct Token {
     pub(crate) access_token: String,
-    pub(crate) expires_in: i64,
+    pub(crate) expires_in: u64,
     pub(crate) id_token: String,
     pub(crate) refresh_token: String,
     pub(crate) token_type: String,
@@ -20,6 +21,7 @@ pub(crate) struct Token {
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
     pub(crate) tkn: Token,
+    pub(crate) exp: Duration,
 }
 
 #[derive(Serialize, Deserialize, Default)]
