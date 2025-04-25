@@ -17,7 +17,7 @@
         id="orgId"
         type="text" 
         placeholder="企業IDを英字で入力してください" 
-        class="input input-primary mb-5"
+        class="input input-primary"
         {disabled}
         bind:value={orgId}
     >

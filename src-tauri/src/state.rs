@@ -1,15 +1,17 @@
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Default)]
 pub(crate) struct CachedAuth {
+    pub(crate) org_id: String,
     pub(crate) code: String
 }
 
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
-    pub(crate) tkn: String,
+    pub(crate) tkn_raw: Value,
 }
 
 #[derive(Serialize, Deserialize, Default)]

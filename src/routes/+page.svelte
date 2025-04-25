@@ -39,8 +39,9 @@
                 goto('/error');
             });
             
-            await invoke('start_auth');
-        } catch {
+            await invoke('start_auth', {orgId});
+        } catch (e) {
+            console.error(e);
             goto('/error');
         }
     }
@@ -55,7 +56,7 @@
                 <div class="text-2xl mb-10">
                     <h1 >管理者認証を行います（ブラウザが開きます）</h1>
                 </div>
-                <div class="mb-5">
+                <div class="mb-10">
                     <AdminForm bind:orgId disabled={submitting}/>
                 </div>
                 <div>

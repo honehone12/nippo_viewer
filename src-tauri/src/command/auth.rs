@@ -1,10 +1,11 @@
+use std::mem;
 use dotenvy_macro::dotenv;
 use serde_json::Value;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
 use tracing::{info, warn};
 use crate::{
-    error::{print_err, InvokeResult},
+    error::{print_err, InvokeError, InvokeResult},
     save::{persistent_file_path, Save},
     state::*,
 };
@@ -30,7 +31,18 @@ pub(crate) async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> Inv
 }
 
 #[tauri::command]
-pub(crate) async fn start_auth() -> InvokeResult<()> {
+pub(crate) async fn start_auth(
+    org_id: String, 
+    st_auth: State<'_, RwLock<CachedAuth>>
+) -> InvokeResult<()> {
+    if org_id.is_empty() {
+        warn!("emprty input");
+        return Err(InvokeError::Input);
+    }
+
+    let mut st_auth = st_auth.write().await;
+    st_auth.org_id = org_id; 
+
     webbrowser::open(dotenv!("AUTH_URL")).map_err(print_err)?;
     Ok(())
 }
@@ -40,7 +52,10 @@ pub(crate) async fn obtain_tkn(
     st_auth: State<'_, RwLock<CachedAuth>>,
     st_admin: State<'_, RwLock<CachedAdmin>>
 ) -> InvokeResult<()> {
-    let st_auth = st_auth.read().await;
+    let (org_id, code) = {
+        let mut st_auth = st_auth.write().await;
+        (mem::take(&mut st_auth.org_id), mem::take(&mut st_auth.code))
+    };
 
     let http_clinet = reqwest::Client::new();
     let url = format!(
@@ -50,27 +65,27 @@ pub(crate) async fn obtain_tkn(
     let form = vec![
         ("grant_type", "authorization_code"),
         ("client_id", dotenv!("CLIENT_ID")),
-        ("code", &st_auth.code),
+        ("code", &code),
         ("redirect_uri", dotenv!("REDIRECT_URI"))
     ];
-    let res = http_clinet.post(url)
+    let tkn_raw = http_clinet.post(url)
         .form(&form)
         .send().await.map_err(print_err)?
         .json::<Value>().await.map_err(print_err)?;
 
-    info!("{res}");
-
-
-    // let tkn = String::from("test-token-999");
-    // let admin = CachedAdmin { org_id, tkn };
-    // let json = serde_json::to_string(&admin).map_err(print_err)?;
-    // let save = Save::from_text(json)?;
-    // let json = serde_json::to_string(&save).map_err(print_err)?;
-    // let path = persistent_file_path()?;
-    // fs::write(path, json).await.map_err(print_err)?;
-
-    // let mut st_admin = st_admin.write().await;
-    // *st_admin = admin;
-
+    let admin = CachedAdmin{ 
+        org_id, 
+        tkn_raw
+    };
+    
+    let json = serde_json::to_string(&admin).map_err(print_err)?;
+    let save = Save::from_text(json)?;
+    let json = serde_json::to_string(&save).map_err(print_err)?;
+    let path = persistent_file_path()?;
+    fs::write(path, json).await.map_err(print_err)?;
+    
+    let mut st_admin = st_admin.write().await;
+    *st_admin = admin;
+    
     Ok(())
 }
