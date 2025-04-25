@@ -1,7 +1,26 @@
 <script>
-    import { page } from "$app/state";
-
     'use strict';
+
+    import { goto } from "$app/navigation";
+    import { invoke } from "@tauri-apps/api/core";
+
+    async function load() {
+        try {
+            await invoke('obtain_tkn')
+        } catch {
+            goto('/error');
+        }
+    }
 </script>
 
-<p>auth</p>
+<div class="hero min-h-screen">
+    <div class="hero-content text-center">
+        <div class="p-20">
+            {#await load()}
+                <p>認証中です</p>
+            {:then} 
+                <p>しばらく経ってもページが自動的に遷移しない場合再起動してください</p>
+            {/await}
+        </div>
+    </div>
+</div>

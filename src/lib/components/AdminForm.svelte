@@ -4,15 +4,11 @@
     interface Props {
         disabled: boolean,
         orgId: string,
-        adminId: string,
-        adminPw: string
     }
 
     let {
         disabled,
         orgId = $bindable(),
-        adminId = $bindable(),
-        adminPw = $bindable()
     }: Props = $props();
 </script>
 
@@ -24,21 +20,5 @@
         class="input input-primary mb-5"
         {disabled}
         bind:value={orgId}
-    >
-    <input 
-        id="adminId"
-        type="text" 
-        placeholder="管理者IDを英字で入力してください" 
-        class="input input-primary mb-5"
-        {disabled}
-        bind:value={adminId}
-    >
-    <input 
-        id="adminPw"
-        type="password" 
-        placeholder="管理者パスワードを英字で入力してください" 
-        class="input input-primary mb-5"
-        {disabled}
-        bind:value={adminPw}
     >
 </div>
