@@ -1,7 +1,8 @@
 use dotenvy_macro::dotenv;
+use serde_json::Value;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
-use tracing::warn;
+use tracing::{info, warn};
 use crate::{
     error::{print_err, InvokeResult},
     save::{persistent_file_path, Save},
@@ -39,7 +40,26 @@ pub(crate) async fn obtain_tkn(
     st_auth: State<'_, RwLock<CachedAuth>>,
     st_admin: State<'_, RwLock<CachedAdmin>>
 ) -> InvokeResult<()> {
-    warn!("do authentication here !!");
+    let st_auth = st_auth.read().await;
+
+    let http_clinet = reqwest::Client::new();
+    let url = format!(
+        "{}/oauth2/token",
+        dotenv!("BASE_AUTH_DOMAIN"),
+    );
+    let form = vec![
+        ("grant_type", "authorization_code"),
+        ("client_id", dotenv!("CLIENT_ID")),
+        ("code", &st_auth.code),
+        ("redirect_uri", dotenv!("REDIRECT_URI"))
+    ];
+    let res = http_clinet.post(url)
+        .form(&form)
+        .send().await.map_err(print_err)?
+        .json::<Value>().await.map_err(print_err)?;
+
+    info!("{res}");
+
 
     // let tkn = String::from("test-token-999");
     // let admin = CachedAdmin { org_id, tkn };
