@@ -7,7 +7,6 @@ mod command {
 }
 
 use std::{borrow::Cow, collections::HashMap};
-
 use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_deep_link::{DeepLinkExt, OpenUrlEvent};
 use tokio::sync::RwLock;

@@ -17,11 +17,28 @@ pub(crate) struct Token {
     pub(crate) token_type: String,
 }
 
+impl Token {
+    pub(crate) fn refresh(&mut self, refresh: TokenRefresh) {
+        self.access_token = refresh.access_token;
+        self.id_token = refresh.id_token;
+        self.token_type = refresh.token_type;
+        self.expires_in = refresh.expires_in;
+    }
+}
+
+#[derive(Default, Serialize, Deserialize)]
+pub(crate) struct TokenRefresh {
+    pub(crate) access_token: String,
+    pub(crate) expires_in: u64,
+    pub(crate) id_token: String,
+    pub(crate) token_type: String,
+}
+
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
     pub(crate) tkn: Token,
-    pub(crate) exp: Duration,
+    pub(crate) exp: u64,
 }
 
 #[derive(Serialize, Deserialize, Default)]
