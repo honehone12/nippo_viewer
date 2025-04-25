@@ -7,6 +7,8 @@
     async function load() {
         try {
             await invoke('obtain_tkn')
+
+            goto('/user');
         } catch {
             goto('/error');
         }
@@ -19,7 +21,7 @@
             {#await load()}
                 <p>認証中です</p>
             {:then} 
-                <p>しばらく経ってもページが自動的に遷移しない場合再起動してください</p>
+                <p>しばらく経ってもページが自動的に遷移しない場合は再起動してください</p>
             {/await}
         </div>
     </div>

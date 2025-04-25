@@ -1,9 +1,8 @@
 use std::mem;
 use dotenvy_macro::dotenv;
-use serde_json::Value;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
-use tracing::{info, warn};
+use tracing::warn;
 use crate::{
     error::{print_err, InvokeError, InvokeResult},
     save::{persistent_file_path, Save},
