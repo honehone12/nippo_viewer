@@ -68,14 +68,14 @@ pub(crate) async fn obtain_tkn(
         ("code", &code),
         ("redirect_uri", dotenv!("REDIRECT_URI"))
     ];
-    let tkn_raw = http_clinet.post(url)
+    let tkn = http_clinet.post(url)
         .form(&form)
         .send().await.map_err(print_err)?
-        .json::<Value>().await.map_err(print_err)?;
+        .json::<Token>().await.map_err(print_err)?;
 
     let admin = CachedAdmin{ 
         org_id, 
-        tkn_raw
+        tkn
     };
     
     let json = serde_json::to_string(&admin).map_err(print_err)?;

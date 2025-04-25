@@ -1,6 +1,5 @@
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 #[derive(Default)]
 pub(crate) struct CachedAuth {
@@ -8,10 +7,19 @@ pub(crate) struct CachedAuth {
     pub(crate) code: String
 }
 
+#[derive(Default, Serialize, Deserialize)]
+pub(crate) struct Token {
+    pub(crate) access_token: String,
+    pub(crate) expires_in: i64,
+    pub(crate) id_token: String,
+    pub(crate) refresh_token: String,
+    pub(crate) token_type: String,
+}
+
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedAdmin {
     pub(crate) org_id: String,
-    pub(crate) tkn_raw: Value,
+    pub(crate) tkn: Token,
 }
 
 #[derive(Serialize, Deserialize, Default)]
