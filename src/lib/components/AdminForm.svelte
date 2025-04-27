@@ -1,11 +1,12 @@
-<script lang="ts">
+<script>
     'use strict';
 
-    interface Props {
-        disabled: boolean,
-        orgId: string,
-    }
-
+    /**
+     * @type {{
+     *  disabled: boolean,
+     *  orgId: string
+     * }}
+     */
     let {
         disabled,
         orgId = $bindable(),
