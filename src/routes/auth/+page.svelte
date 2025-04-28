@@ -6,7 +6,7 @@
 
     async function load() {
         try {
-            await invoke('obtain_tkn')
+            await invoke('obtain_tkn');
 
             goto('/user');
         } catch {
