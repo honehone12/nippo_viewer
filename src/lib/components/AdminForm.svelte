@@ -10,7 +10,7 @@
     let {
         disabled,
         orgId = $bindable(),
-    }: Props = $props();
+    } = $props();
 </script>
 
 <div>

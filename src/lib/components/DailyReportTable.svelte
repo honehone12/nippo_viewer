@@ -1,20 +1,20 @@
-<script lang="ts">
+<script>
     'use strict'
     
-    import type {DailyReportMini} from "$lib/api";
     import {datetime} from "$lib/display"
 
-    interface Props {
-        reports: DailyReportMini[],
-        onclickPrint: (id: string) => Promise<void>,
-        onclickDownload: (id: string) => Promise<void>
-    }
-
+    /**
+     * @type {{
+     *  reports: import("$lib/api").DailyReportMini[],
+     *  onclickPrint: (id: string) => Promise<void>,
+     *  onclickDownload: (id: string) => Promise<void>
+     * }}
+     */
     let {
         reports,
         onclickPrint,
         onclickDownload,
-    }: Props = $props(); 
+    } = $props(); 
 </script>
 
 <table class="table">
