@@ -9,14 +9,8 @@
 
     let orgId = $state('');
     let submitting = $state(false);
-    /**
-     * @type {() => void}
-     */
-    let unlistenDone = () => console.warn('callback is not set, but called');
-    /**
-     * @type {() => void}
-     */
-    let unlistenFailed = () => console.warn('callback is not set, but called');
+    let unlistenDone = () => console.warn('auth_done is called without callback set');
+    let unlistenFailed = () => console.warn('auth_failed is called without callback set');
 
     async function load() {
         try {
@@ -30,6 +24,15 @@
         }
     }
 
+    /**
+     * @param {string | URL} url
+     */
+    function endAuth(url) {
+        unlistenDone();
+        unlistenFailed();
+        goto(url);
+    }
+
     async function onclick() {
         if (submitting) {
             return;
@@ -38,16 +41,8 @@
         submitting = true;
 
         try {
-            unlistenDone = await listen('auth_done', () => {
-                unlistenDone();
-                unlistenFailed();
-                goto('/auth');
-            });
-            unlistenFailed = await listen('auth_failed', () => {
-                unlistenDone();
-                unlistenFailed();
-                goto('/error');
-            });
+            unlistenDone = await listen('auth_done', () => endAuth('/auth'));
+            unlistenFailed = await listen('auth_failed', () => endAuth('/error'));
 
             await invoke('start_auth', {orgId});
         } catch (e) {
