@@ -91,8 +91,9 @@ pub(crate) async fn load_users(
         st_admin.org_id
     );
     info!("requesting to {url}");
+
     let mut users = http_client.get(url)
-        .header("Authorization", &st_admin.tkn.access_token)
+        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Vec<User>>().await.map_err(print_err)?;
 
@@ -137,7 +138,7 @@ pub(crate) async fn load_calls(
     );
     info!("requesting to {url}");
     let mut calls = http_client.get(url)
-        .header("Authorization", &st_admin.tkn.access_token)
+        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Calls>().await.map_err(print_err)?;
 
@@ -186,7 +187,7 @@ pub(crate) async fn load_reports(
     );
     info!("requesting to {url}");
     let mut reports = http_client.get(url)
-        .header("Authorization", &st_admin.tkn.access_token)
+        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Vec<DailyReportMini>>().await.map_err(print_err)?;
 
@@ -236,7 +237,7 @@ pub(crate) async fn load_print(
     );
     info!("requesting to {url}");
     let mut print = http_client.get(url)
-        .header("Authorization", &st_admin.tkn.access_token)
+        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<DailyReportPrint>().await.map_err(print_err)?;
 
@@ -296,7 +297,7 @@ pub(crate) async fn load_download(
     );
     info!("requesting to {url}");
     let mut photos = http_client.get(url)
-        .header("Authorization", &st_admin.tkn.access_token)
+        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Photos>().await.map_err(print_err)?;
 
