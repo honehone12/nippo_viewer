@@ -84,23 +84,20 @@ pub(crate) async fn load_users(
         return Ok(Response::new(json));
     }
 
+    let http_client = reqwest::Client::new();
     let url = format!(
         "{}/{}/view/?q=users",
         dotenv!("BASE_API_URL"),
         st_admin.org_id
     );
     info!("requesting to {url}");
-    let mut users = reqwest::get(url)
-        .await
-        .map_err(print_err)?
-        .json::<Vec<User>>()
-        .await
-        .map_err(print_err)?;
+    let mut users = http_client.get(url)
+        .header("Authorization", &st_admin.tkn.access_token)
+        .send().await.map_err(print_err)?
+        .json::<Vec<User>>().await.map_err(print_err)?;
 
     let jst = jst()?;
-    users
-        .iter_mut()
-        .for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
     users.sort_unstable_by_key(|u| u.created_at);
 
     let json = serde_json::to_string(&users).map_err(print_err)?;
@@ -126,11 +123,10 @@ pub(crate) async fn load_calls(
         return Ok(Response::new(json));
     }
 
-    let user_id = BASE64_STANDARD
-        .decode(st_query.user.as_str())
-        .map_err(print_err)?;
+    let user_id = BASE64_STANDARD.decode(st_query.user.as_str()).map_err(print_err)?;
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
+    let http_client = reqwest::Client::new();
     let url = format!(
         "{}/{}/view?q=calls&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
@@ -140,23 +136,15 @@ pub(crate) async fn load_calls(
         user_id.to_string()
     );
     info!("requesting to {url}");
-    let mut calls = reqwest::get(url)
-        .await
-        .map_err(print_err)?
-        .json::<Calls>()
-        .await
-        .map_err(print_err)?;
+    let mut calls = http_client.get(url)
+        .header("Authorization", &st_admin.tkn.access_token)
+        .send().await.map_err(print_err)?
+        .json::<Calls>().await.map_err(print_err)?;
 
     let jst = jst()?;
-    calls
-        .morning_calls
-        .iter_mut()
-        .for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
+    calls.morning_calls.iter_mut().for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
     calls.morning_calls.sort_unstable_by_key(|c| c.created_at);
-    calls
-        .evening_calls
-        .iter_mut()
-        .for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
+    calls.evening_calls.iter_mut().for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
     calls.evening_calls.sort_unstable_by_key(|c| c.created_at);
 
     let json = serde_json::to_string(&calls).map_err(print_err)?;
@@ -187,6 +175,7 @@ pub(crate) async fn load_reports(
     let user_id = BASE64_STANDARD.decode(&st_query.user).map_err(print_err)?;
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
+    let http_client = reqwest::Client::new();
     let url = format!(
         "{}/{}/view?q=reports&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
@@ -196,12 +185,10 @@ pub(crate) async fn load_reports(
         user_id.to_string()
     );
     info!("requesting to {url}");
-    let mut reports = reqwest::get(url)
-        .await
-        .map_err(print_err)?
-        .json::<Vec<DailyReportMini>>()
-        .await
-        .map_err(print_err)?;
+    let mut reports = http_client.get(url)
+        .header("Authorization", &st_admin.tkn.access_token)
+        .send().await.map_err(print_err)?
+        .json::<Vec<DailyReportMini>>().await.map_err(print_err)?;
 
     let jst = jst()?;
     reports.iter_mut().for_each(|r| {
@@ -240,6 +227,7 @@ pub(crate) async fn load_print(
         .map_err(print_err)?;
     let report_id = Uuid::from_slice(&report_id).map_err(print_err)?;
 
+    let http_client = reqwest::Client::new();
     let url = format!(
         "{}/{}/view?q=print&report={}",
         dotenv!("BASE_API_URL"),
@@ -247,30 +235,19 @@ pub(crate) async fn load_print(
         report_id
     );
     info!("requesting to {url}");
-    let mut print = reqwest::get(url)
-        .await
-        .map_err(print_err)?
-        .json::<DailyReportPrint>()
-        .await
-        .map_err(print_err)?;
+    let mut print = http_client.get(url)
+        .header("Authorization", &st_admin.tkn.access_token)
+        .send().await.map_err(print_err)?
+        .json::<DailyReportPrint>().await.map_err(print_err)?;
 
     let jst = jst()?;
     print.daily_report.iter_mut().for_each(|r| {
         r.created_at = r.created_at.with_timezone(&jst);
         r.updated_at = r.updated_at.with_timezone(&jst);
     });
-    print
-        .morning_call
-        .iter_mut()
-        .for_each(|m| m.created_at = m.created_at.with_timezone(&jst));
-    print
-        .evening_call
-        .iter_mut()
-        .for_each(|e| e.created_at = e.created_at.with_timezone(&jst));
-    print
-        .locations
-        .iter_mut()
-        .for_each(|l| l.created_at = l.created_at.with_timezone(&jst));
+    print.morning_call.iter_mut().for_each(|m| m.created_at = m.created_at.with_timezone(&jst));
+    print.evening_call.iter_mut().for_each(|e| e.created_at = e.created_at.with_timezone(&jst));
+    print.locations.iter_mut().for_each(|l| l.created_at = l.created_at.with_timezone(&jst));
     print.waitings.iter_mut().for_each(|w| {
         w.created_at = w.created_at.with_timezone(&jst);
         w.updated_at = w.updated_at.with_timezone(&jst);
@@ -307,11 +284,10 @@ pub(crate) async fn load_download(
         return Ok(Response::new(json));
     }
 
-    let report_id = BASE64_STANDARD
-        .decode(&st_query.report)
-        .map_err(print_err)?;
+    let report_id = BASE64_STANDARD.decode(&st_query.report).map_err(print_err)?;
     let report_id = Uuid::from_slice(&report_id).map_err(print_err)?;
 
+    let http_client = reqwest::Client::new();
     let url = format!(
         "{}/{}/view?q=download&report={}",
         dotenv!("BASE_API_URL"),
@@ -319,12 +295,10 @@ pub(crate) async fn load_download(
         report_id
     );
     info!("requesting to {url}");
-    let mut photos = reqwest::get(url)
-        .await
-        .map_err(print_err)?
-        .json::<Photos>()
-        .await
-        .map_err(print_err)?;
+    let mut photos = http_client.get(url)
+        .header("Authorization", &st_admin.tkn.access_token)
+        .send().await.map_err(print_err)?
+        .json::<Photos>().await.map_err(print_err)?;
 
     if !photos.morning_alc.is_empty() {
         let morning_alc = BASE64_STANDARD
