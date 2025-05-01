@@ -77,7 +77,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     ])
     .setup(|app| {
         app.manage(RwLock::new(CachedAuth::default()));
-        app.manage(RwLock::new(CachedAdmin::default()));
+        app.manage(RwLock::new(CachedViewer::default()));
         app.manage(RwLock::new(CachedUsers::default()));
         app.manage(RwLock::new(CachedQuery::default()));
         app.manage(RwLock::new(CachedCalls::default()));

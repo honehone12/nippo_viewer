@@ -34,7 +34,7 @@ pub(crate) struct TokenRefresh {
 }
 
 #[derive(Serialize, Deserialize, Default)]
-pub(crate) struct CachedAdmin {
+pub(crate) struct CachedViewer {
     pub(crate) org_id: String,
     pub(crate) tkn: Token,
     pub(crate) exp: u64,

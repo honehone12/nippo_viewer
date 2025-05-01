@@ -21,7 +21,7 @@ fn exp(add: u64) -> InvokeResult<u64> {
 }
 
 #[tauri::command]
-pub(crate) async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> InvokeResult<bool> {
+pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> InvokeResult<bool> {
     let path = persistent_file_path()?;
     if !fs::try_exists(&path).await.map_err(print_err)? {
         return Ok(false);
@@ -30,21 +30,21 @@ pub(crate) async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> Inv
     let json = fs::read_to_string(path).await.map_err(print_err)?;
     let save = serde_json::from_str::<Save>(&json).map_err(print_err)?;
     let json = save.into_text()?;
-    let mut admin = serde_json::from_str::<CachedAdmin>(&json).map_err(print_err)?;
+    let mut viewer = serde_json::from_str::<CachedViewer>(&json).map_err(print_err)?;
 
     let now = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .map_err(print_err)?
         .as_secs();
 
-    if now >= admin.exp {
+    if now >= viewer.exp {
         let (refresh, exp) = {
             let http_client = reqwest::Client::new();
             let url = format!("{}/oauth2/token", dotenv!("BASE_AUTH_DOMAIN"));
             let form = vec![
                 ("grant_type", "refresh_token"),
                 ("client_id", dotenv!("CLIENT_ID")),
-                ("refresh_token", &admin.tkn.refresh_token)
+                ("refresh_token", &viewer.tkn.refresh_token)
             ];
             let refresh = match http_client.post(url)
                 .form(&form)
@@ -62,19 +62,19 @@ pub(crate) async fn exists_auth(st_admin: State<'_, RwLock<CachedAdmin>>) -> Inv
             (refresh, exp)
         };
 
-        admin.exp = exp;
-        admin.tkn.refresh(refresh);
+        viewer.exp = exp;
+        viewer.tkn.refresh(refresh);
     }
 
-    let mut st_admin = st_admin.write().await;
-    *st_admin = admin;
+    let mut st_viewer = st_viewer.write().await;
+    *st_viewer = viewer;
 
     Ok(true)
 }
 
 #[tauri::command]
 pub(crate) async fn start_auth(
-    org_id: String, 
+    org_id: String,
     st_auth: State<'_, RwLock<CachedAuth>>
 ) -> InvokeResult<()> {
     if org_id.is_empty() {
@@ -92,7 +92,7 @@ pub(crate) async fn start_auth(
 #[tauri::command]
 pub(crate) async fn obtain_tkn(
     st_auth: State<'_, RwLock<CachedAuth>>,
-    st_admin: State<'_, RwLock<CachedAdmin>>
+    st_viewer: State<'_, RwLock<CachedViewer>>
 ) -> InvokeResult<()> {
     let (org_id, code) = {
         let mut st_auth = st_auth.write().await;
@@ -113,20 +113,20 @@ pub(crate) async fn obtain_tkn(
         .json::<Token>().await.map_err(print_err)?;
     let exp = exp(tkn.expires_in)?;
 
-    let admin = CachedAdmin{ 
+    let viewer = CachedViewer{ 
         org_id, 
         tkn,
         exp
     };
     
-    let json = serde_json::to_string(&admin).map_err(print_err)?;
+    let json = serde_json::to_string(&viewer).map_err(print_err)?;
     let save = Save::from_text(json)?;
     let json = serde_json::to_string(&save).map_err(print_err)?;
     let path = persistent_file_path()?;
     fs::write(path, json).await.map_err(print_err)?;
     
-    let mut st_admin = st_admin.write().await;
-    *st_admin = admin;
+    let mut st_viewer = st_viewer.write().await;
+    *st_viewer = viewer;
     
     Ok(())
 }

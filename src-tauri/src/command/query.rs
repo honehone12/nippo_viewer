@@ -73,13 +73,13 @@ pub(crate) async fn set_query_ym(
 
 #[tauri::command]
 pub(crate) async fn load_users(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_viewer: State<'_, RwLock<CachedViewer>>,
     st_users: State<'_, RwLock<CachedUsers>>,
 ) -> InvokeResult<Response> {
-    let st_admin = st_admin.read().await;
+    let st_viewer = st_viewer.read().await;
     let mut st_users = st_users.write().await;
 
-    if st_users.has(&st_admin.org_id) {
+    if st_users.has(&st_viewer.org_id) {
         let json = serde_json::to_string(&st_users.users).map_err(print_err)?;
         return Ok(Response::new(json));
     }
@@ -88,12 +88,12 @@ pub(crate) async fn load_users(
     let url = format!(
         "{}/{}/view/?q=users",
         dotenv!("BASE_API_URL"),
-        st_admin.org_id
+        st_viewer.org_id
     );
     info!("requesting to {url}");
 
     let mut users = http_client.get(url)
-        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
+        .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Vec<User>>().await.map_err(print_err)?;
 
@@ -104,18 +104,18 @@ pub(crate) async fn load_users(
     let json = serde_json::to_string(&users).map_err(print_err)?;
 
     st_users.users = users;
-    st_users.org_id = st_admin.org_id.clone();
+    st_users.org_id = st_viewer.org_id.clone();
 
     Ok(Response::new(json))
 }
 
 #[tauri::command]
 pub(crate) async fn load_calls(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_viewer: State<'_, RwLock<CachedViewer>>,
     st_query: State<'_, RwLock<CachedQuery>>,
     st_calls: State<'_, RwLock<CachedCalls>>,
 ) -> InvokeResult<Response> {
-    let st_admin = st_admin.read().await;
+    let st_viewer = st_viewer.read().await;
     let st_query = st_query.read().await;
     let mut st_calls = st_calls.write().await;
 
@@ -131,14 +131,14 @@ pub(crate) async fn load_calls(
     let url = format!(
         "{}/{}/view?q=calls&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
-        st_admin.org_id,
+        st_viewer.org_id,
         st_query.y,
         st_query.m,
         user_id.to_string()
     );
     info!("requesting to {url}");
     let mut calls = http_client.get(url)
-        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
+        .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Calls>().await.map_err(print_err)?;
 
@@ -160,11 +160,11 @@ pub(crate) async fn load_calls(
 
 #[tauri::command]
 pub(crate) async fn load_reports(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_viewer: State<'_, RwLock<CachedViewer>>,
     st_query: State<'_, RwLock<CachedQuery>>,
     st_reports: State<'_, RwLock<CachedDailyReports>>,
 ) -> InvokeResult<Response> {
-    let st_admin = st_admin.read().await;
+    let st_viewer = st_viewer.read().await;
     let st_query = st_query.read().await;
     let mut st_reports = st_reports.write().await;
 
@@ -180,14 +180,14 @@ pub(crate) async fn load_reports(
     let url = format!(
         "{}/{}/view?q=reports&y={}&m={}&user={}",
         dotenv!("BASE_API_URL"),
-        st_admin.org_id,
+        st_viewer.org_id,
         st_query.y,
         st_query.m,
         user_id.to_string()
     );
     info!("requesting to {url}");
     let mut reports = http_client.get(url)
-        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
+        .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Vec<DailyReportMini>>().await.map_err(print_err)?;
 
@@ -210,11 +210,11 @@ pub(crate) async fn load_reports(
 
 #[tauri::command]
 pub(crate) async fn load_print(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_viewer: State<'_, RwLock<CachedViewer>>,
     st_query: State<'_, RwLock<CachedQuery>>,
     st_print: State<'_, RwLock<CachedDailyReportPrint>>,
 ) -> InvokeResult<Response> {
-    let st_admin = st_admin.read().await;
+    let st_viewer = st_viewer.read().await;
     let st_query = st_query.read().await;
     let mut st_print = st_print.write().await;
 
@@ -232,12 +232,12 @@ pub(crate) async fn load_print(
     let url = format!(
         "{}/{}/view?q=print&report={}",
         dotenv!("BASE_API_URL"),
-        st_admin.org_id,
+        st_viewer.org_id,
         report_id
     );
     info!("requesting to {url}");
     let mut print = http_client.get(url)
-        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
+        .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<DailyReportPrint>().await.map_err(print_err)?;
 
@@ -272,11 +272,11 @@ pub(crate) async fn load_print(
 
 #[tauri::command] 
 pub(crate) async fn load_download(
-    st_admin: State<'_, RwLock<CachedAdmin>>,
+    st_viewer: State<'_, RwLock<CachedViewer>>,
     st_query: State<'_, RwLock<CachedQuery>>,
     st_photos: State<'_, RwLock<CachedPhotos>>,
 ) -> InvokeResult<Response> {
-    let st_admin = st_admin.read().await;
+    let st_viewer = st_viewer.read().await;
     let st_query = st_query.read().await;
     let mut st_photos = st_photos.write().await;
 
@@ -292,12 +292,12 @@ pub(crate) async fn load_download(
     let url = format!(
         "{}/{}/view?q=download&report={}",
         dotenv!("BASE_API_URL"),
-        st_admin.org_id,
+        st_viewer.org_id,
         report_id
     );
     info!("requesting to {url}");
     let mut photos = http_client.get(url)
-        .header("Authorization", &format!("Bearer {}", st_admin.tkn.id_token))
+        .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
         .json::<Photos>().await.map_err(print_err)?;
 
