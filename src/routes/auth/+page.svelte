@@ -2,6 +2,7 @@
     'use strict';
 
     import { goto } from "$app/navigation";
+    import Loading from "$lib/components/Loading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
     async function load() {
@@ -19,9 +20,7 @@
     <div class="hero-content text-center">
         <div class="p-20">
             {#await load()}
-                <p>認証中です</p>
-            {:then} 
-                <p>しばらく経ってもページが自動的に遷移しない場合は再起動してください</p>
+                <Loading/>
             {/await}
         </div>
     </div>
