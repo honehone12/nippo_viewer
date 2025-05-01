@@ -76,7 +76,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         load_download
     ])
     .setup(|app| {
-        app.manage(RwLock::new(CachedAuth::default()));
+        app.manage(RwLock::new(CachedCode::default()));
         app.manage(RwLock::new(CachedViewer::default()));
         app.manage(RwLock::new(CachedUsers::default()));
         app.manage(RwLock::new(CachedQuery::default()));
@@ -99,8 +99,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 };
         
-                let st_auth = app_handle.state::<RwLock<CachedAuth>>();
-                let mut st_auth = match st_auth.try_write() {
+                let st_code = app_handle.state::<RwLock<CachedCode>>();
+                let mut st_code = match st_code.try_write() {
                     Ok(l) => l,
                     Err(e) => {
                         error!("opening another instance?: {e}");
@@ -108,7 +108,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
                         return;
                     }
                 };
-                st_auth.code = code;
+                st_code.code = code;
                 
                 _ = app_handle.emit_to("main", "auth_done", ()).map_err(print_err);
             });

@@ -104,7 +104,7 @@ pub(crate) async fn load_users(
     let json = serde_json::to_string(&users).map_err(print_err)?;
 
     st_users.users = users;
-    st_users.org_id = st_viewer.org_id.clone();
+    st_users.org_id = st_viewer.org_id;
 
     Ok(Response::new(json))
 }
@@ -134,7 +134,7 @@ pub(crate) async fn load_calls(
         st_viewer.org_id,
         st_query.y,
         st_query.m,
-        user_id.to_string()
+        user_id
     );
     info!("requesting to {url}");
     let mut calls = http_client.get(url)
@@ -183,7 +183,7 @@ pub(crate) async fn load_reports(
         st_viewer.org_id,
         st_query.y,
         st_query.m,
-        user_id.to_string()
+        user_id
     );
     info!("requesting to {url}");
     let mut reports = http_client.get(url)
@@ -223,9 +223,7 @@ pub(crate) async fn load_print(
         return Ok(Response::new(json));
     }
 
-    let report_id = BASE64_STANDARD
-        .decode(&st_query.report)
-        .map_err(print_err)?;
+    let report_id = BASE64_STANDARD.decode(&st_query.report).map_err(print_err)?;
     let report_id = Uuid::from_slice(&report_id).map_err(print_err)?;
 
     let http_client = reqwest::Client::new();
@@ -302,9 +300,7 @@ pub(crate) async fn load_download(
         .json::<Photos>().await.map_err(print_err)?;
 
     if !photos.morning_alc.is_empty() {
-        let morning_alc = BASE64_STANDARD
-            .decode(&photos.morning_alc)
-            .map_err(print_err)?;
+        let morning_alc = BASE64_STANDARD.decode(&photos.morning_alc).map_err(print_err)?;
         let morning_alc = String::from_utf8(morning_alc).map_err(print_err)?;
         photos.morning_alc = morning_alc;
     }

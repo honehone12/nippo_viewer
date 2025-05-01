@@ -1,9 +1,9 @@
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Default)]
-pub(crate) struct CachedAuth {
-    pub(crate) org_id: String,
+pub(crate) struct CachedCode {
     pub(crate) code: String
 }
 
@@ -35,7 +35,7 @@ pub(crate) struct TokenRefresh {
 
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct CachedViewer {
-    pub(crate) org_id: String,
+    pub(crate) org_id: Uuid,
     pub(crate) tkn: Token,
     pub(crate) exp: u64,
 }
@@ -49,12 +49,12 @@ pub(crate) struct User {
 
 #[derive(Default)]
 pub(crate) struct CachedUsers {
-    pub(crate) org_id: String,
+    pub(crate) org_id: Uuid,
     pub(crate) users: Vec<User>,
 }
 
 impl CachedUsers {
-    pub(crate) fn has(&self, org_id: &str) -> bool {
+    pub(crate) fn has(&self, org_id: &Uuid) -> bool {
         return &self.org_id == org_id && !self.users.is_empty();
     }
 }

@@ -1,8 +1,10 @@
 use std::{mem, time::{Duration, SystemTime}};
+use base64::prelude::*;
 use dotenvy_macro::dotenv;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
 use tracing::{warn, error};
+use uuid::Uuid;
 use crate::{
     error::{print_err, InvokeError, InvokeResult},
     save::{persistent_file_path, Save},
@@ -33,8 +35,7 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
     let mut viewer = serde_json::from_str::<CachedViewer>(&json).map_err(print_err)?;
 
     let now = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH)
-        .map_err(print_err)?
+        .duration_since(SystemTime::UNIX_EPOCH).map_err(print_err)?
         .as_secs();
 
     if now >= viewer.exp {
@@ -73,30 +74,19 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
 }
 
 #[tauri::command]
-pub(crate) async fn start_auth(
-    org_id: String,
-    st_auth: State<'_, RwLock<CachedAuth>>
-) -> InvokeResult<()> {
-    if org_id.is_empty() {
-        warn!("emprty input");
-        return Err(InvokeError::Input);
-    }
-
-    let mut st_auth = st_auth.write().await;
-    st_auth.org_id = org_id; 
-
+pub(crate) fn start_auth() -> InvokeResult<()> {
     webbrowser::open(dotenv!("AUTH_URL")).map_err(print_err)?;
     Ok(())
 }
 
 #[tauri::command]
 pub(crate) async fn obtain_tkn(
-    st_auth: State<'_, RwLock<CachedAuth>>,
+    st_code: State<'_, RwLock<CachedCode>>,
     st_viewer: State<'_, RwLock<CachedViewer>>
 ) -> InvokeResult<()> {
-    let (org_id, code) = {
-        let mut st_auth = st_auth.write().await;
-        (mem::take(&mut st_auth.org_id), mem::take(&mut st_auth.code))
+    let code = {
+        let mut st_code = st_code.write().await;
+        mem::take(&mut st_code.code)
     };
 
     let http_clinet = reqwest::Client::new();
@@ -113,18 +103,27 @@ pub(crate) async fn obtain_tkn(
         .json::<Token>().await.map_err(print_err)?;
     let exp = exp(tkn.expires_in)?;
 
-    let viewer = CachedViewer{ 
-        org_id, 
+    let url = format!("{}/org", dotenv!("BASE_API_URL"));
+    let org_id = http_clinet.get(url)
+        .header("Authorization", format!("Bearer {}", tkn.id_token))
+        .send().await.map_err(print_err)?
+        .text().await.map_err(print_err)?;
+
+    let org_id = BASE64_STANDARD.decode(&org_id).map_err(print_err)?;
+    let org_id = Uuid::from_slice(&org_id).map_err(print_err)?;
+
+    let viewer = CachedViewer{
         tkn,
+        org_id,
         exp
     };
-    
+
     let json = serde_json::to_string(&viewer).map_err(print_err)?;
     let save = Save::from_text(json)?;
     let json = serde_json::to_string(&save).map_err(print_err)?;
     let path = persistent_file_path()?;
     fs::write(path, json).await.map_err(print_err)?;
-    
+
     let mut st_viewer = st_viewer.write().await;
     *st_viewer = viewer;
     
