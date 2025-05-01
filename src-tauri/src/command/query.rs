@@ -91,7 +91,6 @@ pub(crate) async fn load_users(
         st_viewer.org_id
     );
     info!("requesting to {url}");
-
     let mut users = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?

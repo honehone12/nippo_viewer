@@ -3,7 +3,7 @@ use base64::prelude::*;
 use dotenvy_macro::dotenv;
 use tauri::State;
 use tokio::{fs, sync::RwLock};
-use tracing::{warn, error};
+use tracing::{error, info, warn};
 use uuid::Uuid;
 use crate::{
     error::{print_err, InvokeError, InvokeResult},
@@ -47,6 +47,7 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
                 ("client_id", dotenv!("CLIENT_ID")),
                 ("refresh_token", &viewer.tkn.refresh_token)
             ];
+            info!("requesting to refresh");
             let refresh = match http_client.post(url)
                 .form(&form)
                 .send().await.map_err(print_err)
@@ -97,6 +98,7 @@ pub(crate) async fn obtain_tkn(
         ("code", &code),
         ("redirect_uri", dotenv!("REDIRECT_URI"))
     ];
+    info!("requesting tkn");
     let tkn = http_clinet.post(url)
         .form(&form)
         .send().await.map_err(print_err)?
@@ -104,6 +106,7 @@ pub(crate) async fn obtain_tkn(
     let exp = exp(tkn.expires_in)?;
 
     let url = format!("{}/org", dotenv!("BASE_API_URL"));
+    info!("requesting org id");
     let org_id = http_clinet.get(url)
         .header("Authorization", format!("Bearer {}", tkn.id_token))
         .send().await.map_err(print_err)?
