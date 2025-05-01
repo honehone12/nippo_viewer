@@ -50,9 +50,12 @@
     <div>
         {#if print.morning_call}
             <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">前点呼（印刷はされません）</div>
+                <div class="collapse-title">前点呼</div>
                 <div class="collapse-content">
                     <MorningCallTable calls={[print.morning_call]}/>
+                    <div class="text-center mt-5">
+                        <p>（印刷はされません）</p>
+                    </div>
                 </div>
             </div>
         {:else}
@@ -62,9 +65,12 @@
         {/if}
         {#if print.evening_call}
             <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">後点呼（印刷はされません）</div>
+                <div class="collapse-title">後点呼</div>
                 <div class="collapse-content">
                     <EveningCallTable calls={[print.evening_call]}/>
+                    <div class="text-center mt-5">
+                        <p>（印刷はされません）</p>
+                    </div>
                 </div>
             </div>
         {:else}
