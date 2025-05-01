@@ -16,10 +16,13 @@
 
             if (exists) {
                 goto('/user');
+                return true;
             }
         } catch {
             goto('/error');
         }
+
+        return false;
     }
 
     /**
@@ -55,17 +58,19 @@
         <div class="p-20">
             {#await load()}
                 <Loading/>
-            {:then}
-                <div class="text-2xl mb-10">
-                    <h1 >管理者認証を行います（ブラウザが開きます）</h1>
-                </div>
-                <div>
-                    <button 
-                        class="btn btn-primary" 
-                        disabled={submitting}
-                        {onclick}
-                    >OK</button>    
-                </div>    
+            {:then exists}
+                {#if !exists}
+                    <div class="text-2xl mb-10">
+                        <h1 >管理者認証を行います（ブラウザが開きます）</h1>
+                    </div>
+                    <div>
+                        <button 
+                            class="btn btn-primary" 
+                            disabled={submitting}
+                            {onclick}
+                        >OK</button>    
+                    </div>    
+                {/if}
             {/await}
         </div>
     </div>
