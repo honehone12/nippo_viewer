@@ -90,7 +90,7 @@ pub(crate) async fn load_users(
         dotenv!("BASE_API_URL"),
         st_viewer.org_id
     );
-    info!("requesting to {url}");
+    info!("requesting users");
     let mut users = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
@@ -135,7 +135,7 @@ pub(crate) async fn load_calls(
         st_query.m,
         user_id
     );
-    info!("requesting to {url}");
+    info!("requesting calls");
     let mut calls = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
@@ -184,7 +184,7 @@ pub(crate) async fn load_reports(
         st_query.m,
         user_id
     );
-    info!("requesting to {url}");
+    info!("requesting reports");
     let mut reports = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
@@ -232,7 +232,7 @@ pub(crate) async fn load_print(
         st_viewer.org_id,
         report_id
     );
-    info!("requesting to {url}");
+    info!("requesting print");
     let mut print = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
@@ -292,7 +292,7 @@ pub(crate) async fn load_download(
         st_viewer.org_id,
         report_id
     );
-    info!("requesting to {url}");
+    info!("requesting photos");
     let mut photos = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?

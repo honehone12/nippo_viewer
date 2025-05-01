@@ -50,8 +50,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let builder = tauri::Builder::default();
 
     #[cfg(desktop)]
-    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, args, _| {
-        info!("trying to open new instance with args {args:?}");
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+        info!("force single instancing");
 
         let Some(w) = app.get_webview_window("main") else {
             error!("no main window");
