@@ -45,17 +45,25 @@ pub(crate) struct User {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) name: String,
+    pub(crate) email: String
+}
+
+#[derive(Serialize, Deserialize, Default)]
+pub(crate) struct Users {
+    pub(crate) admin: bool,
+    pub(crate) users: Vec<User>,
+    pub(crate) invitables: Vec<User>
 }
 
 #[derive(Default)]
 pub(crate) struct CachedUsers {
     pub(crate) org_id: Uuid,
-    pub(crate) users: Vec<User>,
+    pub(crate) users: Users,
 }
 
 impl CachedUsers {
     pub(crate) fn has(&self, org_id: &Uuid) -> bool {
-        return &self.org_id == org_id && !self.users.is_empty();
+        return &self.org_id == org_id && !self.users.users.is_empty();
     }
 }
 

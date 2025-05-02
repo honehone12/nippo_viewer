@@ -94,11 +94,13 @@ pub(crate) async fn load_users(
     let mut users = http_client.get(url)
         .header("Authorization", &format!("Bearer {}", st_viewer.tkn.id_token))
         .send().await.map_err(print_err)?
-        .json::<Vec<User>>().await.map_err(print_err)?;
+        .json::<Users>().await.map_err(print_err)?;
 
     let jst = jst()?;
-    users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
-    users.sort_unstable_by_key(|u| u.created_at);
+    users.users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    users.users.sort_unstable_by_key(|u| u.created_at);
+    users.invitables.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    users.invitables.sort_unstable_by_key(|u| u.created_at);
 
     let json = serde_json::to_string(&users).map_err(print_err)?;
 
