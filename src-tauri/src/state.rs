@@ -44,8 +44,7 @@ pub(crate) struct CachedViewer {
 pub(crate) struct User {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
-    pub(crate) name: String,
-    pub(crate) email: String
+    pub(crate) name: String
 }
 
 #[derive(Serialize, Deserialize, Default)]
