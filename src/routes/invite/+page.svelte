@@ -1,10 +1,10 @@
 <script>
     'use strict';
 
-    import { goto } from "$app/navigation";
+    import {goto} from "$app/navigation";
+    import {invoke} from "@tauri-apps/api/core";
     import Loading from "$lib/components/Loading.svelte";
     import UserSelector from "$lib/components/UserSelector.svelte";
-    import { invoke } from "@tauri-apps/api/core";
 
     let user = $state("");
     let submitting = $state(false);
@@ -15,7 +15,12 @@
              * @type {import("$lib/api").Users}
              */
             const users = await invoke('load_users');
-            return users;
+
+            if (users.admin) {
+                return users;
+            }
+            
+            goto('/error');
         } catch {
             goto('/error');
         }
@@ -43,7 +48,7 @@
         submitting = true;
 
         try {
-            await invoke('set_query_user', {user});
+            await invoke('invite', {user});
 
             goto('/query');
         } catch {
@@ -59,30 +64,22 @@
         <div class="p-20">
             {#await load()}
                 <Loading/>
-            {:then users} 
-                <div class="text-2xl mb-5">
-                    <h1 >取得するユーザーを選択してください</h1>
-                </div>
-                <div>
-                    <UserSelector users={users.users} bind:user/>
-                </div>
-                <div class="mt-10">
-                    <button 
-                        class="btn btn-primary" 
-                        disabled={!ready}
-                        {onclick}
-                    >OK</button>    
-                </div>
+            {:then users}
                 {#if users.admin}
-                    <div class="text-xl mb-5 mt-10">
-                        <h1 >管理者</h1>
+                    <div class="text-2xl mb-5">
+                        <h1 >招待するユーザーを選択してください</h1>
                     </div>
-                    <button 
-                        class="btn btn-primary" 
-                        disabled={!ready}
-                        onclick={() => goto('/invite')}
-                    >招待ページへ</button>  
-                {/if}
+                    <div>
+                        <UserSelector users={users.users} bind:user/>
+                    </div>
+                    <div class="mt-10">
+                        <button 
+                            class="btn btn-primary" 
+                            disabled={!ready}
+                            {onclick}
+                        >OK</button>    
+                    </div>
+                {/if} 
             {/await}
         </div>
     </div>

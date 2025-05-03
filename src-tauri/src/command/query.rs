@@ -23,11 +23,19 @@ fn jst() -> InvokeResult<FixedOffset> {
 
 #[tauri::command]
 pub(crate) async fn set_query_user(
+    st_users: State<'_, RwLock<CachedUsers>>,
     st_query: State<'_, RwLock<CachedQuery>>,
     user: String,
 ) -> InvokeResult<()> {
     if user.is_empty() {
         warn!("empty input");
+        return Err(InvokeError::Input);
+    }
+
+    let st_users = st_users.read().await;
+
+    if st_users.users.users.iter().position(|u| u.id == user).is_none() {
+        warn!("invalid input");
         return Err(InvokeError::Input);
     }
 
@@ -40,10 +48,18 @@ pub(crate) async fn set_query_user(
 #[tauri::command]
 pub(crate) async fn set_query_report(
     st_query: State<'_, RwLock<CachedQuery>>,
+    st_reports: State<'_, RwLock<CachedDailyReports>>,
     report: String,
 ) -> InvokeResult<()> {
     if report.is_empty() {
         warn!("empty input");
+        return Err(InvokeError::Input);
+    }
+
+    let st_reports = st_reports.read().await;
+
+    if st_reports.reports.iter().position(|r| r.id == report).is_none() {
+        warn!("invalid input");
         return Err(InvokeError::Input);
     }
 
@@ -59,7 +75,7 @@ pub(crate) async fn set_query_ym(
     y: String,
     m: String,
 ) -> InvokeResult<()> {
-    if y.is_empty() || m.is_empty() {
+    if y.is_empty() || y.len() != 4 || m.is_empty() || m.len() > 2 {
         warn!("empty input");
         return Err(InvokeError::Input);
     }
@@ -125,7 +141,7 @@ pub(crate) async fn load_calls(
         return Ok(Response::new(json));
     }
 
-    let user_id = BASE64_STANDARD.decode(st_query.user.as_str()).map_err(print_err)?;
+    let user_id = BASE64_STANDARD.decode(&st_query.user).map_err(print_err)?;
     let user_id = Uuid::from_slice(&user_id).map_err(print_err)?;
 
     let http_client = reqwest::Client::new();

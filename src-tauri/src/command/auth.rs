@@ -1,6 +1,7 @@
 use std::{mem, time::{Duration, SystemTime}};
 use base64::prelude::*;
 use dotenvy_macro::dotenv;
+use serde::{Deserialize, Serialize};
 use tauri::State;
 use tokio::{fs, sync::RwLock};
 use tracing::{error, info, warn};
@@ -10,6 +11,11 @@ use crate::{
     save::{persistent_file_path, Save},
     state::*,
 };
+
+#[derive(Serialize, Deserialize)]
+struct AuthOrg {
+    org_id: String
+}
 
 #[inline]
 fn exp(add: u64) -> InvokeResult<u64> {
@@ -107,12 +113,12 @@ pub(crate) async fn obtain_tkn(
 
     let url = format!("{}/org", dotenv!("BASE_API_URL"));
     info!("requesting org id");
-    let org_id = http_clinet.get(url)
+    let auth_org = http_clinet.get(url)
         .header("Authorization", format!("Bearer {}", tkn.id_token))
         .send().await.map_err(print_err)?
-        .text().await.map_err(print_err)?;
+        .json::<AuthOrg>().await.map_err(print_err)?;
 
-    let org_id = BASE64_STANDARD.decode(&org_id).map_err(print_err)?;
+    let org_id = BASE64_STANDARD.decode(&auth_org.org_id).map_err(print_err)?;
     let org_id = Uuid::from_slice(&org_id).map_err(print_err)?;
 
     let viewer = CachedViewer{

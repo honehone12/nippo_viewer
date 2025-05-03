@@ -5,6 +5,12 @@ export interface User {
     name: string
 }
 
+export interface Users {
+    admin: boolean,
+    invitables: User[],
+    users: User[]
+}
+
 export interface MorningCall {
     id: string,
     created_at: string,
