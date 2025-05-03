@@ -17,7 +17,7 @@
             return false;
         }
 
-        return q.length !== 0 && y.length !== 0 && m.length !== 0
+        return !!q && !!y && !!m
     }
 
     async function onclick() {

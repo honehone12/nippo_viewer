@@ -8,6 +8,7 @@
 
     let user = $state("");
     let submitting = $state(false);
+    let invited = $state("");
 
     async function load() {
         try {
@@ -37,7 +38,7 @@
             return false;
         }
         
-        return user.length !== 0;
+        return !!user;
     }
 
     async function onclick() {
@@ -48,9 +49,8 @@
         submitting = true;
 
         try {
-            await invoke('invite', {user});
-
-            goto('/query');
+            invited = await invoke('invite', {user});
+            submitting = false;
         } catch {
             goto('/error');
         }
@@ -66,19 +66,36 @@
                 <Loading/>
             {:then users}
                 {#if users.admin}
-                    <div class="text-2xl mb-5">
-                        <h1 >招待するユーザーを選択してください</h1>
-                    </div>
-                    <div>
-                        <UserSelector users={users.users} bind:user/>
-                    </div>
-                    <div class="mt-10">
-                        <button 
-                            class="btn btn-primary" 
-                            disabled={!ready}
-                            {onclick}
-                        >OK</button>    
-                    </div>
+                    {#if submitting}
+                        <Loading/>
+                    {:else}
+                        {#if !invited}
+                            <div class="text-2xl mb-5">
+                                <h1 >招待するユーザーを選択してください</h1>
+                            </div>
+                            <div>
+                                <UserSelector users={users.invitables} bind:user/>
+                            </div>
+                            <div class="mt-10">
+                                <button 
+                                    class="btn btn-secondary" 
+                                    disabled={!ready}
+                                    {onclick}
+                                >OK</button>    
+                            </div>
+                        {:else}
+                            <div class="text-xl mb-5">
+                                <h1 >完了しました</h1>
+                            </div>
+                            <p>「{invited}」宛にメールを送信しました。メールアドレスが間違っている場合は届きません。ラインで登録しなおしてください。</p>
+                            <div class="mt-10">
+                                <button 
+                                    class="btn btn-primary" 
+                                    onclick={() => goto('/user')}
+                                >OK</button>    
+                            </div>
+                        {/if}
+                    {/if}
                 {/if} 
             {/await}
         </div>

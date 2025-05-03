@@ -32,7 +32,7 @@
             return false;
         }
         
-        return user.length !== 0;
+        return !!user;
     }
 
     async function onclick() {
@@ -78,7 +78,7 @@
                         <h1 >管理者</h1>
                     </div>
                     <button 
-                        class="btn btn-primary" 
+                        class="btn btn-secondary" 
                         disabled={!ready}
                         onclick={() => goto('/invite')}
                     >招待ページへ</button>  
