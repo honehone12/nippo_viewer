@@ -64,7 +64,7 @@
                     <h1 >取得するユーザーを選択してください</h1>
                 </div>
                 <div>
-                    <UserSelector users={users.users} bind:user/>
+                    <UserSelector admin={false} users={users.users} bind:user/>
                 </div>
                 <div class="mt-10">
                     <button 

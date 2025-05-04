@@ -51,6 +51,7 @@
         try {
             invited = await invoke('invite', {user});
             submitting = false;
+            user = "";
         } catch {
             goto('/error');
         }
@@ -74,7 +75,11 @@
                                 <h1 >招待するユーザーを選択してください</h1>
                             </div>
                             <div>
-                                <UserSelector users={users.invitables} bind:user/>
+                                <UserSelector 
+                                    admin={true} 
+                                    users={users.invitables} 
+                                    bind:user
+                                />
                             </div>
                             <div class="mt-10">
                                 <button 
@@ -87,10 +92,11 @@
                             <div class="text-xl mb-5">
                                 <h1 >完了しました</h1>
                             </div>
-                            <p>「{invited}」宛にメールを送信しました。メールアドレスが間違っている場合は届きません。ラインで登録しなおしてください。</p>
+                            <p>「{invited}」宛にメールを送信しました。</p>
+                            <p>メールアドレスが間違っている場合は届きませんので、再度ラインで登録してください。</p>
                             <div class="mt-10">
                                 <button 
-                                    class="btn btn-primary" 
+                                    class="btn btn-secondary" 
                                     onclick={() => goto('/user')}
                                 >OK</button>    
                             </div>
