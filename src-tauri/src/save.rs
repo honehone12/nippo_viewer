@@ -2,12 +2,11 @@ use crate::{
     error::{InvokeError, InvokeResult},
     print_err,
 };
-use base64::prelude::*;
 use chacha20poly1305::{
     aead::{Aead, KeyInit, OsRng},
     AeadCore, ChaCha20Poly1305, Key, Nonce,
 };
-use dotenvy_macro::dotenv;
+use keyring::{Entry, error::Error as KeyringError};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tracing::error;
@@ -26,9 +25,19 @@ pub(crate) fn persistent_file_path() -> InvokeResult<PathBuf> {
 
 #[inline]
 fn key() -> InvokeResult<Vec<u8>> {
-    let key = dotenv!("SAVE_KEY");
-    let key = BASE64_STANDARD.decode(key).map_err(print_err)?;
-    Ok(key)
+    let user = whoami::username();
+    let kr = Entry::new("com.nippo-viewer.app", &user)?;
+
+    return match kr.get_secret() {
+        Ok(v) => Ok(v),
+        Err(KeyringError::NoEntry) => {
+            let key = ChaCha20Poly1305::generate_key(&mut OsRng);
+            let key = key.as_slice();
+            kr.set_secret(key)?;
+            Ok(key.to_vec())
+        }
+        Err(e) => Err(e.into())
+    }
 }
 
 #[derive(Serialize, Deserialize)]

@@ -28,6 +28,8 @@ pub enum InvokeError {
     Uuid(#[from] uuid::Error),
     #[error("failed to encrypt or decrypt")]
     Aead(#[from] chacha20poly1305::Error),
+    #[error("failed to handle keyring")]
+    Keyring(#[from] keyring::error::Error)
 }
 
 impl Serialize for InvokeError {
