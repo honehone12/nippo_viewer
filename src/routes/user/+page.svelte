@@ -74,12 +74,12 @@
                     >OK</button>    
                 </div>
                 {#if users.admin}
-                    <div class="text-xl mb-5 mt-10">
+                    <div class="text-xl text-secondary mb-5 mt-15">
                         <h1 >管理者</h1>
                     </div>
                     <button 
                         class="btn btn-secondary" 
-                        disabled={!ready}
+                        disabled={ready}
                         onclick={() => goto('/invite')}
                     >招待ページへ</button>  
                 {/if}

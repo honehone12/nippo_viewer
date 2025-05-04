@@ -72,6 +72,12 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
 
         viewer.exp = exp;
         viewer.tkn.refresh(refresh);
+    
+        let json = serde_json::to_string(&viewer).map_err(print_err)?;
+        let save = Save::from_text(json)?;
+        let json = serde_json::to_string(&save).map_err(print_err)?;
+        let path = persistent_file_path()?;
+        fs::write(path, json).await.map_err(print_err)?;
     }
 
     let mut st_viewer = st_viewer.write().await;
