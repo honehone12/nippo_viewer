@@ -19,7 +19,11 @@
       }
     ],
     "security": {
-      "csp": "script-src 'self';"
+      "csp": "script-src 'self';",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Cross-Origin-Opener-Policy": "same-origin"
+      }
     }
   },
   "plugins": {

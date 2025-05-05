@@ -18,7 +18,7 @@
 </script>
 
 <table class="table">
-    <caption class="text-2xl text-primary mb-10">日報</caption>
+    <caption class="text-2xl text-primary mb-10">日報一覧</caption>
     <thead>
         <tr>
             <th>開始</th>
