@@ -54,16 +54,13 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
                 ("refresh_token", &viewer.tkn.refresh_token)
             ];
             info!("requesting to refresh");
-            let refresh = match http_client.post(url)
+            let Ok(refresh) = http_client.post(url)
                 .form(&form)
-                .send().await.map_err(print_err)
+                .send().await.map_err(print_err)?
+                .json::<TokenRefresh>().await.map_err(print_err) else 
             {
-                Ok(res) => res.json::<TokenRefresh>().await.map_err(print_err)?,
-                Err(e) => {
-                    error!("{e}");
-                    warn!("need re-login");
-                    return Ok(false);
-                }
+                warn!("need re-login");
+                return Ok(false);
             };
             let exp = exp(refresh.expires_in)?;
 
