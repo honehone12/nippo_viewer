@@ -63,63 +63,65 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     }));
     
     builder.plugin(tauri_plugin_deep_link::init())
-    .plugin(tauri_plugin_opener::init())
-    .invoke_handler(tauri::generate_handler![
-        exists_auth,
-        start_auth,
-        obtain_tkn,
-        load_users,
-        set_query_user,
-        set_query_ym,
-        set_query_report,
-        load_calls,
-        load_reports,
-        load_print,
-        load_download,
-        invite
-    ])
-    .setup(|app| {
-        app.manage(RwLock::new(CachedCode::default()));
-        app.manage(RwLock::new(CachedViewer::default()));
-        app.manage(RwLock::new(CachedUsers::default()));
-        app.manage(RwLock::new(CachedQuery::default()));
-        app.manage(RwLock::new(CachedCalls::default()));
-        app.manage(RwLock::new(CachedDailyReports::default()));
-        app.manage(RwLock::new(CachedDailyReportPrint::default()));
-        app.manage(RwLock::new(CachedPhotos::default()));
-        _ = app.deep_link().register("nippoviewer").map_err(print_err);
-        let handle = app.handle();
+        .plugin(tauri_plugin_opener::init())
+        .invoke_handler(tauri::generate_handler![
+            exists_auth,
+            start_auth,
+            obtain_tkn,
+            load_users,
+            set_query_user,
+            set_query_ym,
+            set_query_report,
+            load_calls,
+            load_reports,
+            load_print,
+            load_download,
+            invite
+        ])
+        .setup(|app| {
+            app.manage(RwLock::new(CachedCode::default()));
+            app.manage(RwLock::new(CachedViewer::default()));
+            app.manage(RwLock::new(CachedUsers::default()));
+            app.manage(RwLock::new(CachedQuery::default()));
+            app.manage(RwLock::new(CachedCalls::default()));
+            app.manage(RwLock::new(CachedDailyReports::default()));
+            app.manage(RwLock::new(CachedDailyReportPrint::default()));
+            app.manage(RwLock::new(CachedPhotos::default()));
+            if cfg!(windows) {
+                _ = app.deep_link().register("nippoviewer").map_err(print_err);
+            }
+            let handle = app.handle();
 
-        {
-            let app_handle = handle.clone();
-            app.deep_link().on_open_url(move |e| {
-                let code = match handle_link_event(e) {
-                    Ok(s) => s,
-                    Err(s) => {
-                        warn!(s);
-                        emit_auth_error(&app_handle, "auth error");
-                        return
-                    }
-                };
-        
-                let st_code = app_handle.state::<RwLock<CachedCode>>();
-                let mut st_code = match st_code.try_write() {
-                    Ok(l) => l,
-                    Err(e) => {
-                        error!("opening another instance?: {e}");
-                        emit_auth_error(&app_handle, "instance error");
-                        return;
-                    }
-                };
-                st_code.code = code;
-                
-                _ = app_handle.emit_to("main", "auth_done", ()).map_err(print_err);
-            });
-        }
+            {
+                let app_handle = handle.clone();
+                app.deep_link().on_open_url(move |e| {
+                    let code = match handle_link_event(e) {
+                        Ok(s) => s,
+                        Err(s) => {
+                            warn!(s);
+                            emit_auth_error(&app_handle, "auth error");
+                            return
+                        }
+                    };
+            
+                    let st_code = app_handle.state::<RwLock<CachedCode>>();
+                    let mut st_code = match st_code.try_write() {
+                        Ok(l) => l,
+                        Err(e) => {
+                            error!("opening another instance?: {e}");
+                            emit_auth_error(&app_handle, "instance error");
+                            return;
+                        }
+                    };
+                    st_code.code = code;
+                    
+                    _ = app_handle.emit_to("main", "auth_done", ()).map_err(print_err);
+                });
+            }
 
-        Ok(())
-    })
-    .run(tauri::generate_context!())?;
+            Ok(())
+        })
+        .run(tauri::generate_context!())?;
 
     Ok(())
 }
