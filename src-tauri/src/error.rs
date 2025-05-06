@@ -10,7 +10,7 @@ pub enum InvokeError {
     Path,
     #[error("failed to request or unexpected response")]
     Http(#[from] reqwest::Error),
-    #[error("failed on fs or ipc")]
+    #[error("failed on io including fs or ipc")]
     Io(#[from] std::io::Error),
     #[error("failed to handle chrono")]
     Chrono,
