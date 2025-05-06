@@ -1,4 +1,4 @@
-use std::{mem, time::{Duration, SystemTime}};
+use std::{mem, path::Path, time::{Duration, SystemTime}};
 use base64::prelude::*;
 use dotenvy_macro::dotenv;
 use serde::{Deserialize, Serialize};
@@ -28,6 +28,25 @@ fn exp(add: u64) -> InvokeResult<u64> {
     Ok(exp.as_secs())
 }
 
+#[inline]
+async fn read(path: impl AsRef<Path>) -> InvokeResult<CachedViewer> {
+    let json = fs::read_to_string(path).await.map_err(print_err)?;
+    let save = serde_json::from_str::<Save>(&json).map_err(print_err)?;
+    let json = save.into_text()?;
+    let viewer = serde_json::from_str::<CachedViewer>(&json).map_err(print_err)?;
+    Ok(viewer)
+}
+
+#[inline]
+async fn write(viewer: &CachedViewer) -> InvokeResult<()> {
+    let json = serde_json::to_string(viewer).map_err(print_err)?;
+    let save = Save::from_text(json)?;
+    let json = serde_json::to_string(&save).map_err(print_err)?;
+    let path = persistent_file_path()?;
+    fs::write(path, json).await.map_err(print_err)?;
+    Ok(())
+}
+
 #[tauri::command]
 pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> InvokeResult<bool> {
     let path = persistent_file_path()?;
@@ -35,47 +54,34 @@ pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> I
         return Ok(false);
     }
 
-    let json = fs::read_to_string(path).await.map_err(print_err)?;
-    let save = serde_json::from_str::<Save>(&json).map_err(print_err)?;
-    let json = save.into_text()?;
-    let mut viewer = serde_json::from_str::<CachedViewer>(&json).map_err(print_err)?;
+    let mut viewer = read(path).await?;
 
-    let now = SystemTime::now()
-        .duration_since(SystemTime::UNIX_EPOCH).map_err(print_err)?
-        .as_secs();
-
-    if now >= viewer.exp {
-        let (refresh, exp) = {
-            let http_client = reqwest::Client::new();
-            let url = format!("{}/oauth2/token", dotenv!("BASE_AUTH_DOMAIN"));
-            let form = vec![
-                ("grant_type", "refresh_token"),
-                ("client_id", dotenv!("CLIENT_ID")),
-                ("refresh_token", &viewer.tkn.refresh_token)
-            ];
-            info!("requesting to refresh");
-            let Ok(refresh) = http_client.post(url)
-                .form(&form)
-                .send().await.map_err(print_err)?
-                .json::<TokenRefresh>().await.map_err(print_err) else 
-            {
-                warn!("need re-login");
-                return Ok(false);
-            };
-            let exp = exp(refresh.expires_in)?;
-
-            (refresh, exp)
+    let (refresh, exp) = {
+        let http_client = reqwest::Client::new();
+        let url = format!("{}/oauth2/token", dotenv!("BASE_AUTH_DOMAIN"));
+        let form = vec![
+            ("grant_type", "refresh_token"),
+            ("client_id", dotenv!("CLIENT_ID")),
+            ("refresh_token", &viewer.tkn.refresh_token)
+        ];
+        info!("requesting to refresh");
+        let Ok(refresh) = http_client.post(url)
+            .form(&form)
+            .send().await.map_err(print_err)?
+            .json::<TokenRefresh>().await.map_err(print_err) else 
+        {
+            warn!("need re-login");
+            return Ok(false);
         };
+        let exp = exp(refresh.expires_in)?;
 
-        viewer.exp = exp;
-        viewer.tkn.refresh(refresh);
-    
-        let json = serde_json::to_string(&viewer).map_err(print_err)?;
-        let save = Save::from_text(json)?;
-        let json = serde_json::to_string(&save).map_err(print_err)?;
-        let path = persistent_file_path()?;
-        fs::write(path, json).await.map_err(print_err)?;
-    }
+        (refresh, exp)
+    };
+
+    viewer.exp = exp;
+    viewer.tkn.refresh(refresh);
+
+    write(&viewer).await?;
 
     let mut st_viewer = st_viewer.write().await;
     *st_viewer = viewer;
@@ -130,11 +136,7 @@ pub(crate) async fn obtain_tkn(
         exp
     };
 
-    let json = serde_json::to_string(&viewer).map_err(print_err)?;
-    let save = Save::from_text(json)?;
-    let json = serde_json::to_string(&save).map_err(print_err)?;
-    let path = persistent_file_path()?;
-    fs::write(path, json).await.map_err(print_err)?;
+    write(&viewer).await?;
 
     let mut st_viewer = st_viewer.write().await;
     *st_viewer = viewer;

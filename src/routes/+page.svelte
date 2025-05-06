@@ -61,7 +61,7 @@
             {:then exists}
                 {#if !exists}
                     <div class="text-2xl mb-10">
-                        <h1 >管理者認証を行います（ブラウザが開きます）</h1>
+                        <h1 >閲覧者認証を行います（ブラウザが開きます）</h1>
                     </div>
                     <div>
                         <button 
