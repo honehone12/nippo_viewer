@@ -80,6 +80,7 @@ pub(crate) struct MorningCall {
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) caller: String,
     pub(crate) name: String,
+    pub(crate) license_expiration: DateTime<FixedOffset>,
     pub(crate) car_number: String,
     pub(crate) method: u32,
     pub(crate) using_alc_checker: bool,
@@ -142,7 +143,11 @@ pub(crate) struct DailyReportFull {
     pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) name: String,
     pub(crate) car_number: String,
-    pub(crate) meter_photo: String,
+    pub(crate) morning_meter: u64,
+    pub(crate) morning_meter_photo: String,
+    pub(crate) evening_meter: u64,
+    pub(crate) evening_meter_photo: String,
+    pub(crate) non_duty_distance: u64,
     pub(crate) trouble: String,
     pub(crate) note: String,
 }
@@ -163,6 +168,14 @@ impl CachedDailyReports {
 
         !self.reports.is_empty()
     }
+}
+
+#[derive(Serialize, Deserialize, Default)]
+pub(crate) struct Site {
+    pub(crate) id: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) name: String,
+    pub(crate) short_note: String
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -201,7 +214,6 @@ pub(crate) struct Loading {
 pub(crate) struct Resting {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
-    pub(crate) updated_at: DateTime<FixedOffset>,
     pub(crate) label: String,
     pub(crate) address: String,
     pub(crate) short_note: String,
@@ -212,6 +224,7 @@ pub(crate) struct DailyReportPrint {
     pub(crate) daily_report: Option<DailyReportFull>,
     pub(crate) morning_call: Option<MorningCall>,
     pub(crate) evening_call: Option<EveningCall>,
+    pub(crate) sites: Vec<Site>,
     pub(crate) locations: Vec<Location>,
     pub(crate) waitings: Vec<Waiting>,
     pub(crate) loadings: Vec<Loading>,

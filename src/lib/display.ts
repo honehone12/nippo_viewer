@@ -1,7 +1,4 @@
-/**
- * @param {number} code 
- */
-export function method(code) {
+export function method(code: number) {
     switch (code) {
         case 1:
             return '対面';
@@ -12,31 +9,19 @@ export function method(code) {
     }
 }
 
-/**
- * @param {boolean} flag 
- */
-export function done(flag) {
+export function done(flag: boolean) {
     return flag ? '有' : '無';
 }
 
-/**
- * @param {boolean} flag
- */
-export function good(flag) {
+export function good(flag: boolean) {
     return flag ? '良' : '不'
 }
 
-/**
- * @param {boolean} flag
- */
-export function check(flag) {
+export function check(flag: boolean) {
     return flag ? '有' : '不明'
 }
 
-/**
- * @param {string} enc
- */
-export function datetime(enc) {
+export function datetime(enc: string) {
     try {
         const date = new Date(enc);
         const Y = date.getFullYear();
@@ -46,6 +31,19 @@ export function datetime(enc) {
         const m = date.getMinutes();
 
         return `${Y}年${M}月${D}日${H}時${m}分`;   
+    } catch {
+        return '不明';
+    }
+}
+
+export function date(enc: string) {
+    try {
+        const date = new Date(enc);
+        const Y = date.getFullYear();
+        const M = date.getMonth() + 1;
+        const D = date.getDate();
+
+        return `${Y}年${M}月${D}日`;   
     } catch {
         return '不明';
     }

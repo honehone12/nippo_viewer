@@ -1,21 +1,22 @@
 "use strict";
 
-export interface User {
+export type User = {
     id: string,
     name: string
 }
 
-export interface Users {
+export type Users = {
     admin: boolean,
     invitables: User[],
     users: User[]
 }
 
-export interface MorningCall {
+export type MorningCall = {
     id: string,
     created_at: string,
     caller: string,
     name: string,
+    license_expiration: string
     car_number: string,
     method: number,
     using_alc_checker: boolean,
@@ -26,7 +27,7 @@ export interface MorningCall {
     note: string
 }
 
-export interface EveningCall {
+export type EveningCall = {
     id: string,
     created_at: string,
     caller: string,
@@ -39,29 +40,40 @@ export interface EveningCall {
     note: string
 }
 
-export interface Calls {
+export type Calls = {
     morning_calls: MorningCall[],
     evening_calls: EveningCall[]
 }
 
-export interface DailyReportMini {
+export type DailyReportMini = {
     id: string,
     created_at: string,
     updated_at: string,
 }
 
-export interface DailyReportFull {
+export type DailyReportFull = {
     id: string,
     created_at: string,
     updated_at: string,
     name: string,
     car_number: string,
-    meter_photo: string,
+    morning_meter: number,
+    morning_meter_photo: string,
+    evening_meter: number,
+    evening_meter_photo: string,
+    non_duty_sistance: number,
     trouble: string,
     note: string
 }
 
-export interface Location {
+export type Site = {
+    id: string,
+    created_at: string,
+    name: string,
+    short_note: string
+}
+
+export type Location = {
     id: string,
     created_at: string,
     label: string,
@@ -71,7 +83,7 @@ export interface Location {
     short_note: string
 }
 
-export interface Waiting {
+export type Waiting = {
     id: string,
     created_at: string,
     updated_at: string,
@@ -80,7 +92,7 @@ export interface Waiting {
     note: string
 }
 
-export interface Loading {
+export type Loading = {
     id: string,
     created_at: string,
     updated_at: string,
@@ -90,26 +102,26 @@ export interface Loading {
     note: string
 }
 
-export interface Resting {
+export type Resting = {
     id: string,
     created_at: string,
-    updated_at: string,
     label: string,
     address: string,
     short_note: string
 }
 
-export interface DailyReportPrint {
+export type DailyReportPrint = {
     daily_report: DailyReportFull | null,
     morning_call: MorningCall | null,
     evening_call: EveningCall | null,
+    sites: Site[],
     locations: Location[],
     waitings: Waiting[],
     loadings: Loading[],
     restings: Resting[]
 }
 
-export interface photos {
+export type photos = {
     morning_alc: string,
     evening_alc: string,
     meter: string

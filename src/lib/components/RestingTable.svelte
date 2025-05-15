@@ -13,7 +13,7 @@
     <caption class="text-2xl text-primary mb-10">休憩</caption>
     <thead>
         <tr>
-            <th>開始日時</th>
+            <th>登録日時</th>
             <th>終了日時</th>
             <th>場所名</th>
             <th>住所</th>
@@ -23,7 +23,6 @@
         {#each restings as r (r.id)}
             <tr>
                 <td>{datetime(r.created_at)}</td>
-                <td>{datetime(r.updated_at)}</td>
                 <td>{r.label}</td>
                 <td>{r.address}</td>
             </tr>

@@ -48,7 +48,8 @@ async fn write(viewer: &CachedViewer) -> InvokeResult<()> {
 }
 
 #[tauri::command]
-pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) -> InvokeResult<bool> {
+pub(crate) async fn exists_auth(st_viewer: State<'_, RwLock<CachedViewer>>) 
+-> InvokeResult<bool> {
     let path = persistent_file_path()?;
     if !fs::try_exists(&path).await.map_err(print_err)? {
         return Ok(false);

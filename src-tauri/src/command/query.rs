@@ -113,9 +113,11 @@ pub(crate) async fn load_users(
         .json::<Users>().await.map_err(print_err)?;
 
     let jst = jst()?;
-    users.users.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    users.users.iter_mut()
+        .for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
     users.users.sort_unstable_by_key(|u| u.created_at);
-    users.invitables.iter_mut().for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
+    users.invitables.iter_mut()
+        .for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
     users.invitables.sort_unstable_by_key(|u| u.created_at);
 
     let json = serde_json::to_string(&users).map_err(print_err)?;
@@ -160,9 +162,13 @@ pub(crate) async fn load_calls(
         .json::<Calls>().await.map_err(print_err)?;
 
     let jst = jst()?;
-    calls.morning_calls.iter_mut().for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
+    calls.morning_calls.iter_mut().for_each(|c| {
+        c.created_at = c.created_at.with_timezone(&jst);
+        c.license_expiration = c.license_expiration.with_timezone(&jst);
+    });
     calls.morning_calls.sort_unstable_by_key(|c| c.created_at);
-    calls.evening_calls.iter_mut().for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
+    calls.evening_calls.iter_mut()
+        .for_each(|c| c.created_at = c.created_at.with_timezone(&jst));
     calls.evening_calls.sort_unstable_by_key(|c| c.created_at);
 
     let json = serde_json::to_string(&calls).map_err(print_err)?;
@@ -261,9 +267,12 @@ pub(crate) async fn load_print(
         r.created_at = r.created_at.with_timezone(&jst);
         r.updated_at = r.updated_at.with_timezone(&jst);
     });
-    print.morning_call.iter_mut().for_each(|m| m.created_at = m.created_at.with_timezone(&jst));
-    print.evening_call.iter_mut().for_each(|e| e.created_at = e.created_at.with_timezone(&jst));
-    print.locations.iter_mut().for_each(|l| l.created_at = l.created_at.with_timezone(&jst));
+    print.morning_call.iter_mut()
+        .for_each(|m| m.created_at = m.created_at.with_timezone(&jst));
+    print.evening_call
+        .iter_mut().for_each(|e| e.created_at = e.created_at.with_timezone(&jst));
+    print.locations.iter_mut()
+        .for_each(|l| l.created_at = l.created_at.with_timezone(&jst));
     print.waitings.iter_mut().for_each(|w| {
         w.created_at = w.created_at.with_timezone(&jst);
         w.updated_at = w.updated_at.with_timezone(&jst);
@@ -272,10 +281,7 @@ pub(crate) async fn load_print(
         l.created_at = l.created_at.with_timezone(&jst);
         l.updated_at = l.updated_at.with_timezone(&jst);
     });
-    print.restings.iter_mut().for_each(|r| {
-        r.created_at = r.created_at.with_timezone(&jst);
-        r.updated_at = r.updated_at.with_timezone(&jst);
-    });
+    print.restings.iter_mut().for_each(|r| r.created_at = r.created_at.with_timezone(&jst));
 
     let json = serde_json::to_string(&print).map_err(print_err)?;
 
@@ -317,14 +323,14 @@ pub(crate) async fn load_download(
         .json::<Photos>().await.map_err(print_err)?;
 
     if !photos.morning_alc.is_empty() {
-        let morning_alc = BASE64_STANDARD.decode(&photos.morning_alc).map_err(print_err)?;
+        let morning_alc = BASE64_STANDARD
+            .decode(&photos.morning_alc).map_err(print_err)?;
         let morning_alc = String::from_utf8(morning_alc).map_err(print_err)?;
         photos.morning_alc = morning_alc;
     }
     if !photos.evening_alc.is_empty() {
         let evening_alc = BASE64_STANDARD
-            .decode(&photos.evening_alc)
-            .map_err(print_err)?;
+            .decode(&photos.evening_alc).map_err(print_err)?;
         let evening_alc = String::from_utf8(evening_alc).map_err(print_err)?;
         photos.evening_alc = evening_alc;
     }
