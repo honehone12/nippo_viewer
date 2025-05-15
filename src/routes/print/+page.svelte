@@ -21,6 +21,7 @@
             daily_report: null,
             morning_call: null,
             evening_call: null,
+            sites: [],
             locations: [],
             waitings: [],
             loadings: [],

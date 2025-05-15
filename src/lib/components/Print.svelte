@@ -25,7 +25,8 @@
                     <th>終了日時</th>
                     <th>名前</th>
                     <th>車両番号</th>
-                    <th>メーター写真</th>
+                    <th>開始メーター写真</th>
+                    <th>終了メーター写真</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,7 +35,8 @@
                     <td>{datetime(print.daily_report.updated_at)}</td>
                     <td>{print.daily_report.name}</td>
                     <td>{print.daily_report.car_number}</td>
-                    <td>{done(!!print.daily_report.meter_photo.length)}</td>
+                    <td>{done(!!print.daily_report.morning_meter_photo)}</td>
+                    <td>{done(!!print.daily_report.evening_meter_photo)}</td>
                 </tr>
                 <tr>
                     <td>遅延・事故</td>
@@ -49,14 +51,8 @@
     </div>
     <div>
         {#if print.morning_call}
-            <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">前点呼</div>
-                <div class="collapse-content">
-                    <MorningCallTable calls={[print.morning_call]}/>
-                    <div class="text-center mt-5">
-                        <p>（印刷はされません）</p>
-                    </div>
-                </div>
+            <div class="mb-10">
+                <MorningCallTable calls={[print.morning_call]}/>
             </div>
         {:else}
             <div class="text-center mb-10">
@@ -64,14 +60,8 @@
             </div>    
         {/if}
         {#if print.evening_call}
-            <div tabindex="-1" class="collapse collapse-arrow bg-base-200 mb-10 print-exclude">
-                <div class="collapse-title">後点呼</div>
-                <div class="collapse-content">
-                    <EveningCallTable calls={[print.evening_call]}/>
-                    <div class="text-center mt-5">
-                        <p>（印刷はされません）</p>
-                    </div>
-                </div>
+            <div>
+                <EveningCallTable calls={[print.evening_call]}/>
             </div>
         {:else}
             <div class="text-center mb-10">
@@ -120,11 +110,3 @@
         <p>日報無し</p>
     </div>
 {/if}
-
-<style>
-    @media print {
-        .print-exclude {
-            display: none;
-        }
-    }
-</style>
