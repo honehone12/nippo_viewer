@@ -85,6 +85,15 @@
                 <p>後点呼無し</p>
             </div>   
         {/if}
+        {#if print.sites.length > 0}
+            <div class="mb-10">
+
+            </div>
+        {:else}
+            <div class="text-center mb-10">
+                <p>現場の登録無し</p>
+            </div>
+        {/if}
         {#if print.locations.length > 0}
             <div class="mb-10">
                 <LocationTable locations={print.locations}/>
