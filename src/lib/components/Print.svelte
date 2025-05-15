@@ -7,6 +7,7 @@
     import LocationTable from "./LocationTable.svelte";
     import MorningCallTable from "./MorningCallTable.svelte";
     import RestingTable from "./RestingTable.svelte";
+    import SiteTable from "./SiteTable.svelte";
     import WaitingTable from "./WaitingTable.svelte";
 
     /**
@@ -87,7 +88,7 @@
         {/if}
         {#if print.sites.length > 0}
             <div class="mb-10">
-
+                <SiteTable sites={print.sites}/>
             </div>
         {:else}
             <div class="text-center mb-10">
