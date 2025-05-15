@@ -61,7 +61,7 @@ export type DailyReportFull = {
     morning_meter_photo: string,
     evening_meter: number,
     evening_meter_photo: string,
-    non_duty_sistance: number,
+    non_duty_distance: number,
     trouble: string,
     note: string
 }
