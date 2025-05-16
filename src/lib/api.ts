@@ -2,7 +2,8 @@
 
 export type User = {
     id: string,
-    name: string
+    name: string,
+    sub_admin: boolean
 }
 
 export type Users = {

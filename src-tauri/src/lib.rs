@@ -4,7 +4,7 @@ mod state;
 mod command {
     pub(crate) mod auth;
     pub(crate) mod query;
-    pub(crate) mod invite;
+    pub(crate) mod admin;
 }
 
 use std::{borrow::Cow, collections::HashMap};
@@ -15,7 +15,7 @@ use tracing::{error, info, warn};
 use command::{
     auth::*,
     query::*,
-    invite::*
+    admin::*
 };
 use error::print_err;
 use state::*;
@@ -76,7 +76,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             load_reports,
             load_print,
             load_download,
-            invite
+            invite,
+            promote
         ])
         .setup(|app| {
             app.manage(RwLock::new(CachedCode::default()));

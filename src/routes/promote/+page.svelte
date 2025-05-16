@@ -8,7 +8,7 @@
 
     let user = $state("");
     let submitting = $state(false);
-    let invited = $state("");
+    let promoted = $state(false);
 
     async function load() {
         try {
@@ -18,6 +18,8 @@
             const users = await invoke('load_users');
 
             if (users.admin) {
+                users.users = users.users.filter((value) => !value.sub_admin)
+
                 return users;
             }
             
@@ -49,7 +51,8 @@
         submitting = true;
 
         try {
-            invited = await invoke('invite', {user});
+            await invoke('promote', {user});
+            promoted = true;
             submitting = false;
             user = "";
         } catch {
@@ -70,15 +73,15 @@
                     {#if submitting}
                         <Loading/>
                     {:else}
-                        {#if !invited}
+                        {#if !promoted}
                             <div class="mb-10">
-                                <h1 class="text-2xl mb-5">招待するユーザーを選択してください</h1>
-                                <p>ユーザーを招待するとにっぽーViewerにログインできるようになります</p>
+                                <h1 class="text-2xl mb-5">昇格するユーザーを選択してください</h1>
+                                <p>ユーザーを昇格させると組織内のすべてのユーザーデータを閲覧できます</p>
                             </div>
                             <div>
                                 <UserSelector 
                                     admin={true} 
-                                    users={users.invitables} 
+                                    users={users.users} 
                                     bind:user
                                 />
                             </div>
@@ -93,8 +96,6 @@
                             <div class="text-xl mb-5">
                                 <h1 >完了しました</h1>
                             </div>
-                            <p>「{invited}」宛にメールを送信しました。</p>
-                            <p>メールアドレスが間違っている場合は届きませんので、再度ラインで登録してください。</p>
                             <div class="mt-10">
                                 <button 
                                     class="btn btn-secondary" 

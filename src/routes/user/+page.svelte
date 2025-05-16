@@ -74,14 +74,19 @@
                     >OK</button>    
                 </div>
                 {#if users.admin}
-                    <div class="text-xl text-secondary mb-5 mt-15">
-                        <h1 >管理者</h1>
+                    <div class="text-2xl text-secondary mb-10 mt-15">
+                        <h1 >管理者メニュー</h1>
                     </div>
                     <button 
-                        class="btn btn-secondary" 
+                        class="btn btn-secondary mr-15" 
                         disabled={ready}
                         onclick={() => goto('/invite')}
                     >招待ページへ</button>  
+                    <button 
+                        class="btn btn-secondary" 
+                        disabled={ready}
+                        onclick={() => goto('/promote')}
+                    >昇格ページへ</button>  
                 {/if}
             {/await}
         </div>
