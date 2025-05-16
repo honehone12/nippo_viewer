@@ -9,9 +9,9 @@
 
 <div class="card card-side bg-base-200">
     <figure>
-        <img src="{url}" class="size-100" alt="{name}"/>
+        <img src="{url}" class="w-120" alt="{name}"/>
     </figure>
-    <div class="card-body place-content-center px-10">
+    <div class="card-body place-content-center text-center px-10">
         <h2 class="card-title text-xl mb-5">{name}</h2>
         <div class="card-actions justify-center">
             <a href="{url}" download>

@@ -68,6 +68,15 @@
         </table>
     </div>
     <div>
+        {#if print.sites.length > 0}
+            <div class="mb-10">
+                <SiteTable sites={print.sites}/>
+            </div>
+        {:else}
+            <div class="text-center mb-10">
+                <p>現場の登録無し</p>
+            </div>
+        {/if}
         {#if print.morning_call}
             <div class="mb-10">
                 <MorningCallTable calls={[print.morning_call]}/>
@@ -85,15 +94,6 @@
             <div class="text-center mb-10">
                 <p>後点呼無し</p>
             </div>   
-        {/if}
-        {#if print.sites.length > 0}
-            <div class="mb-10">
-                <SiteTable sites={print.sites}/>
-            </div>
-        {:else}
-            <div class="text-center mb-10">
-                <p>現場の登録無し</p>
-            </div>
         {/if}
         {#if print.locations.length > 0}
             <div class="mb-10">

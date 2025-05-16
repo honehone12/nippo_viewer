@@ -3,7 +3,7 @@
     
     import { goto } from "$app/navigation";
     import DailyReportTable from "$lib/components/DailyReportTable.svelte";
-    import Loading from "$lib/components/Loading.svelte";
+    import Loading from "$lib/components/DataLoading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
     async function load() {

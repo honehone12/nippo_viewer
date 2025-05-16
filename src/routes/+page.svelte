@@ -2,7 +2,7 @@
     'use strict';
     
     import { goto } from "$app/navigation";
-    import Loading from "$lib/components/Loading.svelte";
+    import Loading from "$lib/components/DataLoading.svelte";
     import { invoke } from "@tauri-apps/api/core";
     import { listen } from "@tauri-apps/api/event";
 

@@ -121,7 +121,7 @@ export type DailyReportPrint = {
     restings: Resting[]
 }
 
-export type photos = {
+export type Photos = {
     morning_alc: string,
     evening_alc: string,
     morning_mtr: string,
