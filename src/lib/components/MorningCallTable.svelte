@@ -11,6 +11,9 @@
 
 <table class="table">
     <caption class="text-2xl text-primary mb-10">前点呼</caption>
+    <colgroup>
+        <col style="width: 15%;">
+    </colgroup>
     <thead>
         <tr>
             <th>日時</th>

@@ -11,6 +11,12 @@
 
 <table class="table">
     <caption class="text-2xl text-primary mb-10">休憩</caption>
+    <colgroup>
+        <col style="width: 15%;">
+        <col style="width: 20%;">
+        <col style="width: 25%;">
+        <col style="width: 40%;">
+    </colgroup>
     <thead>
         <tr>
             <th>登録日時</th>
