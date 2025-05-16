@@ -14,9 +14,9 @@
     <thead>
         <tr>
             <th>登録日時</th>
-            <th>終了日時</th>
             <th>場所名</th>
             <th>住所</th>
+            <th>説明</th>
         </tr>
     </thead>
     <tbody>
@@ -25,10 +25,7 @@
                 <td>{datetime(r.created_at)}</td>
                 <td>{r.label}</td>
                 <td>{r.address}</td>
-            </tr>
-            <tr>
-                <td>説明</td>
-                <td colspan="3">{r.short_note}</td>
+                <td>{r.short_note}</td>
             </tr>
         {/each}
     </tbody>

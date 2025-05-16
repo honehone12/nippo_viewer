@@ -58,11 +58,11 @@
                 </tr>
                 <tr>
                     <td>遅延・事故</td>
-                    <td colspan="4">{print.daily_report.trouble}</td>
+                    <td colspan="9">{print.daily_report.trouble}</td>
                 </tr>
                 <tr>
                     <td>備考</td>
-                    <td colspan="4">{print.daily_report.note}</td>
+                    <td colspan="9">{print.daily_report.note}</td>
                 </tr>
             </tbody>
         </table>
@@ -78,7 +78,7 @@
             </div>    
         {/if}
         {#if print.evening_call}
-            <div>
+            <div class="mb-10">
                 <EveningCallTable calls={[print.evening_call]}/>
             </div>
         {:else}

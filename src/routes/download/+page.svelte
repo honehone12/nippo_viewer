@@ -20,7 +20,8 @@
         return {
             morning_alc: '',
             evening_alc: '',
-            meter: ''
+            morning_mtr: '',
+            evening_mtr: ''
         };
     }
 </script>
@@ -53,13 +54,22 @@
                         <p>後点呼の写真無し</p>
                     </div>
                 {/if}
-                {#if photos.meter}
+                {#if photos.morning_mtr}
                     <div class="mb-5">
-                        <PhotoCard url="{photos.meter}" name="日報　メーター"/>
+                        <PhotoCard url="{photos.morning_mtr}" name="開始　メーター"/>
                     </div>
                 {:else}
                     <div class="text-center mb-5">
-                        <p>メータの写真無し</p>
+                        <p>開始メータの写真無し</p>
+                    </div>
+                {/if}
+                {#if photos.evening_mtr}
+                    <div class="mb-5">
+                        <PhotoCard url="{photos.evening_mtr}" name="終了　メーター"/>
+                    </div>
+                {:else}
+                    <div class="text-center mb-5">
+                        <p>終了メータの写真無し</p>
                     </div>
                 {/if}
             {/await}

@@ -124,5 +124,6 @@ export type DailyReportPrint = {
 export type photos = {
     morning_alc: string,
     evening_alc: string,
-    meter: string
+    morning_mtr: string,
+    evening_mtr: string
 }

@@ -247,7 +247,8 @@ impl CachedDailyReportPrint {
 pub(crate) struct Photos {
     pub(crate) morning_alc: String,
     pub(crate) evening_alc: String,
-    pub(crate) meter: String,
+    pub(crate) morning_mtr: String,
+    pub(crate) evening_mtr: String,
 }
 
 #[derive(Default)]
@@ -264,6 +265,7 @@ impl CachedPhotos {
 
         return !self.photos.morning_alc.is_empty()
             || !self.photos.evening_alc.is_empty()
-            || !self.photos.meter.is_empty();
+            || !self.photos.morning_mtr.is_empty()
+            || !self.photos.evening_mtr.is_empty();
     }
 }

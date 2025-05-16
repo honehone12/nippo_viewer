@@ -18,6 +18,7 @@
             <th>住所</th>
             <th>緯度</th>
             <th>経度</th>
+            <td>説明</td>
         </tr>
     </thead>
     <tbody>
@@ -28,10 +29,7 @@
                 <td>{l.address}</td>
                 <td>{l.latitude.toFixed(4)}</td>
                 <td>{l.longitude.toFixed(4)}</td>
-            </tr>
-            <tr>
-                <td>説明</td>
-                <td colspan="4">{l.short_note}</td>
+                <td>{l.short_note}</td>
             </tr>
         {/each}
     </tbody>
