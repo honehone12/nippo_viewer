@@ -83,6 +83,7 @@ pub(crate) struct MorningCall {
     pub(crate) name: String,
     pub(crate) license_expiration: DateTime<FixedOffset>,
     pub(crate) car_number: String,
+    pub(crate) inspection_expiration: DateTime<FixedOffset>,
     pub(crate) method: u32,
     pub(crate) using_alc_checker: bool,
     pub(crate) alc_check: bool,
