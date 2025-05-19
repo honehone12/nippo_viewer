@@ -4,9 +4,9 @@
     import {method, good, done, datetime, date, photo} from "$lib/display";
 
     /**
-     * @type {{calls: import("$lib/api").MorningCall[]}}
+     * @type {{calls: import("$lib/api").MorningCall[], usePhoto: boolean}}
      */
-    let {calls} = $props();
+    let {calls, usePhoto} = $props();
 </script>
 
 <table class="table">
@@ -40,7 +40,7 @@
                 <td>{date(m.inspection_expiration)}</td>
                 <td>{method(m.method)}</td>
                 <td>{done(m.using_alc_checker)}</td>
-                <td>{good(m.alc_check)}{photo(m.alc_photo)}</td>
+                <td>{good(m.alc_check)}{#if usePhoto}{photo(m.alc_photo)}{/if}</td>
                 <td>{good(m.health_check)}</td>
                 <td>{good(m.car_check)}</td>
             </tr>

@@ -42,13 +42,13 @@
                 </div>
             </div>
             <div class="flex-auto">
-                <MorningCallTable calls={calls.morning_calls}/>
+                <MorningCallTable calls={calls.morning_calls} usePhoto={true}/>
             </div>
             <div class="divider divider-primary flex-auto my-20">
                 前{calls.morning_calls.length}件：後{calls.evening_calls.length}件
             </div>
             <div class="flex-auto">
-                <EveningCallTable calls={calls.evening_calls}/>
+                <EveningCallTable calls={calls.evening_calls} usePhoto={true}/>
             </div>
         </div>
     </div>

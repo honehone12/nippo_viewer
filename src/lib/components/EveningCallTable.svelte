@@ -4,9 +4,9 @@
     import {method, good, done, datetime, photo} from "$lib/display";
 
     /**
-     * @type {{calls: import("$lib/api").EveningCall[]}}
+     * @type {{calls: import("$lib/api").EveningCall[], usePhoto: boolean}}
      */
-    let {calls} = $props();
+    let {calls, usePhoto} = $props();
 </script>
 
 <table class="table">
@@ -34,7 +34,7 @@
                 <td>{e.car_number}</td>
                 <td>{method(e.method)}</td>
                 <td>{done(e.using_alc_checker)}</td>
-                <td>{good(e.alc_check)}{photo(e.alc_photo)}</td>
+                <td>{good(e.alc_check)}{#if usePhoto}{photo(e.alc_photo)}{/if}</td>
             </tr>
             <tr>
                 <td>備考</td>

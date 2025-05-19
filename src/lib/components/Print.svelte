@@ -48,8 +48,8 @@
                     <td>{datetime(print.daily_report.updated_at)}</td>
                     <td>{print.daily_report.name}</td>
                     <td>{print.daily_report.car_number}</td>
-                    <td>{print.daily_report.morning_meter}{photo(print.daily_report.morning_meter_photo)}</td>
-                    <td>{print.daily_report.evening_meter}{photo(print.daily_report.evening_meter_photo)}</td>
+                    <td>{print.daily_report.morning_meter}</td>
+                    <td>{print.daily_report.evening_meter}</td>
                     <td>{print.daily_report.non_duty_distance}</td>
                     <td>{dutyDist()}</td>
                 </tr>
@@ -76,7 +76,7 @@
         {/if}
         {#if print.morning_call}
             <div class="mb-10">
-                <MorningCallTable calls={[print.morning_call]}/>
+                <MorningCallTable calls={[print.morning_call]} usePhoto={false}/>
             </div>
         {:else}
             <div class="text-center mb-10">
@@ -85,7 +85,7 @@
         {/if}
         {#if print.evening_call}
             <div class="mb-10">
-                <EveningCallTable calls={[print.evening_call]}/>
+                <EveningCallTable calls={[print.evening_call]} usePhoto={false}/>
             </div>
         {:else}
             <div class="text-center mb-10">
