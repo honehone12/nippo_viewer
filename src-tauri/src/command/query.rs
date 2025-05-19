@@ -34,7 +34,7 @@ pub(crate) async fn set_query_user(
 
     let st_users = st_users.read().await;
 
-    if st_users.users.users.iter().position(|u| u.id == user).is_none() {
+    if st_users.users.users.iter().position(|u| u.user.id == user).is_none() {
         warn!("invalid input");
         return Err(InvokeError::Input);
     }
@@ -114,14 +114,11 @@ pub(crate) async fn load_users(
 
     let jst = jst()?;
     users.users.iter_mut()
-        .for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
-    users.users.sort_unstable_by_key(|u| u.created_at);
-    users.invitables.iter_mut()
-        .for_each(|u| u.created_at = u.created_at.with_timezone(&jst));
-    users.invitables.sort_unstable_by_key(|u| u.created_at);
+        .for_each(|u| u.user.created_at = u.user.created_at.with_timezone(&jst));
+    users.users.sort_unstable_by_key(|u| u.user.created_at);
 
     let json = serde_json::to_string(&users).map_err(print_err)?;
-
+    info!(json);
     st_users.users = users;
     st_users.org_id = st_viewer.org_id;
 

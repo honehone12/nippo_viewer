@@ -3,13 +3,17 @@
 export type User = {
     id:         string;
     name:       string;
-    sub_admin: boolean;
+}
+
+export type UserInfo = {
+    user:       User;
+    invitable:  boolean;
+    promotable: boolean;
 }
 
 export type Users = {
     admin:     boolean;
-    invitables: User[];
-    users:      User[];
+    users:     UserInfo[];
 }
 
 export type MorningCall = {
@@ -101,7 +105,7 @@ export type Loading = {
     label:           string;
     address:         string;
     shipping_check: boolean;
-               note: string;
+    note:            string;
 }
 
 export type Resting = {

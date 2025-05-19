@@ -45,14 +45,19 @@ pub(crate) struct User {
     pub(crate) id: String,
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) name: String,
-    pub(crate) sub_admin: bool
+}
+
+#[derive(Serialize, Deserialize, Default)]
+pub(crate) struct UserInfo {
+    pub(crate) user: User,
+    pub(crate) invitable: bool,
+    pub(crate) promotable: bool
 }
 
 #[derive(Serialize, Deserialize, Default)]
 pub(crate) struct Users {
     pub(crate) admin: bool,
-    pub(crate) users: Vec<User>,
-    pub(crate) invitables: Vec<User>
+    pub(crate) users: Vec<UserInfo>
 }
 
 #[derive(Default)]

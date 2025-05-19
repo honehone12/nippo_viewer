@@ -18,9 +18,7 @@
             const users = await invoke('load_users');
 
             if (users.admin) {
-                users.users = users.users.filter((value) => !value.sub_admin)
-
-                return users;
+                return users.users.filter((u) => u.promotable).map((u) => u.user);
             }
             
             goto('/error');
@@ -28,11 +26,7 @@
             goto('/error');
         }
 
-        return {
-            admin: false,
-            invitables: [],
-            users: []
-        };
+        return [];
     }
 
     function valid() {
@@ -69,40 +63,38 @@
             {#await load()}
                 <Loading/>
             {:then users}
-                {#if users.admin}
-                    {#if submitting}
-                        <Loading/>
+                {#if submitting}
+                    <Loading/>
+                {:else}
+                    {#if !promoted}
+                        <div class="mb-10">
+                            <h1 class="text-2xl mb-5">昇格するユーザーを選択してください</h1>
+                            <p>ユーザーを昇格させると組織内のすべてのユーザーデータを閲覧できます</p>
+                        </div>
+                        <div>
+                            <UserSelector 
+                                admin={true} 
+                                {users} 
+                                bind:user
+                            />
+                        </div>
+                        <div class="mt-10">
+                            <button 
+                                class="btn btn-secondary" 
+                                disabled={!ready}
+                                {onclick}
+                            >OK</button>    
+                        </div>
                     {:else}
-                        {#if !promoted}
-                            <div class="mb-10">
-                                <h1 class="text-2xl mb-5">昇格するユーザーを選択してください</h1>
-                                <p>ユーザーを昇格させると組織内のすべてのユーザーデータを閲覧できます</p>
-                            </div>
-                            <div>
-                                <UserSelector 
-                                    admin={true} 
-                                    users={users.users} 
-                                    bind:user
-                                />
-                            </div>
-                            <div class="mt-10">
-                                <button 
-                                    class="btn btn-secondary" 
-                                    disabled={!ready}
-                                    {onclick}
-                                >OK</button>    
-                            </div>
-                        {:else}
-                            <div class="text-xl mb-5">
-                                <h1 >完了しました</h1>
-                            </div>
-                            <div class="mt-10">
-                                <button 
-                                    class="btn btn-secondary" 
-                                    onclick={() => goto('/user')}
-                                >OK</button>    
-                            </div>
-                        {/if}
+                        <div class="text-xl mb-5">
+                            <h1 >完了しました</h1>
+                        </div>
+                        <div class="mt-10">
+                            <button 
+                                class="btn btn-secondary" 
+                                onclick={() => goto('/user')}
+                            >OK</button>    
+                        </div>
                     {/if}
                 {/if} 
             {/await}

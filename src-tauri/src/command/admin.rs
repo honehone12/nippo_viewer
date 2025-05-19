@@ -34,7 +34,9 @@ pub(crate) async fn invite(
         return Err(InvokeError::Input);
     }
 
-    let Some(idx) = st_users.users.invitables.iter().position(|u| u.id == user) else {
+    let Some(idx) = st_users.users.users.iter()
+        .position(|u| u.user.id == user && u.invitable) 
+    else {
         warn!("invalid input");
         return Err(InvokeError::Input);
     };
@@ -59,7 +61,7 @@ pub(crate) async fn invite(
         .send().await.map_err(print_err)?
         .json::<Invited>().await.map_err(print_err)?;
 
-    st_users.users.invitables.remove(idx);
+    st_users.users.users[idx].invitable = false;
 
     Ok(invited.user_email)
 }
@@ -88,7 +90,8 @@ pub(crate) async fn promote(
         return Err(InvokeError::Input);
     }
     
-    let Some(idx) = st_users.users.users.iter().position(|u| u.id == user && !u.sub_admin) 
+    let Some(idx) = st_users.users.users.iter()
+        .position(|u| u.user.id == user && u.promotable) 
     else {
         warn!("invalid input");
         return Err(InvokeError::Input);
@@ -114,7 +117,7 @@ pub(crate) async fn promote(
         .send().await.map_err(print_err)?
         .json::<Promoted>().await.map_err(print_err)?;
 
-    st_users.users.users[idx].sub_admin = promoted.sub_admin;
+    st_users.users.users[idx].promotable = !promoted.sub_admin;
 
     Ok(())
 }

@@ -15,14 +15,16 @@
              * @type {import("$lib/api").Users}
              */
             const users = await invoke('load_users');
-            return users;
+            return {
+                admin: users.admin,
+                users: users.users.map((u) => u.user)
+            };
         } catch {
             goto('/error');
         }
 
         return {
             admin: false,
-            invitables: [],
             users: []
         };
     }
