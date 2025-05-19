@@ -56,3 +56,7 @@ export function date(enc: string) {
         return '不明';
     }
 }
+
+export function photo(photoName: string) {
+    return `（写真${photoName ? '有' : '無'}）`
+}

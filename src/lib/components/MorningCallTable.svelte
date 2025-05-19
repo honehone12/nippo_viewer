@@ -1,7 +1,7 @@
 <script>
     'use strict';
     
-    import {method, good, done, datetime, date} from "$lib/display";
+    import {method, good, done, datetime, date, photo} from "$lib/display";
 
     /**
      * @type {{calls: import("$lib/api").MorningCall[]}}
@@ -25,7 +25,6 @@
             <th>方法</th>
             <th>検査機</th>
             <th>Alc検査</th>
-            <th>Alc写真</th>
             <th>体調検査</th>
             <th>車両検査</th>
         </tr>
@@ -41,14 +40,13 @@
                 <td>{date(m.inspection_expiration)}</td>
                 <td>{method(m.method)}</td>
                 <td>{done(m.using_alc_checker)}</td>
-                <td>{good(m.alc_check)}</td>
-                <td>{done(!!m.alc_photo)}</td>
+                <td>{good(m.alc_check)}{photo(m.alc_photo)}</td>
                 <td>{good(m.health_check)}</td>
                 <td>{good(m.car_check)}</td>
             </tr>
             <tr>
                 <td>備考</td>
-                <td colspan="11">{m.note}</td>
+                <td colspan="10">{m.note}</td>
             </tr>
         {/each}
     </tbody>

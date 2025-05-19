@@ -1,7 +1,7 @@
 <script>
     'use strict';
     
-    import { datetime, done } from "$lib/display";
+    import { datetime, done, photo } from "$lib/display";
     import EveningCallTable from "./EveningCallTable.svelte";
     import LoadingTable from "./LoadingTable.svelte";
     import LocationTable from "./LocationTable.svelte";
@@ -36,8 +36,6 @@
                     <th>終了日時</th>
                     <th>名前</th>
                     <th>車両番号</th>
-                    <th>開始メーター写真</th>
-                    <th>終了メーター写真</th>
                     <th>開始メーター</th>
                     <th>終了メーター</th>
                     <th>空走行距離</th>
@@ -50,20 +48,18 @@
                     <td>{datetime(print.daily_report.updated_at)}</td>
                     <td>{print.daily_report.name}</td>
                     <td>{print.daily_report.car_number}</td>
-                    <td>{done(!!print.daily_report.morning_meter_photo)}</td>
-                    <td>{done(!!print.daily_report.evening_meter_photo)}</td>
-                    <td>{print.daily_report.morning_meter}</td>
-                    <td>{print.daily_report.evening_meter}</td>
+                    <td>{print.daily_report.morning_meter}{photo(print.daily_report.morning_meter_photo)}</td>
+                    <td>{print.daily_report.evening_meter}{photo(print.daily_report.evening_meter_photo)}</td>
                     <td>{print.daily_report.non_duty_distance}</td>
                     <td>{dutyDist()}</td>
                 </tr>
                 <tr>
                     <td>遅延・事故</td>
-                    <td colspan="9">{print.daily_report.trouble}</td>
+                    <td colspan="7">{print.daily_report.trouble}</td>
                 </tr>
                 <tr>
                     <td>備考</td>
-                    <td colspan="9">{print.daily_report.note}</td>
+                    <td colspan="7">{print.daily_report.note}</td>
                 </tr>
             </tbody>
         </table>

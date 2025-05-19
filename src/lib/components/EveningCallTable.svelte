@@ -1,7 +1,7 @@
 <script>
     'use strict';
 
-    import {method, good, done, datetime} from "$lib/display";
+    import {method, good, done, datetime, photo} from "$lib/display";
 
     /**
      * @type {{calls: import("$lib/api").EveningCall[]}}
@@ -23,7 +23,6 @@
             <th>方法</th>
             <th>検査機</th>
             <th>Alc検査</th>
-            <th>Alc写真</th>
         </tr>
     </thead>
     <tbody>
@@ -35,12 +34,11 @@
                 <td>{e.car_number}</td>
                 <td>{method(e.method)}</td>
                 <td>{done(e.using_alc_checker)}</td>
-                <td>{good(e.alc_check)}</td>
-                <td>{done(!!e.alc_photo)}</td>
+                <td>{good(e.alc_check)}{photo(e.alc_photo)}</td>
             </tr>
             <tr>
                 <td>備考</td>
-                <td colspan="7">{e.note}</td>
+                <td colspan="6">{e.note}</td>
             </tr>
         {/each}
     </tbody>
