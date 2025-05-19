@@ -11,6 +11,10 @@
 
 <table class="table">
     <caption class="text-2xl text-primary mb-10">待機（荷主都合による）</caption>
+    <colgroup>
+        <col style="width: 15%;">
+        <col style="width: 15%;">
+    </colgroup>
     <thead>
         <tr>
             <th>開始日時</th>

@@ -11,7 +11,7 @@
 
 <table class="table">
     <caption class="text-2xl text-primary mb-10">後点呼</caption>
-     <colgroup>
+    <colgroup>
         <col style="width: 15%;">
     </colgroup>
     <thead>
