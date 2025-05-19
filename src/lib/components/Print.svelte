@@ -21,7 +21,8 @@
         }
 
         const r = print.daily_report;
-        return r.evening_meter - r.morning_meter - r.non_duty_distance;
+        const dist = r.evening_meter - r.morning_meter - r.non_duty_distance
+        return dist >= 0 ? dist : 0;
     }
 </script>
 
@@ -37,8 +38,8 @@
                     <th>車両番号</th>
                     <th>開始メーター写真</th>
                     <th>終了メーター写真</th>
-                    <th>終了メーター</th>
                     <th>開始メーター</th>
+                    <th>終了メーター</th>
                     <th>空走行距離</th>
                     <th>走行距離</th>
                 </tr>

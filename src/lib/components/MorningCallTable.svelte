@@ -21,6 +21,7 @@
             <th>名前</th>
             <th>免許証期限</th>
             <th>車両番号</th>
+            <th>車検期限</th>
             <th>方法</th>
             <th>検査機</th>
             <th>Alc検査</th>
@@ -37,6 +38,7 @@
                 <td>{m.name}</td>
                 <td>{date(m.license_expiration)}</td>
                 <td>{m.car_number}</td>
+                <td>{date(m.inspection_expiration)}</td>
                 <td>{method(m.method)}</td>
                 <td>{done(m.using_alc_checker)}</td>
                 <td>{good(m.alc_check)}</td>
@@ -46,7 +48,7 @@
             </tr>
             <tr>
                 <td>備考</td>
-                <td colspan="10">{m.note}</td>
+                <td colspan="11">{m.note}</td>
             </tr>
         {/each}
     </tbody>
