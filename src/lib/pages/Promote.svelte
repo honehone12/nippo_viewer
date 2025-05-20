@@ -126,7 +126,7 @@
                             </div>
                             <div class="mt-10">
                                 <button 
-                                    class="btn btn-secondary" 
+                                    class="btn btn-accent" 
                                     onclick={() => goto('/user')}
                                 >OK</button>    
                             </div>

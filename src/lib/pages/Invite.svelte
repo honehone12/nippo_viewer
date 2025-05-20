@@ -126,7 +126,7 @@
                             <p>メールアドレスが間違っている場合は届きませんので、再度ラインで登録してください。</p>
                             <div class="mt-10">
                                 <button 
-                                    class="btn btn-secondary" 
+                                    class="btn btn-accent" 
                                     onclick={() => goto('/user')}
                                 >OK</button>    
                             </div>
