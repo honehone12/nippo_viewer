@@ -2,8 +2,8 @@
     'use strict';
 
     import { goto } from "$app/navigation";
-    import Loading from "$lib/components/DataLoading.svelte";
     import { invoke } from "@tauri-apps/api/core";
+    import Auth from "$lib/pages/Auth.svelte";
 
     async function load() {
         try {
@@ -16,12 +16,4 @@
     }
 </script>
 
-<div class="hero min-h-screen">
-    <div class="hero-content text-center">
-        <div class="p-20">
-            {#await load()}
-                <Loading/>
-            {/await}
-        </div>
-    </div>
-</div>
+<Auth load={load()}/>

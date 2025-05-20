@@ -2,9 +2,8 @@
     'use strict';
     
     import { goto } from "$app/navigation";
-    import DailyReportList from "$lib/components/DailyReportList.svelte";
-    import Loading from "$lib/components/DataLoading.svelte";
     import { invoke } from "@tauri-apps/api/core";
+    import Report from "$lib/pages/Report.svelte";
 
     async function load() {
         try {
@@ -45,24 +44,4 @@
     }
 </script>
 
-{#await load()}
-    <div class="hero min-h-screen">
-        <div class="hero-content text-center">
-            <div class="p-20">
-                <Loading/>
-            </div>
-        </div>
-    </div>                
-{:then reports} 
-    <div class="min-h-screen">
-        <div class="flex p-20">
-            <div class="flex-auto">
-                <DailyReportList
-                    {reports}
-                    {onclickPrint}
-                    {onclickDownload}
-                />
-            </div>
-        </div>
-    </div>
-{/await}
+<Report load={load()} {onclickPrint} {onclickDownload}/>
