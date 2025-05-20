@@ -30,8 +30,8 @@ export function datetime(enc: string) {
         const H = date.getHours();
         const m = date.getMinutes();
 
-        if (Y == 1) {
-            return "ー";
+        if (Y === 1) {
+            return '';
         }
 
         return `${Y}年${M}月${D}日${H}時${m}分`;   
@@ -47,7 +47,7 @@ export function date(enc: string) {
         const M = date.getMonth() + 1;
         const D = date.getDate();
 
-        if (Y == 1) {
+        if (Y === 1) {
             return '';
         }
 
