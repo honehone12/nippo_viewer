@@ -56,7 +56,7 @@
         if (!valid()) {
             return;
         }
-
+        
         submitting = true;
 
         invited = await invite(user);
@@ -103,16 +103,17 @@
                                         <div class="py-4">
                                             <p>招待後の取消は出来ません</p>
                                             <p>十分に注意してください</p>
-                                            <p>招待者：　{name}</p>
+                                            <p>招待対象者：　{name}</p>
                                         </div>
                                         <div class="modal-action place-content-center">
                                             <form method="dialog">
                                                 <button 
                                                     class="btn btn-accent mr-5"
                                                     disabled={!ready}
-                                                    {onclick} 
+                                                    {onclick}
+                                                    type="button" 
                                                 >続行</button>
-                                                <button class="btn">戻る</button>
+                                                <button class="btn" type="button">戻る</button>
                                             </form>
                                         </div>
                                     </div>

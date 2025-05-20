@@ -105,7 +105,7 @@
                                         <div class="py-4">
                                             <p>昇格後の変更は出来ません</p>
                                             <p>十分に注意してください</p>
-                                            <p>昇格者：　{name}</p>
+                                            <p>昇格対象者：　{name}</p>
                                         </div>
                                         <div class="modal-action place-content-center">
                                             <form method="dialog">
@@ -113,8 +113,9 @@
                                                     class="btn btn-accent mr-5"
                                                     disabled={!ready}
                                                     {onclick} 
+                                                    type="button"
                                                 >続行</button>
-                                                <button class="btn">戻る</button>
+                                                <button class="btn" type="button">戻る</button>
                                             </form>
                                         </div>
                                     </div>
@@ -123,6 +124,7 @@
                         {:else}
                             <div class="text-xl mb-5">
                                 <h1>完了しました</h1>
+                                <p>続けて昇格を行う場合は一度再起動してください</p>
                             </div>
                             <div class="mt-10">
                                 <button 
