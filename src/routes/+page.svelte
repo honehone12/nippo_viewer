@@ -6,7 +6,6 @@
     import { listen } from "@tauri-apps/api/event";
     import Root from "$lib/pages/Root.svelte";
 
-    
     let unlistenDone = () => console.warn('auth_done is called without callback set');
     let unlistenFailed = () => console.warn('auth_failed is called without callback set');
 

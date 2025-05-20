@@ -2,7 +2,7 @@
     'use strict';
     
     import "../app.css";
-    import Navbar from "$lib/components/layout/Navbar.svelte";
+    import Navbar from "$lib/layout/Navbar.svelte";
 
     let {children} = $props();
 </script>
