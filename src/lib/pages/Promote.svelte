@@ -28,6 +28,15 @@
         return !!user;
     }
 
+    function beforeclick() {
+        const elem = document.getElementById('promote_modal_dialog');
+        if (elem instanceof HTMLDialogElement) {
+            elem.showModal();
+        } else {
+            goto('/error');
+        }
+    }
+
     async function onclick() {
         if (!valid()) {
             return;
@@ -70,9 +79,30 @@
                             <div class="mt-10">
                                 <button 
                                     class="btn btn-accent" 
+                                    onclick={beforeclick}
                                     disabled={!ready}
-                                    {onclick}
-                                >OK</button>    
+                                >OK</button>
+                                
+                                <dialog id="promote_modal_dialog" class="modal">
+                                    <div class="modal-box">
+                                        <h3 class="text-lg text-accent font-bold">注意</h3>
+                                        <div class="py-4">
+                                            <p>昇格後の変更は出来ません</p>
+                                            <p>十分に注意してください</p>
+                                            <p>昇格者：　{users.find((u) => u.id === user)?.name}</p>
+                                        </div>
+                                        <div class="modal-action place-content-center">
+                                            <form method="dialog">
+                                                <button 
+                                                    class="btn btn-accent mr-5"
+                                                    disabled={!ready}
+                                                    {onclick} 
+                                                >続行</button>
+                                                <button class="btn">戻る</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </dialog>
                             </div>
                         {:else}
                             <div class="text-xl mb-5">
