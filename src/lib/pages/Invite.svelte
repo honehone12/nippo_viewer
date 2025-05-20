@@ -31,22 +31,13 @@
     }
 
     function valid() {
-        if (submitting) {
-            return false;
-        }
-        
-        return !!user;
+        return !submitting && !!user;
     }
 
-    function findName() {
-        const u = users.find((u) => u.id === user);
-        return u ? u.name : '';
-    }
-
-    function beforeclick() {
+    function modal() {
         const elem = document.getElementById('promote_modal_dialog');
         if (elem instanceof HTMLDialogElement) {
-            elem.showModal();
+            return elem;
         } else {
             goto('/error');
         }
@@ -58,6 +49,7 @@
         }
         
         submitting = true;
+        modal()?.close();
 
         invited = await invite(user);
 
@@ -66,7 +58,7 @@
     }
 
     let ready = $derived(valid());
-    let name = $derived(findName())
+    let name = $derived(users.find((u) => u.id === user)?.name ?? '')
 </script>
 
 <div class="hero min-h-screen">
@@ -94,7 +86,7 @@
                             <div class="mt-10">
                                 <button 
                                     class="btn btn-accent" 
-                                    onclick={beforeclick}
+                                    onclick={() => modal()?.showModal()}
                                     disabled={!ready}
                                 >OK</button>
                                 <dialog id="promote_modal_dialog" class="modal">
@@ -113,7 +105,11 @@
                                                     {onclick}
                                                     type="button" 
                                                 >続行</button>
-                                                <button class="btn" type="button">戻る</button>
+                                                <button 
+                                                    class="btn" 
+                                                    type="button"
+                                                    onclick={() => modal()?.close()}
+                                                >戻る</button>
                                             </form>
                                         </div>
                                     </div>
@@ -124,7 +120,8 @@
                                 <h1>完了しました</h1>
                             </div>
                             <p>「{invited}」宛にメールを送信しました。</p>
-                            <p>メールアドレスが間違っている場合は届きませんので、再度ラインで登録してください。</p>
+                            <p>メールアドレスが間違っている場合は届きませんので、ラインで登録しなおしてください。</p>
+                            <p>また、続けて昇格を行う際は一度再起動してください</p>
                             <div class="mt-10">
                                 <button 
                                     class="btn btn-accent" 

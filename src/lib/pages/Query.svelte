@@ -16,11 +16,7 @@
     let submitting = $state(false);
 
     function valid() {
-        if (submitting) {
-            return false;
-        }
-
-        return !!q && !!y && !!m
+        return !submitting && !!q && !!y && !!m
     }
 
     async function onclick() {
