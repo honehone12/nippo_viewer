@@ -13,7 +13,7 @@
     </figure>
     <div class="card-body place-content-center px-10">
         <div class="text-center">
-            <h2 class="text-xl mb-5">{name}</h2>
+            <h2 class="text-xl text-primary mb-5">{name}</h2>
         </div>
         <div class="justify-center">
             <a href="{url}">

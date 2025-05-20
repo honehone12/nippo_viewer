@@ -13,7 +13,7 @@
     </div>
     {#if url}
         <figure>
-            <img src="{url}" class="max-w-70" alt="{name}"/>
+            <img src="{url}" class="max-w-72" alt="{name}"/>
         </figure>
     {:else}
         <p>写真無し</p>

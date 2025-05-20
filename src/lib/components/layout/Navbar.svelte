@@ -1,3 +1,10 @@
+<script>
+    'use strict'
+
+    import { goto } from "$app/navigation";
+    import { page } from "$app/state";
+</script>
+
 <div class="navbar bg-base-300 print-exclude">
     <div class="navbar-start">
         <div class="join grid grid-cols-2">
@@ -16,6 +23,14 @@
                 <svg class="h-6 w-6 fill-current md:h-8 md:w-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"></path></svg>
             </button>
         </div>
+    </div>
+    <div class="navbar-center">
+        <button onclick="{() => {
+            const home = page.url.pathname === '/' ? '/' : '/user';
+            goto(home);
+        }}">
+            <img src="favicon.png" width="36" height="36" alt="favicon">
+        </button>
     </div>
     <div class="navbar-end">
         <button

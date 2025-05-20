@@ -36,7 +36,7 @@ export function datetime(enc: string) {
 
         return `${Y}年${M}月${D}日${H}時${m}分`;   
     } catch {
-        return '不明';
+        return '';
     }
 }
 
@@ -48,12 +48,12 @@ export function date(enc: string) {
         const D = date.getDate();
 
         if (Y == 1) {
-            return "ー";
+            return '';
         }
 
         return `${Y}年${M}月${D}日`;   
     } catch {
-        return '不明';
+        return '';
     }
 }
 

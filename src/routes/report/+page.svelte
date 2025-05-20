@@ -2,7 +2,7 @@
     'use strict';
     
     import { goto } from "$app/navigation";
-    import DailyReportTable from "$lib/components/DailyReportTable.svelte";
+    import DailyReportList from "$lib/components/DailyReportList.svelte";
     import Loading from "$lib/components/DataLoading.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
@@ -57,7 +57,7 @@
     <div class="min-h-screen">
         <div class="flex p-20">
             <div class="flex-auto">
-                <DailyReportTable 
+                <DailyReportList
                     {reports}
                     {onclickPrint}
                     {onclickDownload}

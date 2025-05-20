@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui" {
     logs: false;
-    themes: light --default, dark --prefersdark
+    themes: lemonade --default
 }
 
 table {
@@ -10,7 +10,7 @@ table {
 }
 
 th {
-    @apply border;
+    @apply border bg-base-200;
     border-color: var(--color-base-content);
 }
 

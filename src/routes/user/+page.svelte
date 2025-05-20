@@ -62,7 +62,7 @@
             {#await load()}
                 <Loading/>
             {:then users} 
-                <div class="text-2xl mb-5">
+                <div class="text-2xl text-primary mb-5">
                     <h1 >取得するユーザーを選択してください</h1>
                 </div>
                 <div>
@@ -76,16 +76,16 @@
                     >OK</button>    
                 </div>
                 {#if users.admin}
-                    <div class="text-2xl text-secondary mb-10 mt-15">
+                    <div class="text-2xl text-accent mb-10 mt-20">
                         <h1 >管理者メニュー</h1>
                     </div>
                     <button 
-                        class="btn btn-secondary mr-15" 
+                        class="btn btn-accent mr-15" 
                         disabled={ready}
                         onclick={() => goto('/invite')}
                     >招待ページへ</button>  
                     <button 
-                        class="btn btn-secondary" 
+                        class="btn btn-accent" 
                         disabled={ready}
                         onclick={() => goto('/promote')}
                     >昇格ページへ</button>  

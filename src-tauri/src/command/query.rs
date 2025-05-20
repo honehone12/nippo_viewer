@@ -118,7 +118,6 @@ pub(crate) async fn load_users(
     users.users.sort_unstable_by_key(|u| u.user.created_at);
 
     let json = serde_json::to_string(&users).map_err(print_err)?;
-    info!(json);
     st_users.users = users;
     st_users.org_id = st_viewer.org_id;
 

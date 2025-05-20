@@ -68,7 +68,7 @@
                 {:else}
                     {#if !promoted}
                         <div class="mb-10">
-                            <h1 class="text-2xl mb-5">昇格するユーザーを選択してください</h1>
+                            <h1 class="text-2xl text-accent mb-5">昇格するユーザーを選択してください</h1>
                             <p>ユーザーを昇格させると組織内のすべてのユーザーデータを閲覧できます</p>
                         </div>
                         <div>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="mt-10">
                             <button 
-                                class="btn btn-secondary" 
+                                class="btn btn-accent" 
                                 disabled={!ready}
                                 {onclick}
                             >OK</button>    

@@ -1,7 +1,7 @@
 <script>
     'use strict';
     
-    import DailyReport from "./DailyReport.svelte";
+    import DailyReportTable from "./DailyReportTable.svelte";
     import EveningCallTable from "./EveningCallTable.svelte";
     import LoadingTable from "./LoadingTable.svelte";
     import LocationTable from "./LocationTable.svelte";
@@ -18,7 +18,7 @@
 
 {#if print.daily_report}
     <div class="mb-10">
-        <DailyReport report={print.daily_report}/>
+        <DailyReportTable report={print.daily_report}/>
     </div>
     <div>
         {#if print.sites.length > 0}
@@ -26,7 +26,7 @@
                 <SiteTable sites={print.sites}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>現場の登録無し</p>
             </div>
         {/if}
@@ -35,7 +35,7 @@
                 <MorningCallTable calls={[print.morning_call]} usePhoto={false}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>前点呼無し</p>
             </div>    
         {/if}
@@ -44,7 +44,7 @@
                 <EveningCallTable calls={[print.evening_call]} usePhoto={false}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>後点呼無し</p>
             </div>   
         {/if}
@@ -53,7 +53,7 @@
                 <LocationTable locations={print.locations}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>位置情報の登録無し</p>
             </div>    
         {/if}
@@ -62,7 +62,7 @@
                 <WaitingTable waitings={print.waitings}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>待機の登録無し</p>
             </div>    
         {/if}
@@ -71,7 +71,7 @@
                 <LoadingTable loadings={print.loadings}/>
             </div>
         {:else}
-            <div class="text-center mb-10">
+            <div class="text-center text-primary mb-10">
                 <p>荷役・附帯業務の登録無し</p>
             </div>    
         {/if}
@@ -80,13 +80,13 @@
                 <RestingTable restings={print.restings}/>
             </div>
         {:else}
-            <div class="text-center">
+            <div class="text-center text-primary">
                 <p>休憩の登録無し</p>
             </div>
         {/if}
     </div>
 {:else}
-    <div class="text-center">
+    <div class="text-center text-primary">
         <p>日報無し</p>
     </div>
 {/if}

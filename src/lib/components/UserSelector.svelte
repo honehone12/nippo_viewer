@@ -17,7 +17,7 @@
 
 <select 
     id="uSelect" 
-    class="select {admin ? "select-secondary": "select-primary"} mb-5" 
+    class="select {admin ? "select-accent": "select-primary"} mb-5" 
     bind:value={user}
 >
     <option value="" disabled selected>ユーザーを選択してください</option>

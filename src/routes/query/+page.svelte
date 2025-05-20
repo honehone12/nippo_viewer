@@ -52,13 +52,13 @@
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">
-            <div class="text-2xl mb-5">
+            <div class="text-2xl text-primary mb-5">
                 <h1 >取得するデータの種類を選択してください</h1>
             </div>
             <div>
                 <DocumentSelector bind:q/>
             </div>
-            <div class="text-2xl mb-5 mt-10">
+            <div class="text-2xl text-primary mb-5 mt-10">
                 <h1 >取得するデータの期間を選択してください</h1>
             </div>
             <div>
