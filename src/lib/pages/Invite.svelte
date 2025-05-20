@@ -16,9 +16,19 @@
      */
     let {load, invite} = $props();
 
+    /**
+     * @type {import("$lib/api").User[]}
+     */
+    let users = $state([]);
     let user = $state("");
     let submitting = $state(false);
     let invited = $state("");
+
+    async function init() {
+        const {admin, users: u} = await load;
+        users = u;
+        return admin;
+    }
 
     function valid() {
         if (submitting) {
@@ -26,6 +36,11 @@
         }
         
         return !!user;
+    }
+
+    function findName() {
+        const u = users.find((u) => u.id === user);
+        return u ? u.name : '';
     }
 
     function beforeclick() {
@@ -51,14 +66,15 @@
     }
 
     let ready = $derived(valid());
+    let name = $derived(findName())
 </script>
 
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">
-            {#await load}
+            {#await init()}
                 <LoadingDots/>
-            {:then {admin, users}}
+            {:then admin}
                 {#if admin}
                     {#if submitting}
                         <LoadingDots/>
@@ -81,14 +97,13 @@
                                     onclick={beforeclick}
                                     disabled={!ready}
                                 >OK</button>
-                                
                                 <dialog id="promote_modal_dialog" class="modal">
                                     <div class="modal-box">
                                         <h3 class="text-lg text-accent font-bold">注意</h3>
                                         <div class="py-4">
                                             <p>招待後の取消は出来ません</p>
                                             <p>十分に注意してください</p>
-                                            <p>招待者：　{users.find((u) => u.id === user)?.name}</p>
+                                            <p>招待者：　{name}</p>
                                         </div>
                                         <div class="modal-action place-content-center">
                                             <form method="dialog">

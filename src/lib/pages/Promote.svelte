@@ -16,9 +16,19 @@
      */
     let {load, promote} = $props();
 
+    /**
+     * @type {import("$lib/api").User[]}
+     */
+    let users = $state([])
     let user = $state("");
     let submitting = $state(false);
     let promoted = $state(false);
+
+    async function init() {
+        const {admin, users: u} = await load;
+        users = u;
+        return admin;
+    }
 
     function valid() {
         if (submitting) {
@@ -26,6 +36,11 @@
         }
         
         return !!user;
+    }
+
+    function findName() {
+        const u = users.find((u) => u.id === user);
+        return u ? u.name : '';
     }
 
     function beforeclick() {
@@ -52,14 +67,15 @@
     }
 
     let ready = $derived(valid());
+    let name = $derived(findName());
 </script>
 
 <div class="hero min-h-screen">
     <div class="hero-content text-center">
         <div class="p-20">
-            {#await load}
+            {#await init()}
                 <LoadingDots/>
-            {:then {admin, users}}
+            {:then admin}
                 {#if admin}
                     {#if submitting}
                         <LoadingDots/>
@@ -89,7 +105,7 @@
                                         <div class="py-4">
                                             <p>昇格後の変更は出来ません</p>
                                             <p>十分に注意してください</p>
-                                            <p>昇格者：　{users.find((u) => u.id === user)?.name}</p>
+                                            <p>昇格者：　{name}</p>
                                         </div>
                                         <div class="modal-action place-content-center">
                                             <form method="dialog">
