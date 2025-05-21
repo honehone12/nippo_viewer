@@ -9,7 +9,7 @@ export function method(code: number) {
     }
 }
 
-export function done(flag: boolean) {
+export function exists(flag: boolean) {
     return flag ? '有' : '無';
 }
 
@@ -17,8 +17,8 @@ export function good(flag: boolean) {
     return flag ? '良' : '不'
 }
 
-export function check(flag: boolean) {
-    return flag ? '有' : '不明'
+export function checked(flag: boolean) {
+    return flag ? '済' : '不'
 }
 
 export function datetime(enc: string) {

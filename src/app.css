@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui" {
     logs: false;
-    themes: lemonade --default
+    themes: emerald --default
 }
 
 table {

@@ -1,7 +1,7 @@
 <script>
     'use strict';
 
-    import { datetime, check } from "$lib/display";
+    import { datetime, checked } from "$lib/display";
 
     /**
      * @type {{loadings: import("$lib/api").Loading[]}}
@@ -31,7 +31,7 @@
                 <td>{datetime(l.updated_at)}</td>
                 <td>{l.label}</td>
                 <td>{l.address}</td>
-                <td>{check(l.shipping_check)}</td>
+                <td>{checked(l.shipping_check)}</td>
             </tr>
             <tr>
                 <td>備考</td>

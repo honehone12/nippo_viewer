@@ -1,7 +1,7 @@
 <script>
     'use strict';
 
-    import {method, good, done, datetime, photo} from "$lib/display";
+    import {method, good, exists, datetime, photo} from "$lib/display";
 
     /**
      * @type {{calls: import("$lib/api").EveningCall[], usePhoto: boolean}}
@@ -33,7 +33,7 @@
                 <td>{e.name}</td>
                 <td>{e.car_number}</td>
                 <td>{method(e.method)}</td>
-                <td>{done(e.using_alc_checker)}</td>
+                <td>{exists(e.using_alc_checker)}</td>
                 <td>{good(e.alc_check)}{#if usePhoto}{photo(e.alc_photo)}{/if}</td>
             </tr>
             <tr>

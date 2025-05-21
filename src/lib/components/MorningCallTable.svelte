@@ -1,7 +1,7 @@
 <script>
     'use strict';
     
-    import {method, good, done, datetime, date, photo} from "$lib/display";
+    import {method, good, exists, checked, datetime, date, photo} from "$lib/display";
 
     /**
      * @type {{calls: import("$lib/api").MorningCall[], usePhoto: boolean}}
@@ -39,10 +39,10 @@
                 <td>{m.car_number}</td>
                 <td>{date(m.inspection_expiration)}</td>
                 <td>{method(m.method)}</td>
-                <td>{done(m.using_alc_checker)}</td>
+                <td>{exists(m.using_alc_checker)}</td>
                 <td>{good(m.alc_check)}{#if usePhoto}{photo(m.alc_photo)}{/if}</td>
                 <td>{good(m.health_check)}</td>
-                <td>{good(m.car_check)}</td>
+                <td>{checked(m.car_check)}</td>
             </tr>
             <tr>
                 <td>備考</td>
