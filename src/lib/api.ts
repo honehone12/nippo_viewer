@@ -1,22 +1,22 @@
 "use strict";
 
-export type User = {
+export interface User {
     id:         string;
     name:       string;
 }
 
-export type UserInfo = {
+export interface UserInfo {
     user:       User;
     invitable:  boolean;
     promotable: boolean;
 }
 
-export type Users = {
+export interface Users {
     admin:     boolean;
     users:     UserInfo[];
 }
 
-export type MorningCall = {
+export interface MorningCall {
     id:                    string;
     created_at:            string;
     caller:                string;
@@ -33,7 +33,7 @@ export type MorningCall = {
     note:                  string;
 }
 
-export type EveningCall = {
+export interface EveningCall {
     id:                 string;
     created_at:         string;
     caller:             string;
@@ -46,18 +46,18 @@ export type EveningCall = {
     note:               string;
 }
 
-export type Calls = {
+export interface Calls {
     morning_calls: MorningCall[];
     evening_calls: EveningCall[];
 }
 
-export type DailyReportMini = {
+export interface DailyReportMini {
     id:         string;
     created_at: string;
     updated_at: string;
 }
 
-export type DailyReportFull = {
+export interface DailyReportFull {
     id:                  string;
     created_at:          string;
     updated_at:          string;
@@ -72,14 +72,14 @@ export type DailyReportFull = {
     note:                string;
 }
 
-export type Site = {
+export interface Site {
     id:         string;
     created_at: string;
     name:       string;
     short_note: string;
 }
 
-export type Location = {
+export interface Location {
     id:         string;
     created_at: string;
     label:      string;
@@ -89,7 +89,7 @@ export type Location = {
     short_note: string;
 }
 
-export type Waiting = {
+export interface Waiting {
     id:         string;
     created_at: string;
     updated_at: string;
@@ -98,7 +98,7 @@ export type Waiting = {
     note:       string;
 }
 
-export type Loading = {
+export interface Loading {
     id:              string;
     created_at:      string;
     updated_at:      string;
@@ -108,7 +108,7 @@ export type Loading = {
     note:            string;
 }
 
-export type Resting = {
+export interface Resting {
     id:         string;
     created_at: string;
     label:      string;
@@ -116,7 +116,7 @@ export type Resting = {
     short_note: string;
 }
 
-export type DailyReportPrint = {
+export interface DailyReportPrint {
     daily_report: DailyReportFull | null;
     morning_call:     MorningCall | null;
     evening_call:     EveningCall | null;
@@ -127,7 +127,7 @@ export type DailyReportPrint = {
     restings:                  Resting[];
 }
 
-export type Photos = {
+export interface Photos {
     morning_alc: string;
     evening_alc: string;
     morning_mtr: string;
