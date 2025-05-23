@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     'use strict';
     
     import { goto } from "$app/navigation";
@@ -11,10 +11,7 @@
 
     async function load() {
         try {
-            /**
-             * @type {boolean}
-             */
-            const exists = await invoke('exists_auth');
+            const exists = await invoke<boolean>('exists_auth');
             if (exists) {
                 goto('/user');
                 return true;
@@ -26,10 +23,7 @@
         return false;
     }
 
-    /**
-     * @param {string} url
-     */
-    function endAuth(url) {
+    function endAuth(url: string | URL) {
         unlistenDone();
         unlistenFailed();
         goto(url);

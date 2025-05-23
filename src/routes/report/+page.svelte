@@ -1,16 +1,14 @@
-<script>
+<script lang="ts">
     'use strict';
     
     import { goto } from "$app/navigation";
     import { invoke } from "@tauri-apps/api/core";
     import Report from "$lib/pages/Report.svelte";
+    import type { DailyReportMini } from "$lib/api";
 
     async function load() {
         try {
-            /**
-             * @type {import("$lib/api").DailyReportMini[]}
-             */
-            const reports = await invoke('load_reports');
+            const reports = await invoke<DailyReportMini[]>('load_reports');
             return reports;
         } catch {
             goto('/error');
@@ -19,10 +17,7 @@
         return [];
     }
 
-    /**
-     * @param {string} id
-     */
-    async function onclickPrint(id) {
+    async function onclickPrint(id: string) {
         try {
             await invoke('set_query_report', {report: id});
             goto('/print');
@@ -31,10 +26,7 @@
         }
     }
 
-    /**
-     * @param {string} id
-     */
-    async function onclickDownload(id) {
+    async function onclickDownload(id: string) {
         try {
             await invoke('set_query_report', {report: id});
             goto('/download');

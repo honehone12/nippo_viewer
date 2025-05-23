@@ -1,16 +1,11 @@
-<script>
+<script lang="ts">
     'use strict';
     
     import { goto } from "$app/navigation";
     import { invoke } from "@tauri-apps/api/core";
     import Query from "$lib/pages/Query.svelte";
     
-    /**
-     * @param {string} q
-     * @param {string} y
-     * @param {string} m
-     */
-    async function setQuery(q, y, m) {
+    async function setQuery(q: string, y: string, m: string) {
         try {
             await invoke('set_query_ym', {y, m});
 
